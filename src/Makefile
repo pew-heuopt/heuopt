@@ -9,13 +9,13 @@ ASSIGNMENTS= $(ASSIGNMENT1_1)
 
 INC = $(LIBDIR)
 
-CXXFLAGS= -Wall -std=c++11
+CXXFLAGS= -Wall -std=c++11 -g
 CXX = g++
 
 
 all: runtests $(ASSIGNMENTS)
 
-$(LIBSTAT): $(LIBDIR)/kpmp_instance.o  $(LIBDIR)/kpmp_solution.o  $(LIBDIR)/kpmp_solution_writer.o 
+$(LIBSTAT): $(LIBDIR)/kpmp_instance.o  $(LIBDIR)/kpmp_solution.o  $(LIBDIR)/kpmp_solution_writer.o  $(LIBDIR)/assignment_helpers.o
 	ar rvs $(LIBSTAT) lib/*.o
 
 $(LIBDIR)/%.o : $(LIBDIR)/%.cpp $(LIBDIR)/%.h
@@ -30,7 +30,7 @@ runtests: unittests
 
 
 $(ASSIGNMENT1_1): $(LIBSTAT) $(ASSIGNMENT1_1).cpp
-	$(CXX) -o $(ASSIGNMENT1_1) -I $(INC) $(CXXFLAGS) $(ASSIGNMENT1_1).cpp $(LIBSTAT)
+	$(CXX) -o $(ASSIGNMENT1_1) -I $(INC) $(CXXFLAGS) $(ASSIGNMENT1_1).cpp $(LIBSTAT) -lboost_program_options
 
 clean: 
 	rm -f $(LIBSTAT) $(ASSIGNMENTS) unittests $(LIBDIR)/*.o

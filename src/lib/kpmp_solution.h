@@ -1,6 +1,6 @@
 
-#ifndef _KBMP_SOLUTION_H_
-#define _KBMP_SOLUTION_H_
+#ifndef _KPMP_SOLUTION_H_
+#define _KPMP_SOLUTION_H_
 
 
 #include <vector>
@@ -17,6 +17,16 @@ class solution
 {
 public:
 
+    struct page
+    {
+        page() : crossings(0) {};
+
+        int crossings;
+        std::list< edge_t > edges;
+    };
+
+    typedef std::vector< page >::const_iterator const_page_iterator;
+
     solution(int num_pages, const std::vector< vertex_t > & spine_order  );
 
     int try_num_crossing( unsigned int page, const edge_t & ) const;
@@ -25,7 +35,17 @@ public:
     void add_edge(  unsigned int page, const edge_t & e );
     void add_edge(  unsigned int page, const edge_t & e, int crossings );
     
+    const int get_pages() const { return pages.size(); };
+
+    const std::vector< vertex_t > & get_spine_order( ) const { return spine_order; };
+
     int get_crossings() const;
+
+
+    const_page_iterator page_begin() const { return pages.begin(); };
+    const_page_iterator page_end() const { return pages.end(); };
+
+
 
 private:
 
@@ -42,13 +62,6 @@ private:
 
     std::vector< vertex_t > spine_order;
 
-    struct page
-    {
-        page() : crossings(0) {};
-
-        int crossings;
-        std::list< edge_t > edges;
-    };
 
     std::vector< page > pages;
 };
@@ -56,5 +69,5 @@ private:
 
 
 
-#endif // _KBMP_SOLUTION_H_
+#endif // _KPMP_SOLUTION_H_
 
