@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 
-import subprocess, re
+import os, subprocess, re
 
 input_dir= "instances/"
 input_instances= [
@@ -36,6 +36,8 @@ if __name__ == '__main__' :
 
     results= {};
 
+    if not os.path.exists( output_dir):
+        os.makedirs(output_dir)
 
     # execute programs
     for program_name in program_instances:
