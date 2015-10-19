@@ -1,0 +1,3 @@
+
+pdf:
+	pdflatex report.tex
