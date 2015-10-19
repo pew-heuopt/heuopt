@@ -19,7 +19,7 @@ void insert_on_next_crossfree_page(solution & sol, const edge_t & e )
 
 #ifdef DEBUG
     std::cout << "trying edge: " << e.first << " " << e.second << std::endl;
-#endif // DEBUG
+#endif // DEBUG 
 
     int crossings;
     int min_crossings;
