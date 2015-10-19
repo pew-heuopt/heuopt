@@ -32,12 +32,3 @@ runtime complexity (n-1) * n / 2.
 
     apt-get install libboost-test-dev
 
-    
-# Known Deficencies
-
-crossing calculation could be much more efficen if edges would be sorted 
-according to spine order.
-currently not implemented because i am afraid of breaking edge identities 
-in input output files.
-
-TODO: ask if output is used like that by tu ;)
