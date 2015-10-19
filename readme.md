@@ -1,3 +1,22 @@
+# Getting started 
+
+compile:
+    cd src; make
+
+make statistics for all program variants:
+
+    ./make_stat_data.py  
+
+see output dir for generated content.
+*be are the actual book embeddings, the *data files are carrying statistic information.
+    
+after that you can plot stats:
+
+    ./make_stat_plots.sh
+
+this will generate the respective pdfs in the output dir
+    
+
 
 # Source Code Overview
 
