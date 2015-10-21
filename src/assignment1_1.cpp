@@ -12,8 +12,9 @@
 #include <spine.h>
 
 
-
-
+// ##############################################
+// MAIN
+// ##############################################
 int main( int argc, char **argv)
 {
 
@@ -53,7 +54,7 @@ int main( int argc, char **argv)
             return 1;
         }
     }
-
+    
 
         
 
@@ -61,8 +62,9 @@ int main( int argc, char **argv)
     // instance input
     //
     std::auto_ptr<KPMPInstance> instance( KPMPInstance::readInstance( input_filename ) );
-
-	ofstream outfile(output_filename, ios::out);
+    
+    // open output file
+    ofstream outfile(output_filename, ios::out);
 
     if( !outfile )
     {
@@ -70,8 +72,8 @@ int main( int argc, char **argv)
         return 1;
     }
 
-
-
+   
+    
     size_t num_vertices= instance->getNumVertices();
 
     //
@@ -82,6 +84,7 @@ int main( int argc, char **argv)
     std::vector<vertex_t> spine_order( spine_order_opt == ASCEND ? spine_order_ascending(num_vertices) :
                                                                    spine_order_num_edges(instance->getAdjacencyList()) );
     
+    // create an empty solution, locally optimal (?) spine order
     solution sol(instance->getK(), spine_order);
 
     //
