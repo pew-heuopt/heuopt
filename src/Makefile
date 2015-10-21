@@ -10,11 +10,17 @@ ASSIGNMENTS= $(ASSIGNMENT1_1) $(ASSIGNMENT1_2)
 
 INC = $(LIBDIR)
 
-CXXFLAGS= -Wall -std=c++11 -g
+
+CXXFLAGS= -Wall -std=c++11
 CXX = g++
 
+release: CXX += -O3
+debug: CXX += -g
 
 all: runtests $(ASSIGNMENTS)
+
+release: all
+debug: all	
 
 $(LIBSTAT): $(LIBDIR)/kpmp_instance.o  $(LIBDIR)/kpmp_solution.o  $(LIBDIR)/kpmp_solution_writer.o  $(LIBDIR)/assignment_helpers.o  $(LIBDIR)/spine.o 
 	ar rvs $(LIBSTAT) lib/*.o

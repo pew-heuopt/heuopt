@@ -1,7 +1,16 @@
 # Getting started 
 
 compile:
-    cd src; make
+
+    cd src; 
+    
+    make
+
+you can build release or debug builds:
+
+    make debug
+    make release
+
 
 make statistics for all program variants:
 
