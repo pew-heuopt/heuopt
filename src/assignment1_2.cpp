@@ -21,6 +21,8 @@ void greedy_edge_add( solution & sol,
 
 
 
+    // TODO: this sort order is very important for beeing better than solutuin 1.1 ;)
+    //       so we have to work on edge allocation as well
     auto new_vertices_sorted= new_vertices;
     std::sort( new_vertices_sorted.begin(), new_vertices_sorted.end() );
 
