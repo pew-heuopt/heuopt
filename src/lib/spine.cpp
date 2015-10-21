@@ -98,7 +98,7 @@ void random_spine_generator::random_change_block( unsigned int block_size, unsig
         }while( index1 == index2 && ++cnt<10 ); // yay ;)
 
         if(cnt >= 10)
-            throw std::runtime_error("random generator is eval");
+            throw std::runtime_error("random generator is evil");
 
         std::swap( permutation_map[index1], permutation_map[index2]);
 
