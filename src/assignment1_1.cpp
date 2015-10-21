@@ -9,99 +9,7 @@
 #include <kpmp_instance.h>
 #include <kpmp_solution.h>
 
-
-//#define DEBUG 1
-
-void insert_on_next_crossfree_page(solution & sol, const edge_t & e )
-{
-
-    int num_pages= sol.get_pages();
-
-#ifdef DEBUG
-    std::cout << "trying edge: " << e.first << " " << e.second << std::endl;
-#endif // DEBUG 
-
-    int crossings;
-    int min_crossings;
-    int min_index;
-
-    for( int i=0; i<num_pages; ++i )
-    {
-        crossings= sol.try_num_crossing(i, e);
-
-        if( crossings == 0  )
-        {
-            sol.add_edge( i, e, crossings );
-#ifdef DEBUG
-            std::cout << "    0 crossing found inserting on page " << i << std::endl;
-#endif // DEBUG
-            return;
-        }
-
-#ifdef DEBUG
-        std::cout << "    crossings on page " << i << ": " << crossings << std::endl;
-#endif // DEBUG
-        if( i == 0 || 
-            crossings < min_crossings)
-        {
-            min_crossings= crossings;
-            min_index= i;
-        }
-
-
-
-    }
-
-#ifdef DEBUG
-    std::cout << "    no zero found, inserting with " << min_crossings << " on page " << min_index << std::endl ;
-#endif // DEBUG
-
-    sol.add_edge( min_index, e, min_crossings );
-
-}
-
-
-
-
-//
-// construction spine order
-//
-
-
-std::vector<vertex_t> spine_order_ascending( unsigned int num_vertices )
-{
-    std::vector<vertex_t> spine_order( num_vertices );
-
-    for(unsigned int i= 0; i< num_vertices; ++i )
-        spine_order[i]= i;
-
-    return spine_order;
-}
-
-
-std::vector<vertex_t> spine_order_num_edges( const vector<vector<unsigned int> > & adjacencyList )
-{
-    std::vector<vertex_t> spine_order( spine_order_ascending(adjacencyList.size() ) );
-
-    // this sort predicate just uses the number 
-    // of neighbors of a vertex
-    struct sort_pred_num_neighbors
-    {
-        sort_pred_num_neighbors(const vector<vector<unsigned int> > & _adjacencyList) 
-        : adjacencyList(_adjacencyList) {} ;
-
-        bool operator() (unsigned int x1, unsigned int x2) 
-        { 
-            return adjacencyList[x1].size() < adjacencyList[x2].size(); 
-        };
-
-        vector<vector<unsigned int> > adjacencyList;
-    };
-
-    std::sort( spine_order.begin(), spine_order.end(), sort_pred_num_neighbors(adjacencyList) );
-    
-    return spine_order;
-}
+#include <spine.h>
 
 
 // ##############################################
@@ -148,7 +56,11 @@ int main( int argc, char **argv)
     }
     
 
-    // read specified problem instance 
+        
+
+    //
+    // instance input
+    //
     std::auto_ptr<KPMPInstance> instance( KPMPInstance::readInstance( input_filename ) );
     
     // open output file
@@ -176,7 +88,7 @@ int main( int argc, char **argv)
     solution sol(instance->getK(), spine_order);
 
     //
-    // edge order
+    // edge page allication
     //
 
     // arbitrary insertion of edges

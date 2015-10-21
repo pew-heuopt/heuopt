@@ -19,6 +19,28 @@ solution::solution( int num_pages, const std::vector<vertex_t> & _spine_order )
 }
 
 
+solution::solution( int num_pages, int num_vertices  )
+: 
+  spine_order_map( num_vertices, -1 ),
+  spine_order(),
+  pages( num_pages )
+{
+}
+
+solution::solution( int num_pages, int num_vertices, const std::vector< vertex_t > & partial_spine_order  )
+: 
+  spine_order_map( num_vertices, -1 ),
+  spine_order(partial_spine_order),
+  pages( num_pages )
+{
+    int order_count= 0;
+
+    for( auto v=spine_order.begin(); v!= spine_order.end(); ++v  )
+    {
+        spine_order_map[ *v ]= order_count++;
+    }
+}
+
 /*
 edge_t solution::order_edge( const edge_t & e )
 {
@@ -42,11 +64,38 @@ void solution::add_edge(  unsigned int page, const edge_t & e, int crossings )
         throw std::out_of_range("requested page out of range");
 
     solution::page &p = pages[page];
-
     p.edges.push_back( e );
     p.crossings+= crossings;
 
 }
+
+
+void solution::add_vertices_to_spine_order( const std::vector<vertex_t> & new_vertices )
+{
+    int spine_i= spine_order.size();
+
+    spine_order.resize( spine_order.size() + new_vertices.size() );
+
+
+    for( auto v= new_vertices.begin(); v != new_vertices.end(); ++v )
+    {
+        spine_order[spine_i]= *v;
+
+        if( vertex_in_spine(*v) )
+            throw std::runtime_error("vertex already in spine");
+
+        spine_order_map[*v] = spine_i;
+
+        spine_i++;
+    }
+}
+
+
+bool solution::vertex_in_spine( vertex_t v ) const
+{
+    return spine_order_map[v] != -1 ;
+}
+
 
 
 
@@ -61,6 +110,9 @@ int solution::try_num_crossing( unsigned int page, const edge_t & e ) const
     // to make things easy we order the edge
     if( check_edge_v1 > check_edge_v2 )
         std::swap( check_edge_v1, check_edge_v2 );
+
+    if( check_edge_v1 == -1 )
+        throw std::out_of_range("trying an edge with a vertex which is not part of spine");
 
     int crossing_sum= 0;
 
@@ -105,4 +157,12 @@ int solution::get_crossings() const
         crossings+= page->crossings;
 
     return crossings;
+}
+
+
+std::ostream& operator<<(std::ostream& os, const solution & sol)
+{
+    for( auto sv= sol.spine_order.begin(); sv!=sol.spine_order.end(); ++sv )
+        os << *sv << " ";
+   return os; 
 }

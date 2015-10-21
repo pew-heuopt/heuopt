@@ -54,6 +54,63 @@ int common_cmdline( int argc,
 
 
 
+//
+// edge page allocation
+//
+
+
+
+void insert_on_next_crossfree_page(solution & sol, const edge_t & e )
+{
+
+    int num_pages= sol.get_pages();
+
+#ifdef DEBUG
+    std::cout << "trying edge: " << e.first << " " << e.second << std::endl;
+#endif // DEBUG
+
+    int crossings;
+    int min_crossings;
+    int min_index;
+
+    for( int i=0; i<num_pages; ++i )
+    {
+        crossings= sol.try_num_crossing(i, e);
+
+        if( crossings == 0  )
+        {
+            sol.add_edge( i, e, crossings );
+#ifdef DEBUG
+            std::cout << "    0 crossing found inserting on page " << i << std::endl;
+#endif // DEBUG
+            return;
+        }
+
+#ifdef DEBUG
+        std::cout << "    crossings on page " << i << ": " << crossings << std::endl;
+#endif // DEBUG
+        if( i == 0 || 
+            crossings < min_crossings)
+        {
+            min_crossings= crossings;
+            min_index= i;
+        }
+
+
+
+    }
+
+#ifdef DEBUG
+    std::cout << "    no zero found, inserting with " << min_crossings << " on page " << min_index << std::endl ;
+#endif // DEBUG
+
+    sol.add_edge( min_index, e, min_crossings );
+
+}
+
+
+
+
 void write_solution( ostream & out, const solution & sol )
 {    
     KPMPSolutionWriter writer( sol.get_pages() );
