@@ -19,6 +19,16 @@ int common_cmdline( int argc,
                     std::string & output_filename );
 
 
+//
+// edge page allocation
+//
+
+void insert_on_next_crossfree_page(solution & sol, const edge_t & e );
+
+
+//
+// output
+//
 void write_solution( std::ostream & out, const solution & sol );
 
 void write_solution_statistics(  std::ostream & out, const solution & sol );
