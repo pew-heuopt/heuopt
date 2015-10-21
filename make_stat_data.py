@@ -36,6 +36,24 @@ program_instances= {
      
 
 
+def write_statfile( program_instances, results, filename, instance_property ) :
+
+    stat_file = open( output_dir + filename, 'w') 
+
+    header_line= "instance"
+    for program_name in program_instances:
+        header_line= header_line + " " + program_name ;
+
+    stat_file.write( header_line + "\n" )
+
+    for input_instance in input_instances :
+        result_line= input_instance;
+        for program_name in program_instances:
+            result_line = result_line + " " + results[program_name][input_instance][instance_property]
+        stat_file.write( result_line + "\n" )
+
+
+
 if __name__ == '__main__' :
 
     results= {};
@@ -55,33 +73,33 @@ if __name__ == '__main__' :
             results[program_name][input_instance]= {}
 
 
-            proc = subprocess.Popen([ program_instance['bin'], 
+            proc = subprocess.Popen([ "/usr/bin/time", 
+                                      "-f", "time sum: user %U sys %S",
+                                      program_instance['bin'], 
                                       "--input", input_dir + input_instance, 
                                       "--output",  output_dir + input_instance + '.be',
                                        ] + program_instance['opt'], 
                                      
-                                     stdout=subprocess.PIPE)
+                                     stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
             for line in proc.stdout:
-                str= line.rstrip();
-                match= re.search("crossings sum: (\d+)", str)
+
+                linestr= line.rstrip();
+
+                match= re.search("crossings sum: (\d+)", linestr)
                 if match:
                     num= match.group(1);
                     results[program_name][input_instance]['crossings']= num
-            #        print program_name, " crossings: ", num
+                    continue
+
+                match= re.search("time sum: user (\d+.?\d*) sys (\d+.?\d*)", linestr)
+                if match:
+                    user= float( match.group(1) );
+                    sys= float( match.group(2) );
+                    results[program_name][input_instance]['time']= str( user + sys );
+                    continue
 
 
+    write_statfile( program_instances, results, "crossings_stat.data", "crossings" )
+    write_statfile( program_instances, results, "time_stat.data", "time" )
 
-    crossings_stat_file = open( output_dir + 'crossings_stat.data', 'w') 
 
-    header_line= "instance";
-    for program_name in program_instances:
-        header_line= header_line + " " + program_name ;
-    crossings_stat_file.write( header_line + "\n" )
-
-    for input_instance in input_instances :
-        result_line= input_instance;
-        for program_name in program_instances:
-            result_line = result_line + " " + results[program_name][input_instance]['crossings']
-        crossings_stat_file.write( result_line + "\n" )
-
-        
