@@ -2,7 +2,7 @@
 #include <memory>
 #include <fstream>
 #include <algorithm>
-
+#include <vector>
 
 #include <assignment_helpers.h>
 
@@ -11,13 +11,16 @@
 
 #include <spine.h>
 
-
+#include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/connected_components.hpp>
+#include <boost/config.hpp>
 // ##############################################
 // MAIN
 // ##############################################
 int main( int argc, char **argv)
 {
 
+  using namespace boost;
     // Declare the supported options.
     boost::program_options::options_description desc("Allowed options");
     boost::program_options::variables_map vm;
@@ -27,8 +30,11 @@ int main( int argc, char **argv)
 
     std::string spine_order_opt_str;
 
+    // use boost graph library to calc connected components
+
     desc.add_options()
-         ("spine-order", boost::program_options::value<std::string>(&spine_order_opt_str), "spine order: ascend|sorted default: sorted")
+         ("spine-order", boost::program_options::value<std::string>(&spine_order_opt_str), 
+	  "spine order: ascend|sorted|component default: sorted")
              ;
 
     if( common_cmdline( argc, argv,
@@ -37,7 +43,7 @@ int main( int argc, char **argv)
         return 1;
 
 
-    enum spine_order_opt_t { SORTED, ASCEND };
+    enum spine_order_opt_t { SORTED, ASCEND, COMPONENT };
     spine_order_opt_t spine_order_opt= SORTED;
     
 
@@ -47,7 +53,9 @@ int main( int argc, char **argv)
             spine_order_opt= SORTED;
         else if( spine_order_opt_str == "ascend" )
             spine_order_opt= ASCEND;
-        else
+        else if( spine_order_opt_str == "component" )
+	    spine_order_opt= COMPONENT;
+	else 
         {
             std::cerr << "unkown spine-order" << std::endl
                       << desc << std::endl;
@@ -74,15 +82,37 @@ int main( int argc, char **argv)
 
    
     
-    size_t num_vertices= instance->getNumVertices();
+    size_t n_vertices= instance->getNumVertices();
 
     //
     // spine order
     //
 
+    // arbitrary insertion of edges
+    bool ** am= instance->getAdjacencyMatrix() ;
 
-    std::vector<vertex_t> spine_order( spine_order_opt == ASCEND ? spine_order_ascending(num_vertices) :
-                                                                   spine_order_num_edges(instance->getAdjacencyList()) );
+
+    //std::vector<int> component(num_vertices(G));
+
+    //int num = connected_components(G, &component[0]);
+
+    // cout << "Number of connected components: " << num << endl;
+
+    // determine spine order
+    // right now we support 3 options:
+    // ascending, sorted and using connected components
+    std::vector<vertex_t> spine_order;
+    if(spine_order_opt == ASCEND)
+      spine_order= spine_order_ascending(n_vertices);
+    if(spine_order_opt == SORTED)
+      spine_order= spine_order_num_edges(instance->getAdjacencyList());
+    if(spine_order_opt == COMPONENT)
+      spine_order= spine_order_component(instance->getAdjacencyList(),
+					 instance->getAdjacencyMatrix());
+
+    // now we have more than 2 options
+    //std::vector<vertex_t> spine_order( spine_order_opt == ASCEND ? spine_order_ascending(n_vertices) :
+    //                                                               spine_order_num_edges(instance->getAdjacencyList()) );
     
     // create an empty solution, locally optimal (?) spine order
     solution sol(instance->getK(), spine_order);
@@ -91,11 +121,10 @@ int main( int argc, char **argv)
     // edge page allication
     //
 
-    // arbitrary insertion of edges
-    bool ** am= instance->getAdjacencyMatrix() ;
 
-    for( unsigned int i= 0; i<num_vertices; ++i )
-        for( unsigned int j= i+1; j<num_vertices; ++j )
+
+    for( unsigned int i= 0; i<n_vertices; ++i )
+        for( unsigned int j= i+1; j<n_vertices; ++j )
             if( am[i][j] )
             {
                 insert_on_next_crossfree_page(sol, edge_t(i,j) );

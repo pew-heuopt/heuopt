@@ -5,7 +5,10 @@
 
 #include "spine.h"
 
-
+#include <vector>
+#include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/connected_components.hpp>
+#include <boost/config.hpp>
 
 
 //
@@ -13,6 +16,7 @@
 //
 
 
+// create 
 std::vector<vertex_t> spine_order_ascending( unsigned int num_vertices )
 {
     std::vector<vertex_t> spine_order( num_vertices );
@@ -20,7 +24,66 @@ std::vector<vertex_t> spine_order_ascending( unsigned int num_vertices )
     for(unsigned int i= 0; i< num_vertices; ++i )
         spine_order[i]= i;
 
+
     return spine_order;
+}
+
+
+/**
+ * \brief Determine spine order based on connected components
+ * 
+ * This function calculates the connected components based on the graph provided
+ * and sorts the vertices s.t. all vertices of a connected component are grouped together.
+ *
+ */ 
+std::vector<vertex_t> spine_order_component( const std::vector<std::vector<unsigned int> > & adjacencyList,
+					     bool** am)
+{
+
+
+  // get number of vertices from adjacencyList
+  unsigned int n_vertices = adjacencyList.size(); 
+#ifdef DEBUG
+  std::cout << "spine_order_component: number of vertices is " << n_vertices;
+#endif // DEBUG
+  std::vector<vertex_t> spine_order( n_vertices );
+
+  using namespace boost;
+  typedef boost::adjacency_list <vecS, vecS, undirectedS> Graph;
+  
+  Graph G;
+
+  //  std::cout << "vertices" << n_vertices << std::endl;
+  
+  // construct the tree
+  for(unsigned int i= 0; i<n_vertices;++i) {
+    for(unsigned int j= 0; j<n_vertices;++j) {
+      //if(**am[i][j]==1) {
+      //	add_edge(i,j,G);
+      //}
+      if(am[i][j]) {
+	add_edge(i,j,G);
+      }
+    }
+  }
+  
+  // calculate components and store them in a vector
+  std::vector<int> component(num_vertices(G));
+  int n_components = connected_components(G, &component[0]);
+
+  std::cout << "Number of components: " << n_components <<  std::endl;
+  // inefficient way to construct spine order
+  int counter = 0;
+  for(int i=0; i<n_components; ++i) {
+    for(unsigned int j=0;j<n_vertices;++j) {
+      if(i==component[j]) {
+	spine_order[j] = counter;
+	counter = counter + 1;
+      }
+    }
+  }
+
+  return spine_order;
 }
 
 

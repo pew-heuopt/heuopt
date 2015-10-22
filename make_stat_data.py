@@ -29,8 +29,13 @@ program_instances= {
                      'cnstr-sorted' : { 'bin' : 'src/assignment1_1', 
                                         'opt' : [ '--spine-order', 'sorted'] },
 
+                     'cnstr-component' : { 'bin' : 'src/assignment1_1', 
+                                        'opt' : [ '--spine-order', 'component'] },
+
+
                      'cnstr-random' : { 'bin' : 'src/assignment1_2', 
                                         'opt' : [ ] },
+
 
                    }
      
