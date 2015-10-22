@@ -11,7 +11,7 @@ std::vector<vertex_t> spine_order_ascending( unsigned int num_vertices );
 std::vector<vertex_t> spine_order_num_edges( const std::vector<std::vector<unsigned int> > & adjacencyList );
 
 std::vector<vertex_t> spine_order_component( const std::vector<std::vector<unsigned int> > & adjacencyList,
-					     const bool & adjacencyMatrix);
+					     bool** adjacencyMatrix);
 
 
 class random_spine_generator

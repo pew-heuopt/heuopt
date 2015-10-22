@@ -32,12 +32,12 @@ std::vector<vertex_t> spine_order_ascending( unsigned int num_vertices )
 /**
  * \brief Determine spine order based on connected components
  * 
- * This function calculated the connected components based on the graph provided
+ * This function calculates the connected components based on the graph provided
  * and sorts the vertices s.t. all vertices of a connected component are grouped together.
  *
  */ 
 std::vector<vertex_t> spine_order_component( const std::vector<std::vector<unsigned int> > & adjacencyList,
-					     const bool & am)
+					     bool** am)
 {
 
 
@@ -53,17 +53,35 @@ std::vector<vertex_t> spine_order_component( const std::vector<std::vector<unsig
   
   Graph G;
 
-  std::cout << "vertices" << n_vertices << std::endl;
+  //  std::cout << "vertices" << n_vertices << std::endl;
   
   // construct the tree
   for(unsigned int i= 0; i<n_vertices;++i) {
     for(unsigned int j= 0; j<n_vertices;++j) {
-      //if(am[i][j]==1) {
+      //if(**am[i][j]==1) {
       //	add_edge(i,j,G);
       //}
+      if(am[i][j]) {
+	add_edge(i,j,G);
+      }
     }
   }
   
+  // calculate components and store them in a vector
+  std::vector<int> component(num_vertices(G));
+  int n_components = connected_components(G, &component[0]);
+
+  std::cout << "Number of components: " << n_components <<  std::endl;
+  // inefficient way to construct spine order
+  int counter = 0;
+  for(int i=0; i<n_components; ++i) {
+    for(unsigned int j=0;j<n_vertices;++j) {
+      if(i==component[j]) {
+	spine_order[j] = counter;
+	counter = counter + 1;
+      }
+    }
+  }
 
   return spine_order;
 }
