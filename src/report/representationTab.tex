@@ -1,0 +1,38 @@
+\begin{table}
+\centering
+\begin{tabular}{llp{7cm}}
+\toprule
+\textbf{Variable} & \textbf{Type} & \textbf{Description} \\
+\midrule
+Pages & Array & Number of pages is constant; allows direct access to each element \\
+Page & List of edges & dynamic; only sequential access needed; each time we add an edge we incrementally update the number of crossings \\
+Spine Order & Array & does not change often in our implementation; easy access. To be able to calculate
+the number of crossings efficiently we use an additional spine order map.\\
+
+\bottomrule 
+
+\end{tabular}
+
+\caption{This table shows structure of our solution.}
+\end{table}
+
+
+%% hier noch ein paar notes bzgl des report:
+
+
+
+
+%%     solution representation
+
+%%         in pseudo strukturen angegeben, analog zu pseudocode
+
+%%         pages : array // weil anzahl konstant und so schneller zugriff auf alle arten
+
+%%         page : edges als liste: weil dynamisch und immer nur sequentieller zugriff
+%%                crossings werden abgespeichert damit nicht immer wieder berechnet,
+%%                also inkrementel mit allokation
+              
+%%         spine_order : array weil selten veraendert und so beliiebeger yugriff
+
+%%         spine_order_map: schneller zugriff fuer die ordnungszahl eines vertex um
+%%                          die crossing berechnung effizient zu machen
