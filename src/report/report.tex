@@ -1,6 +1,52 @@
 \documentclass{scrartcl}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{color}
+\usepackage{booktabs}
 
-\author{Alexander Eisl (0250266), Peter Wiedermann}
+\newcounter{nalg}[section] % defines algorithm counter for section
+\renewcommand{\thenalg}{\thesection .\arabic{nalg}} %defines appearance of the algorithm counter
+\DeclareCaptionLabelFormat{algocaption}{Algorithm \thenalg} % defines a new caption label as Algorithm x.y
+
+\lstnewenvironment{algorithm}[1][] %defines the algorithm listing environment
+{   
+    \refstepcounter{nalg} %increments algorithm number
+    \captionsetup{labelformat=algocaption,labelsep=colon} %defines the
+                                                          %caption
+                                                          %setup for:
+                                                          %it ises
+                                                          %label
+                                                          %format as
+                                                          %the
+                                                          %declared
+                                                          %caption
+                                                          %label above
+                                                          %and makes
+                                                          %label and
+                                                          %caption
+                                                          %text to be
+                                                          %separated
+                                                          %by a ':'
+    \lstset{ %this is the stype
+        frame=tB,
+        numbers=left, 
+        numberstyle=\tiny,
+        basicstyle=\scriptsize, 
+        keywordstyle=\color{black}\bfseries,
+        escapeinside={(*}{*)},
+        keywords={,input, output, return, datatype, function, in, if, else, foreach, while, begin, end, } 
+        numbers=left,
+        xleftmargin=.04\textwidth,
+        #1 % this is to add specific settings to an usage of this environment (for instnce, the caption and referable label)
+    }
+}
+{}
+
+
+
+
+
+\author{Alexander Eisl (0250266), Peter Wiedermann (0025999)}
 
 \date{\today}
 
@@ -12,29 +58,88 @@
 
 
 \section{Deterministic Construction Heuristic}
-% Just a few sketches, needs to be rewritten
-In this section, we present the algorithm used for the determinstic
-construction heuristic. 
+In the first part of this programming exercise, we develop a
+deterministic construction heuristic to solve the K-page minimal
+crossing problem. The following listing shows the pseudo-code of our
+algorithm.
 
-\begin{enumerate}
-  \item Construct a spine order which we suppose to give a small number 
-    of crossings.
-\end{enumerate}
+\begin{algorithm}[caption={Deterministic construction heuristic}]
+    input: Graph with given spine order and set of edges
+    output: Graph with new spine order and edge partition
+
+    begin
+       start with empty solution
+       spine order (*$\leftarrow$*) sort(spine order)
+       while solution not complete
+           add edge to page that creates the fewest crossings
+       end 
+    end
+\end{algorithm}
+
+%% General idea of the algorithm, explain how generate the spine-order
+%% we should add a few words why we expect this to be a good idea...
+Our heuristic construct the solution in two parts. In the first part,
+we create a new spine-order by sorting the vertices according to the
+number of neighbours fo each vertex. The idea of this approach is to
+get vertices with many neighbours closer together to minimize the
+number of crossings these can potentially produce.
+
+%%% Explain how select assign edges to pages. Is this really a greedy
+%%% construction heuristic?
+In the second part of the heuristic, we add elements to our solution
+by adding pairs of pages and edges to our initially empty solution.
+If it is possible to add an edge to a page without introducing new
+crossings we add it there. Otherwise we select the optimal page for a
+particular edge.
+
+%%% Argue why we generate the spine-order first and not sequentially
+%%% FIXME: das hinkt noch ein wenig...
+We decided to generate the spine-order in the beginning and then
+decide on the edge-partinioning independently. Separating the two
+problems makes the algorithm simpler and computationally faster. It
+also allows for a simple way to incorporate randomness in our
+construction heuristic.
 
 
+\section{Randomization}
+In this section, we explain how we extend our approach to a
+randomized/multi-solution heuristic. We do this by randomly
+permutating a subset of the vertices on the spine. Thus, the result of
+our spine-sorting algorithm is subject to random variations. We first
+sort our vertices as explained in the previous section and then
+randomly permutate $n$ vertices $k$ times, to create $k$ different
+initial spine-orders. For each of these $k$ spine-orders we can run
+the same edge-allocation algorithm. We then compute the number of
+crossing and -- from the list of generated solutions -- select the one
+resulting in the lowest number of
+edge-crossings. Table~\ref{tab:results} shows the results of our
+algorithm. The solutions we generate using the random approach are
+slightly better than the solutions generated by our deterministic
+routine. This is not surpring, as we can make sure that the randomized
+heuristic produces at least the same result as the deterministic
+algorithm by including the deterministic spine-order in our set of
+solution candidates.
 
-\begin{enumerate}
-  \item Find optimal vertex order
-  \item Assign edges to pages
-\end{enumerate}
+%%% Why this is not random search
+Our algorithm also does not degenerate into random search, as we limit
+the number of random permutations that are allowed.
 
-%% should we include some pseudo-code?
+\input{representationTab}
 
-\section{Now add some randomness...}
+\section{Results}
+We executed the code on a desktop computer with a Core i7 Quad-Core
+CPU and 24 GB of main memory. Table~\ref{tab:results} shows the
+results of our randomized algorithm.
 
+\begin{table}[h]
 
-\section{Discussion}
-
+\centering
+\input{resultsTable}
+\caption{This table shows the results of our randomized construction heuristic. The first two
+columns show the mean and standard deviation of the number of crossings, the last two columns
+show the mean and standard deviation of the runtime in seconds.}
+\label{tab:results}
+\end{table}
 
 
 \end{document}

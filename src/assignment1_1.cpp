@@ -116,11 +116,51 @@ int main( int argc, char **argv)
     
     // create an empty solution, locally optimal (?) spine order
     solution sol(instance->getK(), spine_order);
-
+    int n_pages = sol.get_pages();
     //
     // edge page allication
     //
 
+    // // create list of all edges
+    // std::vector<edge_t > unallocatedEdges;
+
+    //  for( unsigned int i=0;i<n_vertices;++i)
+    //   for( unsigned int j = i+1; j<n_vertices; ++j)
+    // 	if( am[i][j]) // found an edge
+    // 	  {
+    // 	    unallocatedEdges.push_back(edge_t(i,j));
+    // 	  }
+    //  // 
+
+    //  // loop over all edges and allocate them
+    //  int usedPages = 0; // remember how many pages we have used
+    //  edge_t selEdge; // the currently selected edge
+    //  while(!unallocatedEdges.empty()) {
+    //    if(usedPages==0) {
+    // 	 selEdge = unallocatedEdges[0];
+    // 	 sol.add_edge(0,selEdge);
+    // 	 for(unsigned int i=1;i<unallocatedEdges.size();++i) { // loop over remaining edges
+    // 	   if(sol.try_num_crossing(0,unallocatedEdges[i])) {
+    // 	     sol.add_edge(0,unallocatedEdges[i]);
+    // 	     cout << "adding element" << endl;;
+    // 	   }
+    // 	 }
+    // 	 usedPages=1;
+    //    }
+    //    unallocatedEdges.pop_back();
+    //    cout << ".";
+    //  }
+
+    // int crossings;
+    // // loop over all edges
+    // for( unsigned int i=0;i<n_vertices;++i)
+    //   for( unsigned int j = i+1; j<n_vertices; ++j)
+    // 	if( am[i][j]) // found an edge
+    // 	  { // if there is no crossing, add edge to this page
+    // 	    crossings= sol.try_num_crossing(0,edge_t(i,j));
+    // 	    if(crossings==0)
+    // 	      sol.add_edge(0,edge_t(i,j));
+    // 	  }
 
 
     for( unsigned int i= 0; i<n_vertices; ++i )
