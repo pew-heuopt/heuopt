@@ -43,14 +43,21 @@ KPMPInstance* KPMPInstance::readInstance(string filename) {
 				if(instFile.eof())
 					break;				
 				instFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');	// skip remainder of line (page number)
+
+if( instance->adjacencyMatrix[a][b] )
+{
+    std::cout << "instance: warning duplicated edge in input: " << a << " " << b << std::endl;
+}
+else
+{
+
 				instance->adjacencyList[a].push_back(b);
 				instance->adjacencyList[b].push_back(a);
 
-if( instance->adjacencyMatrix[a][b] )
-    std::cout << "instance: warning duplicated edge in input: " << a << " " << b << std::endl;
 
 				instance->adjacencyMatrix[a][b] = true;
 				instance->adjacencyMatrix[b][a] = true;
+}                
 			}
 		}
 
