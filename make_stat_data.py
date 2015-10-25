@@ -7,16 +7,8 @@ import os, subprocess, re
 input_dir= "instances/"
 input_instances= [
 
-                   'automatic-1.txt', 
-                   'automatic-2.txt',
                    'automatic-3.txt',
-                   'automatic-4.txt',
-                   'automatic-5.txt',
-
-                   'automatic-6.txt',
-                   'automatic-7.txt',
                    'automatic-8.txt',
-                   'automatic-9.txt',
                    'automatic-10.txt',
                    ]
 
