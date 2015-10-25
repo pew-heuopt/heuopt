@@ -59,17 +59,17 @@
 
 \section{Deterministic Construction Heuristic}
 In the first part of this programming exercise, we develop a
-deterministic construction heuristic to solve the K-page minimal
-crossing problem. The following listing shows the pseudo-code of our
-algorithm.
+deterministic construction heuristic to solve the K-page crossing
+number minimization problem. The following listing shows the
+pseudo-code of our algorithm.
 
 \begin{algorithm}[caption={Deterministic construction heuristic}]
-    input: Graph with given spine order and set of edges
-    output: Graph with new spine order and edge partition
+    input: Graph with given spine-order and set of edges
+    output: Graph with new spine-order and edge partition
 
     begin
        start with empty solution
-       spine order (*$\leftarrow$*) sort(spine order)
+       spine-order (*$\leftarrow$*) sort(spine order)
        while solution not complete
            add edge to page that creates the fewest crossings
        end 
@@ -78,11 +78,12 @@ algorithm.
 
 %% General idea of the algorithm, explain how generate the spine-order
 %% we should add a few words why we expect this to be a good idea...
-Our heuristic construct the solution in two parts. In the first part,
+Our heuristic constructs the solution in two parts. In the first part,
 we create a new spine-order by sorting the vertices according to the
-number of neighbours fo each vertex. The idea of this approach is to
-get vertices with many neighbours closer together to minimize the
-number of crossings these can potentially produce.
+number of neighbors of each vertex. The idea of this approach is to
+get vertices with many neighbors closer together to minimize the
+number of crossings the edges of these vertices can potentially
+produce.
 
 %%% Explain how select assign edges to pages. Is this really a greedy
 %%% construction heuristic?
@@ -135,9 +136,10 @@ results of our randomized algorithm.
 
 \centering
 \input{resultsTable}
-\caption{This table shows the results of our randomized construction heuristic. The first two
-columns show the mean and standard deviation of the number of crossings, the last two columns
-show the mean and standard deviation of the runtime in seconds.}
+\caption{This table shows the results of our randomized construction
+  heuristic. The first two columns show the mean and standard
+  deviation of the number of crossings, the last two columns show the
+  mean and standard deviation of the runtime in seconds.}
 \label{tab:results}
 \end{table}
 
