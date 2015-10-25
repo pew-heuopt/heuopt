@@ -1,0 +1,29 @@
+hot0250266@behemoth:~/assignment1$ hot2015submit assignment1 automatic-1 automatic-1.txt_0.be 
+{"result": 17}
+
+hot0250266@behemoth:~/assignment1$ hot2015submit assignment1 automatic-2 automatic-2.txt_0.be 
+{"result": 48}
+
+hot0250266@behemoth:~/assignment1$ hot2015submit assignment1 automatic-3 automatic-3.txt_0.be 
+{"result": 104}
+
+hot0250266@behemoth:~/assignment1$ hot2015submit assignment1 automatic-4 automatic-4.txt_0.be 
+{"result": 181}
+
+hot0250266@behemoth:~/assignment1$ hot2015submit assignment1 automatic-5 automatic-5.txt_0.be 
+{"result": 74}
+
+hot0250266@behemoth:~/assignment1$ hot2015submit assignment1 automatic-6 automatic-6.txt_24.be 
+{"result": 5146883}
+
+hot0250266@behemoth:~/assignment1$ hot2015submit assignment1 automatic-7 automatic-7.txt_23.be 
+{"result": 141516}
+
+hot0250266@behemoth:~/assignment1$ hot2015submit assignment1 automatic-8 automatic-8.txt_10.be 
+{"result": 509178}
+
+hot0250266@behemoth:~/assignment1$ hot2015submit assignment1 automatic-9 automatic-9.txt_18.be 
+{"result": 1105586}
+
+hot0250266@behemoth:~/assignment1$ hot2015submit assignment1 automatic-10 automatic-10.txt_22.be 
+{"result": 51623}
