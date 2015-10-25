@@ -30,7 +30,7 @@ print(mat,hline.after=NULL,
       add.to.row=list(
            pos=list(-1,-1,0,nrow(res)),
            command=c('\\toprule ',
-                    ' & \\multicolumn{2}{c}{Objective} & \\multicolumn{2}{c}{Runtime} \\\\',
+                    ' & \\multicolumn{3}{c}{Crossings} & \\multicolumn{3}{c}{Runtime} \\\\',
                     '\\midrule ',
                     '\\bottomrule ')))
 
