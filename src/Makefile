@@ -46,3 +46,6 @@ $(ASSIGNMENT1_2): $(LIBSTAT) $(ASSIGNMENT1_2).cpp
 
 clean: 
 	rm -f $(LIBSTAT) $(ASSIGNMENTS) unittests $(LIBDIR)/*.o
+
+rtables:
+	R CMD BATCH makeRunTimeTables.R
