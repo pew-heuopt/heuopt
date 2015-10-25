@@ -1,0 +1,11 @@
+instance cnstr-asc cnstr-random cnstr-sorted cnstr-component
+automatic-1.txt 21 18 21 21
+automatic-2.txt 92 48 48 92
+automatic-3.txt 147 152 132 147
+automatic-4.txt 119 190 192 119
+automatic-5.txt 114 74 77 112
+automatic-6.txt 7524000 5399496 6153059 7524000
+automatic-7.txt 162968 143885 143905 162968
+automatic-8.txt 1047118 556202 553866 1047118
+automatic-9.txt 1547842 1262940 1268456 1547842
+automatic-10.txt 201022 52868 55787 202312
