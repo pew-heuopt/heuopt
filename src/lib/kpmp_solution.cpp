@@ -57,18 +57,55 @@ void solution::add_edge(  unsigned int page, const edge_t & e )
     add_edge( page, e, try_num_crossing(page, e) );
 }
 
+void solution::add_edge(  page & p , const edge_t & e )
+{
+    add_edge( p, e, try_num_crossing(p, e) );
+}
+
+
 
 void solution::add_edge(  unsigned int page, const edge_t & e, int crossings )
 {
     if( page >= pages.size() )
         throw std::out_of_range("requested page out of range");
 
-    solution::page &p = pages[page];
-    p.edges.push_back( e );
-    p.crossings+= crossings;
+    add_edge( pages[page], e, crossings );
 
 }
 
+void solution::add_edge( page & p, const edge_t & e, int crossings )
+{
+    p.edges.push_back( e );
+    p.crossings+= crossings;
+}
+
+void solution::remove_edge(  unsigned int page, const edge_t & e )
+{
+    remove_edge( page, e, try_num_crossing(page, e) );
+}
+
+void solution::remove_edge(  page & p, const edge_t & e )
+{
+    remove_edge( p, e, try_num_crossing(p, e) );
+}
+
+
+
+void solution::remove_edge(  unsigned int page, const edge_t & e, int crossings )
+{
+    if( page >= pages.size() )
+        throw std::out_of_range("requested page out of range");
+
+    remove_edge(pages[page], e, crossings);
+}
+
+
+void solution::remove_edge(  page & p, const edge_t & e, int crossings )
+{
+    p.edges.remove( e );
+    p.crossings-= crossings;
+
+}
 
 void solution::add_vertices_to_spine_order( const std::vector<vertex_t> & new_vertices )
 {
@@ -91,6 +128,46 @@ void solution::add_vertices_to_spine_order( const std::vector<vertex_t> & new_ve
 }
 
 
+void solution::swap_vertices( size_t index1, size_t index2 )
+{
+
+    if( index1 >= spine_order.size() ||
+        index2 >= spine_order.size() )
+    {
+        throw std::out_of_range("swap vertices outside of index range");
+    }
+
+    std::swap( spine_order[index1], spine_order[index2] );
+
+    // 
+    // new order map
+    int order_count= 0;
+
+    for( auto v=spine_order.begin(); v!= spine_order.end(); ++v  )
+    {
+        spine_order_map[ *v ]= order_count++;
+    }
+
+    // recalc all pages
+    for( auto i= pages.begin(); i != pages.end(); ++i )
+        recalc_page( *i );
+
+}
+
+void solution::recalc_page( page & p )
+{
+
+    // the cheap one ;)
+    auto edge_list= p.edges;
+
+    p.crossings= 0;
+    p.edges.clear();
+
+    for( auto i= edge_list.begin(); i != edge_list.end(); ++i )
+        add_edge( p, *i);
+}
+
+
 bool solution::vertex_in_spine( vertex_t v ) const
 {
     return spine_order_map[v] != -1 ;
@@ -103,7 +180,12 @@ int solution::try_num_crossing( unsigned int page, const edge_t & e ) const
 {
     if( page >= pages.size() )
         throw std::out_of_range("requested page out of range");
+    
+    return try_num_crossing( pages[page], e );
+}
 
+int solution::try_num_crossing( const page & p, const edge_t & e ) const
+{
     order_t check_edge_v1= spine_order_map[ e.first ];
     order_t check_edge_v2= spine_order_map[ e.second ];
 
@@ -116,8 +198,8 @@ int solution::try_num_crossing( unsigned int page, const edge_t & e ) const
 
     int crossing_sum= 0;
 
-    for( auto edge_it= pages[page].edges.begin(); 
-              edge_it != pages[page].edges.end(); ++edge_it )
+    for( auto edge_it= p.edges.begin(); 
+              edge_it != p.edges.end(); ++edge_it )
     {
         order_t page_edge_v1= spine_order_map[ edge_it->first ];
         order_t page_edge_v2= spine_order_map[ edge_it->second ];
@@ -157,6 +239,16 @@ int solution::get_crossings() const
         crossings+= page->crossings;
 
     return crossings;
+}
+
+int solution::get_num_edges() const
+{
+    int num_edges= 0;
+
+    for( auto page= pages.begin(); page != pages.end(); ++page ) 
+        num_edges+= page->edges.size();
+
+    return num_edges;
 }
 
 

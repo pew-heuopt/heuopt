@@ -19,12 +19,12 @@ set terminal pdf
 
 set output "output/time_stat.pdf"
 set style histogram clustered
-plot for [COL=2:4] 'output/time_stat.data' using COL:xticlabels(1) title columnheader
+plot for [COL=2:7] 'output/time_stat.data' using COL:xticlabels(1) title columnheader
 
 set logscale y
 
 set output "output/crossings_stat.pdf"
 set style histogram clustered
-plot for [COL=2:4] 'output/crossings_stat.data' using COL:xticlabels(1) title columnheader
+plot for [COL=2:7] 'output/crossings_stat.data' using COL:xticlabels(1) title columnheader
 
 

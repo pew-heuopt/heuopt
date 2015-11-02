@@ -7,28 +7,66 @@ import os, subprocess, re
 input_dir= "instances/"
 input_instances= [
 
+                   'automatic-1.txt',
+                   'automatic-2.txt',
                    'automatic-3.txt',
+                   'automatic-4.txt',
+                   'automatic-5.txt',
+                   'automatic-6.txt',
+                   'automatic-7.txt',
                    'automatic-8.txt',
+                   'automatic-9.txt',
                    'automatic-10.txt',
                    ]
 
 output_dir= "output/"
 
 program_instances= { 
+                     'lsearch-1node-first' : { 'bin' : 'src/assignment2', 
+                                               'opt' : [  '--neighborhood', '1-node',
+                                                          '--step-func', 'first'] },
 
-                     'cnstr-asc' : { 'bin' : 'src/assignment1_1', 
-                                     'opt' : [ '--spine-order', 'ascend'] },
+                     'lsearch-1node-best' : { 'bin' : 'src/assignment2', 
+                                              'opt' : [ '--neighborhood', '1-node',
+                                                        '--step-func', 'best'] },
 
-                     'cnstr-sorted' : { 'bin' : 'src/assignment1_1', 
-                                        'opt' : [ '--spine-order', 'sorted'] },
-
-                     'cnstr-component' : { 'bin' : 'src/assignment1_1', 
-                                        'opt' : [ '--spine-order', 'component'] },
+                     'lsearch-1node-random' : { 'bin' : 'src/assignment2', 
+                                               'opt' : [ '--neighborhood', '1-node',
+                                                         '--step-func', 'random'] },
 
 
-                     'cnstr-random' : { 'bin' : 'src/assignment1_2', 
-                                        'opt' : [ ] },
 
+
+
+                     'lsearch-1edge-first' : { 'bin' : 'src/assignment2', 
+                                               'opt' : [  '--neighborhood', '1-edge',
+                                                          '--step-func', 'first'] },
+
+                     'lsearch-1edge-best' : { 'bin' : 'src/assignment2', 
+                                              'opt' : [ '--neighborhood', '1-edge',
+                                                        '--step-func', 'best'] },
+
+                     'lsearch-1edge-random' : { 'bin' : 'src/assignment2', 
+                                               'opt' : [ '--neighborhood', '1-edge',
+                                                         '--step-func', 'random'] },
+
+#
+# assignament 1
+#
+
+#                     'cnstr-asc' : { 'bin' : 'src/assignment1_1', 
+#                                     'opt' : [ '--spine-order', 'ascend'] },
+#
+#                     'cnstr-sorted' : { 'bin' : 'src/assignment1_1', 
+#                                        'opt' : [ '--spine-order', 'sorted'] },
+#
+#                     'cnstr-component' : { 'bin' : 'src/assignment1_1', 
+#                                        'opt' : [ '--spine-order', 'component'] },
+#
+#
+#                     'cnstr-random' : { 'bin' : 'src/assignment1_2', 
+#                                        'opt' : [ ] },
+#
 
                    }
      

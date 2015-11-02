@@ -116,7 +116,6 @@ int main( int argc, char **argv)
     
     // create an empty solution, locally optimal (?) spine order
     solution sol(instance->getK(), spine_order);
-    int n_pages = sol.get_pages();
     //
     // edge page allication
     //
