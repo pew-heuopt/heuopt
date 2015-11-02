@@ -1,0 +1,130 @@
+\documentclass{scrartcl}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{color}
+\usepackage{booktabs}
+
+\newcounter{nalg}[section] % defines algorithm counter for section
+\renewcommand{\thenalg}{\thesection .\arabic{nalg}} %defines appearance of the algorithm counter
+\DeclareCaptionLabelFormat{algocaption}{Algorithm \thenalg} % defines a new caption label as Algorithm x.y
+
+\lstnewenvironment{algorithm}[1][] %defines the algorithm listing environment
+{   
+    \refstepcounter{nalg} %increments algorithm number
+    \captionsetup{labelformat=algocaption,labelsep=colon} %defines the
+                                                          %caption
+                                                          %setup for:
+                                                          %it ises
+                                                          %label
+                                                          %format as
+                                                          %the
+                                                          %declared
+                                                          %caption
+                                                          %label above
+                                                          %and makes
+                                                          %label and
+                                                          %caption
+                                                          %text to be
+                                                          %separated
+                                                          %by a ':'
+    \lstset{ %this is the stype
+        frame=tB,
+        numbers=left, 
+        numberstyle=\tiny,
+        basicstyle=\scriptsize, 
+        keywordstyle=\color{black}\bfseries,
+        escapeinside={(*}{*)},
+        keywords={,input, output, return, datatype, function, in, if, else, foreach, while, begin, end, } 
+        numbers=left,
+        xleftmargin=.04\textwidth,
+        #1 % this is to add specific settings to an usage of this environment (for instnce, the caption and referable label)
+    }
+}
+{}
+
+
+
+
+
+\author{Alexander Eisl (0250266), Peter Wiedermann (0025999)}
+
+\date{\today}
+
+
+\title{Heuristic Optimization Techniques \\ Exercise 2}
+
+\begin{document}
+\maketitle
+
+
+\section{Local Search}
+\label{sec:deterministic}
+In this programming exercise, we improve the results of the construction
+heuristic developed in the previous exercise by using a local search. In the following
+subsection we will first explain the neighborhoods that we define and then outline the
+step functions used.
+
+%%% brauchen wir sowas?
+\begin{algorithm}[caption={Local search}]
+    input: Initial solution
+    output: Improved solution
+    begin
+    	sol = initial solution;
+	repeat:
+		choose an sol' $\in$ N(x) 
+		if f($sol'$) $\leq$ f(sol) then
+			sol = $sol'$
+	until stopping criteria satisfied
+    end
+\end{algorithm}
+
+\subsection{Neighborhood}
+We use the following neighbourhoods:
+
+\begin{description}
+\item[1-node flip] This neighbourhood is defined as all subsets where two vertices are flipped. This is a omputationally intensive neighbourhood as the crossings have to be recalculated and there are $n(n-2)/2$ different possible flips. However, we expect this to give large improvements at least for small graphs.
+	
+\item[1-edge move] This neighbourhood consists of all solutions where one edge is moved to a different
+	page. This has the advantage that we can re-calculate the number of crossings incrementally and 			there	are only $(pages-1) edges$ such neighbourhoods. 
+	
+\item[1-node edge move] This neighbourhood consists of all solutions where the edges of
+	one vertex are moved to a different page. This also allows for incremental neighbourhoods, the
+		size is $(pages-1) |N(v_i)|$
+
+\end{description}
+
+
+\subsection{Questions asked in assignment -- to be incorporated into the text}
+
+
+improve our deterministic approach.
+
+Q1: Does using a good initial solution help? \\
+A1: It's very important to have a good initial solution. First, because it helps to end up
+in a good local optimum. Second, because it significantly reduces the run-time of the algorithm.
+
+Q2: Can subsequent (possibly random) moves in your neighbourhood(s) reach
+any valid solution in the search space?
+A2: ?
+
+Q3: How many iterations does it take to reach local optima? What does this say about your neighbourhood(s)?
+
+Q4: How does incremental evaluation work for your neighbourhoods?
+
+
+
+\section{Solution Representation}
+The same as in exercise 1. Do we need this subsection?
+
+\section{Results}
+%%% den doppelten Verweis auf Table 3 gestrichen
+We executed the code on a desktop computer with a Core i7 Quad-Core
+CPU with 2.67Ghz and 24 GB of main memory. Table~\ref{tab:results}
+shows the results of our randomized algorithm, where we have choosen
+to perform $n=4$ permutations of vertices to generete $k=5$ different
+solutions.
+
+
+
+
+\end{document}
