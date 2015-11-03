@@ -203,7 +203,7 @@ int main( int argc, char **argv)
     solution best= sol;
     while(1)
     {
-        solution local_search_sol= execute_neighborhood( sol, neighborhood, step_func, time );
+        solution local_search_sol= execute_neighborhood( best, neighborhood, step_func, time );
 
         if( best.get_crossings() > local_search_sol.get_crossings() )
             best= local_search_sol;
