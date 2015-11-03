@@ -11,7 +11,7 @@ public:
     /** threshold in seconds */
     timer(int _threshold);
 
-    bool over_thresold();
+    bool over_thresold() const;
 
 private:        
 

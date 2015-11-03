@@ -25,6 +25,9 @@ solution first_improvement( T begin,
 
     for( ; iterator != end; ++iterator )
     {
+        if( time.over_thresold() )
+            break;
+
         solution sol=  *iterator;
         if( sol.get_crossings() < best.get_crossings() )
         {
@@ -51,6 +54,9 @@ solution best_improvement( T begin,
 
     for( ; iterator != end; ++iterator )
     {
+        if( time.over_thresold() )
+            break;
+
         solution sol=  *iterator;
 
         if( sol.get_crossings() < best.get_crossings() )

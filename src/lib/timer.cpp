@@ -7,7 +7,7 @@ timer::timer(int _threshold)
 }
 
 #include <iostream>
-bool timer::over_thresold()
+bool timer::over_thresold() const
 {
     auto timestruct= cpu_time.elapsed();
 
