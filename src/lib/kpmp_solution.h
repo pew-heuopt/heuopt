@@ -35,6 +35,8 @@ public:
     typedef std::vector< page >::iterator page_iterator_t;
     typedef std::vector< page >::const_iterator const_page_iterator_t;
 
+    typedef std::vector< vertex_t >::iterator vertex_iterator_t;
+    typedef std::vector< vertex_t >::const_iterator const_vertex_iterator_t;
 
     solution(int num_pages, const std::vector< vertex_t > & spine_order  );
 
@@ -70,6 +72,13 @@ public:
 
     int get_crossings() const;
     int get_num_edges() const;
+
+
+    vertex_iterator_t vertex_begin() { return spine_order.begin(); };
+    const_vertex_iterator_t vertex_begin() const { return spine_order.begin(); };
+
+    vertex_iterator_t vertex_end() { return spine_order.end(); };
+    const_vertex_iterator_t vertex_end() const { return spine_order.end(); };
 
 
     page_iterator_t page_begin() { return pages.begin(); };

@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <vector>
 
+#include <boost/timer/timer.hpp>
+
 #include <assignment_helpers.h>
 
 #include <kpmp_instance.h>
@@ -14,6 +16,7 @@
 #include <neighborhood_1_edge_move.h>
 #include <neighborhood_1_node_flip.h>
 
+#include <time.h>
 #include <stepfunctions.h>
 
 
@@ -24,13 +27,13 @@ enum neighborhood_t { NODE_1, EDGE_1 };
 
 template<typename T>
 solution execute_step( T  begin, T  end, 
-                       step_func_t step_func, int max_random )
+                       step_func_t step_func, int max_random, const timer & time )
 {
     switch( step_func )
     {
-        case FIRST: return stepfunction::first_improvement(begin,end);
-        case BEST: return stepfunction::best_improvement(begin,end);
-        case RANDOM: return stepfunction::random(begin,end,max_random);
+        case FIRST: return stepfunction::first_improvement(begin,end,time);
+        case BEST: return stepfunction::best_improvement(begin,end,time);
+        case RANDOM: return stepfunction::random(begin,end,max_random,time);
 
         default:
                    throw std::runtime_error("unsupported stepfunction");
@@ -40,7 +43,7 @@ solution execute_step( T  begin, T  end,
     };
 }
 
-solution execute_neighborhood( const solution & sol, neighborhood_t neighborhood, step_func_t step_func )
+solution execute_neighborhood( const solution & sol, neighborhood_t neighborhood, step_func_t step_func, const timer & time )
 {
     int num_vertices= sol.get_spine_order().size();
     int num_edges= sol.get_num_edges();
@@ -52,13 +55,15 @@ solution execute_neighborhood( const solution & sol, neighborhood_t neighborhood
 
             return execute_step( neighborhood_1_node_flip_begin(sol),
                                  neighborhood_1_node_flip_end(sol),
-                                 step_func, num_vertices * (num_vertices-1) / 2  );
+                                 step_func, num_vertices * (num_vertices-1) / 2, 
+                                 time  );
 
         case EDGE_1: 
 
             return execute_step( neighborhood_1_edge_move_begin(sol),
                                  neighborhood_1_edge_move_end(sol),
-                                 step_func, (num_pages-1)*num_edges  );
+                                 step_func, (num_pages-1)*num_edges,
+                                 time  );
 
         default:
                    throw std::runtime_error("unsupported stepfunction");
@@ -80,10 +85,14 @@ int main( int argc, char **argv)
 
     std::string step_func_str;
     std::string neighborhood_str;
+    int timeout= 60 * 5;
 
     // use boost graph library to calc connected components
 
     desc.add_options()
+
+         ("timeout", boost::program_options::value<int>(&timeout), 
+ 	                  "timeout of computation in seconds (default 300seconds = 5 minutes")
 
          ("neighborhood", boost::program_options::value<std::string>(&neighborhood_str), 
  	                   "stepping function: 1-node | 1-edge")
@@ -185,17 +194,34 @@ int main( int argc, char **argv)
             }
         
 
+    // start the timer
+    timer time(timeout);
+
+
     // local search
-    solution local_search_sol= execute_neighborhood( sol, neighborhood, step_func );
+    //
+    solution best= sol;
+    while(1)
+    {
+        solution local_search_sol= execute_neighborhood( sol, neighborhood, step_func, time );
+
+        if( best.get_crossings() > local_search_sol.get_crossings() )
+            best= local_search_sol;
+
+        if( time.over_thresold() )
+        {
+            break;
+        }
+    }
 
 
     //
     // output
     //
-    write_solution( outfile, local_search_sol );
+    write_solution( outfile, best );
 	outfile.close();
 
-    write_solution_statistics( std::cout, local_search_sol );
+    write_solution_statistics( std::cout, best );
 
     return 0;
 }

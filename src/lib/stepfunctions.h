@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <cstdlib>
 
+#include "timer.h"
 
 #include "kpmp_solution.h"
 
@@ -12,7 +13,7 @@ namespace stepfunction
 
 template<typename T>
 solution first_improvement( T begin,
-                            T end  )
+                            T end, const timer & time  )
 {
 
     if( begin == end )
@@ -38,7 +39,7 @@ solution first_improvement( T begin,
 
 template<typename T>
 solution best_improvement( T begin,
-                           T end  )
+                           T end, const timer & time  )
 {
 
     if( begin == end )
@@ -66,7 +67,7 @@ solution best_improvement( T begin,
 template<typename T>
 solution random( T begin,
                  T end,
-                 int max_rand )
+                 int max_rand, const timer & timeout )
 {
 
     if( begin == end )

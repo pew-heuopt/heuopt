@@ -13,7 +13,7 @@ ASSIGNMENTS= $(ASSIGNMENT1_1) $(ASSIGNMENT1_2) $(ASSIGNMENT2)
 INC = $(LIBDIR)
 
 
-CXXFLAGS= -Wall -std=c++11
+CXXFLAGS= -Wall -std=c++11 -DBOOST_SYSTEM_NO_DEPRECATED
 CXX = g++
 
 release: CXX += -O3
@@ -24,7 +24,7 @@ all: runtests $(ASSIGNMENTS)
 release: all
 debug: all	
 
-$(LIBSTAT): $(LIBDIR)/kpmp_instance.o  $(LIBDIR)/kpmp_solution.o  $(LIBDIR)/kpmp_solution_writer.o  $(LIBDIR)/assignment_helpers.o  $(LIBDIR)/spine.o   $(LIBDIR)/neighborhood_1_edge_move.o  $(LIBDIR)/neighborhood_1_node_flip.o
+$(LIBSTAT): $(LIBDIR)/kpmp_instance.o  $(LIBDIR)/kpmp_solution.o  $(LIBDIR)/kpmp_solution_writer.o  $(LIBDIR)/assignment_helpers.o  $(LIBDIR)/spine.o   $(LIBDIR)/neighborhood_1_edge_move.o  $(LIBDIR)/neighborhood_1_node_flip.o $(LIBDIR)/timer.o
 	ar rvs $(LIBSTAT) lib/*.o
 
 $(LIBDIR)/%.o : $(LIBDIR)/%.cpp $(LIBDIR)/%.h
@@ -32,7 +32,7 @@ $(LIBDIR)/%.o : $(LIBDIR)/%.cpp $(LIBDIR)/%.h
 
 
 unittests: $(LIBSTAT) unittests.cpp
-	$(CXX) -o unittests -I $(INC) $(CXXFLAGS) unittests.cpp $(LIBSTAT) -lboost_unit_test_framework
+	$(CXX) -o unittests -I $(INC) $(CXXFLAGS) unittests.cpp $(LIBSTAT) -lboost_timer -lboost_unit_test_framework
 
 runtests: unittests
 	./unittests
@@ -45,7 +45,7 @@ $(ASSIGNMENT1_2): $(LIBSTAT) $(ASSIGNMENT1_2).cpp
 	$(CXX) -o $(ASSIGNMENT1_2) -I $(INC) $(CXXFLAGS) $(ASSIGNMENT1_2).cpp $(LIBSTAT) -lboost_program_options
 
 $(ASSIGNMENT2): $(LIBSTAT) $(ASSIGNMENT2).cpp
-	$(CXX) -o $(ASSIGNMENT2) -I $(INC) $(CXXFLAGS) $(ASSIGNMENT2).cpp $(LIBSTAT) -lboost_program_options
+	$(CXX) -o $(ASSIGNMENT2) -I $(INC) $(CXXFLAGS) $(ASSIGNMENT2).cpp $(LIBSTAT) -lboost_program_options -lboost_timer
 
 
 
