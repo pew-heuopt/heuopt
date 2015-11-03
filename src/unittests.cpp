@@ -332,6 +332,7 @@ BOOST_AUTO_TEST_CASE( neighborhood_1_node_flip  )
 
 BOOST_AUTO_TEST_CASE( stepfunction_test  )
 {
+
     solution sol(5, std::vector< vertex_t > {0,1,2,3,4,5,6,7}  );
 
     sol.add_edge( 0, edge_t(0,6) );
@@ -341,17 +342,19 @@ BOOST_AUTO_TEST_CASE( stepfunction_test  )
     sol.add_edge( 1, edge_t(4,7) );
     sol.add_edge( 2, edge_t(5,7) );
 
+    timer t(0);
+
     solution first_improvement_sol= 
         
             stepfunction::first_improvement( neighborhood_1_edge_move_begin( sol ), 
-                                             neighborhood_1_edge_move_end( sol ) );
+                                             neighborhood_1_edge_move_end( sol ), t );
 
     BOOST_CHECK_MESSAGE( first_improvement_sol.get_crossings() == 1, "should be 1  but is " << first_improvement_sol.get_crossings( ) );
 
     solution best_improvement_sol= 
         
             stepfunction::best_improvement( neighborhood_1_edge_move_begin( sol ), 
-                                             neighborhood_1_edge_move_end( sol ) );
+                                             neighborhood_1_edge_move_end( sol ), t );
 
     BOOST_CHECK_MESSAGE( best_improvement_sol.get_crossings() == 0, "should be 0  but is " << best_improvement_sol.get_crossings( ) );
 
