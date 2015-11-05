@@ -39,6 +39,8 @@ private:
     void start_new_target_iteration();
     bool current_and_target_same_page();
 
+    size_t fetch_current_node_edges();
+
     const solution & init_solution;
 
     solution solution_without_current_node_edges;

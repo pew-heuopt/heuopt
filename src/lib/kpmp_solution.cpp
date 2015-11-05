@@ -52,6 +52,12 @@ edge_t solution::order_edge( const edge_t & e )
 */
 
 
+void solution::add_edges(  unsigned int page, const std::list<edge_t> & l )
+{
+    for(auto i= l.begin(); i!=l.end(); ++i )
+        add_edge( page, *i );
+}
+
 void solution::add_edge(  unsigned int page, const edge_t & e )
 {
     add_edge( page, e, try_num_crossing(page, e) );
@@ -77,6 +83,13 @@ void solution::add_edge( page & p, const edge_t & e, int crossings )
 {
     p.edges.push_back( e );
     p.crossings+= crossings;
+}
+
+
+void solution::remove_edges( unsigned int page, const std::list<edge_t> & l )
+{
+    for(auto i= l.begin(); i!=l.end(); ++i )
+        remove_edge( page, *i );
 }
 
 void solution::remove_edge(  unsigned int page, const edge_t & e )

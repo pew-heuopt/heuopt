@@ -48,11 +48,13 @@ public:
     int try_num_crossing( const page & p, const edge_t & e ) const;
 
     void add_edge(  unsigned int page, const edge_t & e );
+    void add_edges(  unsigned int page, const std::list<edge_t> & l );
     void add_edge(  page & p, const edge_t & e );
     void add_edge(  unsigned int page, const edge_t & e, int crossings );
     void add_edge(  page &p, const edge_t & e, int crossings );
     
     void remove_edge(  unsigned int page, const edge_t & e );
+    void remove_edges( unsigned int page, const std::list<edge_t> & l );
     void remove_edge(  page & p, const edge_t & e );
     void remove_edge(  unsigned int page, const edge_t & e, int crossings );
     void remove_edge(  page & p, const edge_t & e, int crossings );

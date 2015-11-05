@@ -323,6 +323,48 @@ BOOST_AUTO_TEST_CASE( neighborhood_1_node_flip  )
     BOOST_CHECK_MESSAGE( num_iterations == 6, "should be " << 6 << "but is " << num_iterations  );
 }
 
+
+//
+// neighborhood_1_node_edge_move iterator
+//
+
+#include <neighborhood_1_node_edge_move.h>
+
+BOOST_AUTO_TEST_CASE( neighborhood_1_node_edge  )
+{
+    solution sol(3, std::vector< vertex_t > {0,1,2,3,4}  );
+
+    sol.add_edge( 0, edge_t(0,2) );
+    sol.add_edge( 1, edge_t(1,3) );
+   
+
+    unsigned num_iterations= 0;
+    for( auto i= neighborhood_1_node_edge_move_begin( sol ); 
+         i != neighborhood_1_node_edge_move_end( sol ); 
+         ++i )
+    {
+        solution s= *i;
+
+        if( num_iterations == 0 ||
+            num_iterations == 2 ||
+            num_iterations == 4 ||
+            num_iterations == 6 ||
+            num_iterations == 8 )
+        {
+            BOOST_CHECK( s.get_crossings() == 1 );
+        }
+        else
+            BOOST_CHECK( s.get_crossings() == 0 );
+            
+
+        ++num_iterations;
+    }
+
+    BOOST_CHECK_MESSAGE( num_iterations == 8, "should be " << 8 << "but is " << num_iterations  );
+}
+
+
+
 //
 // stepfunction tests
 //

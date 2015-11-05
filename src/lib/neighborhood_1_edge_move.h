@@ -29,6 +29,7 @@ public:
 protected:
 
 
+    size_t fetch_current_node_edges();
     void increment();
 
 private:
