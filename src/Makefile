@@ -24,8 +24,8 @@ all: runtests $(ASSIGNMENTS)
 release: all
 debug: all	
 
-$(LIBSTAT): $(LIBDIR)/kpmp_instance.o  $(LIBDIR)/kpmp_solution.o  $(LIBDIR)/kpmp_solution_writer.o  $(LIBDIR)/assignment_helpers.o  $(LIBDIR)/spine.o   $(LIBDIR)/neighborhood_1_edge_move.o  $(LIBDIR)/neighborhood_1_node_flip.o $(LIBDIR)/timer.o
-	ar rvs $(LIBSTAT) lib/*.o
+$(LIBSTAT): $(LIBDIR)/kpmp_instance.o  $(LIBDIR)/kpmp_solution.o  $(LIBDIR)/kpmp_solution_writer.o  $(LIBDIR)/assignment_helpers.o  $(LIBDIR)/spine.o  $(LIBDIR)/neighborhood_node_edge_move.o  $(LIBDIR)/neighborhood_1_edge_move.o  $(LIBDIR)/neighborhood_1_node_flip.o $(LIBDIR)/timer.o
+	ar rvs $(LIBSTAT) lib/*.o 
 
 $(LIBDIR)/%.o : $(LIBDIR)/%.cpp $(LIBDIR)/%.h
 	$(CXX) -c $(CXXFLAGS) $< -o $@

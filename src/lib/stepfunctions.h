@@ -75,8 +75,8 @@ solution random( T begin,
                  T end,
                  int max_rand, const timer & timeout )
 {
-
-    if( begin == end )
+  
+  if( begin == end )
         throw std::runtime_error( "empty neighborhood iterator");
 
 

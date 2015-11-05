@@ -15,13 +15,14 @@
 
 #include <neighborhood_1_edge_move.h>
 #include <neighborhood_1_node_flip.h>
+#include <neighborhood_node_edge_move.h>
 
 #include <time.h>
 #include <stepfunctions.h>
 
 
 enum step_func_t { FIRST, BEST, RANDOM };
-enum neighborhood_t { NODE_1, EDGE_1 };
+enum neighborhood_t { NODE_1, EDGE_1, NODE_EDGE };
 
 
 
@@ -64,6 +65,12 @@ solution execute_neighborhood( const solution & sol, neighborhood_t neighborhood
                                  neighborhood_1_edge_move_end(sol),
                                  step_func, (num_pages-1)*num_edges,
                                  time  );
+	    
+        case NODE_EDGE:
+	  // for each node, we can move each edge only (num_pages-1) times.
+	  return execute_step( neighborhood_node_edge_move_begin(sol),
+                               neighborhood_node_edge_move_end(sol),
+                               step_func, num_vertices * (num_pages-1), time);
 
         default:
                    throw std::runtime_error("unsupported stepfunction");
@@ -95,7 +102,7 @@ int main( int argc, char **argv)
  	                  "timeout of computation in seconds (default 300seconds = 5 minutes")
 
          ("neighborhood", boost::program_options::value<std::string>(&neighborhood_str), 
- 	                   "stepping function: 1-node | 1-edge")
+ 	                   "stepping function: 1-node | 1-edge | node-edge")
 
 
          ("step-func", boost::program_options::value<std::string>(&step_func_str), 
@@ -123,6 +130,8 @@ int main( int argc, char **argv)
             neighborhood= NODE_1;
         else if( neighborhood_str == "1-edge" )
             neighborhood= EDGE_1;
+	else if( neighborhood_str == "node-edge" )
+	  neighborhood= NODE_EDGE;
         else 
         {
             std::cerr << "unkown neighborhood" << std::endl
@@ -205,9 +214,10 @@ int main( int argc, char **argv)
     {
         solution local_search_sol= execute_neighborhood( best, neighborhood, step_func, time );
 
-        if( best.get_crossings() > local_search_sol.get_crossings() )
+        if( best.get_crossings() > local_search_sol.get_crossings() ) {
+	  cout << "improvement found";
             best= local_search_sol;
-
+	}
         if( time.over_thresold() )
         {
             break;
