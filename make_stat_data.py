@@ -11,11 +11,11 @@ input_instances= [
                    'automatic-3.txt',
                    'automatic-4.txt',
                    'automatic-5.txt',
-                   'automatic-6.txt',
-                   'automatic-7.txt',
-                   'automatic-8.txt',
-                   'automatic-9.txt',
-                   'automatic-10.txt',
+#                   'automatic-6.txt',
+#                   'automatic-7.txt',
+#                   'automatic-8.txt',
+#                   'automatic-9.txt',
+#                   'automatic-10.txt',
                    ]
 
 output_dir= "output/"
@@ -100,7 +100,7 @@ def write_statfile( program_instances, results, filename, instance_property ) :
                 val= results[program_name][input_instance][instance_property]
             else :
                 val= 0
-            result_line = result_line + " " + str()
+            result_line = result_line + " " + str(val)
         stat_file.write( result_line + "\n" )
 
 
