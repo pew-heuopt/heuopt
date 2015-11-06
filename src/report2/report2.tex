@@ -78,38 +78,58 @@ step functions used.
     end
 \end{algorithm}
 
-\subsection{Neighborhood}
+\subsection{Neighborhoods}
+\label{neighborhoods}
 We use the following neighbourhoods:
 
 \begin{description}
-\item[1-node flip] This neighbourhood is defined as all subsets where two vertices are flipped. This is a omputationally intensive neighbourhood as the crossings have to be recalculated and there are $n(n-2)/2$ different possible flips. However, we expect this to give large improvements at least for small graphs.
+\item[1-node flip] 
+    
+    This neighbourhood is defined as all subsets where two vertices of the initial solution are flipped. 
+    \begin{itemize}
+        \item Size of neigborhood: $n(n-1)/2$
+        \item Objective Function: Very intensive becuase we change the spine order.
+
+    \end{itemize}
+
+    Combination of big neigborhood size and complex objective function makes this  a omputationally intensive variant.
+    However, we expect this to give large improvements at least for small graphs.
+
+    TODO: number of steps to reach local optimum
 	
-\item[1-edge move] This neighbourhood consists of all solutions where one edge is moved to a different
-	page. This has the advantage that we can re-calculate the number of crossings incrementally and 			there	are only $(pages-1) edges$ such neighbourhoods. 
+\item[1-edge move] This neighbourhood consists of all solutions where one edge is moved to a different page. 
+     \begin{itemize}
+        \item Size of neigborhood: $(pages-1) edges$ 
+        \item Objective Function: Incremental, only crossings for moved edges are recalculated.
+    \end{itemize}
+   
+    The incremental objective function and the moderat neighborhood size makes this variant computational feasible.
+
+    TODO: number of steps to reach local optimum
 	
 \item[1-node edge move] This neighbourhood consists of all solutions where the edges of
-	one vertex are moved to a different page. This also allows for incremental neighbourhoods, the
+	one vertex on a specific page are moved to all different pages. 
+
+    \begin{itemize}
+        \item Size of neigborhood: $(pages-1) edges$ as worst case \footnote{depending on number of edges on respective node pages}.
+        \item Objective Function: Incremental, only crossings for moved edges are recalculated.
+    \end{itemize}
+    
+    This also allows for incremental neighbourhoods, the
 		size is $(pages-1) |N(v_i)|$
 
 \end{description}
 
 
-\subsection{Questions asked in assignment -- to be incorporated into the text}
+\subsection{Stepfunctions}
 
+We implemented the following thre stepfunctions:
 
-improve our deterministic approach.
-
-Q1: Does using a good initial solution help? \\
-A1: It's very important to have a good initial solution. First, because it helps to end up
-in a good local optimum. Second, because it significantly reduces the run-time of the algorithm.
-
-Q2: Can subsequent (possibly random) moves in your neighbourhood(s) reach
-any valid solution in the search space?
-A2: ?
-
-Q3: How many iterations does it take to reach local optima? What does this say about your neighbourhood(s)?
-
-Q4: How does incremental evaluation work for your neighbourhoods?
+\begin{description}
+\item[first] 
+\item[best] 
+\item[random] 
+\end{description}
 
 
 
@@ -123,6 +143,28 @@ CPU with 2.67Ghz and 24 GB of main memory. Table~\ref{tab:results}
 shows the results of our randomized algorithm, where we have choosen
 to perform $n=4$ permutations of vertices to generete $k=5$ different
 solutions.
+
+
+improve our deterministic approach.
+
+Q1: Does using a good initial solution help? \\
+A1: It's very important to have a good initial solution. First, because it helps to end up
+in a good local optimum. Second, because it significantly reduces the run-time of the algorithm.
+
+TODO: wo steht Q1?
+
+Does it yield a gain if compared to simply using random initial solutions?
+TODO: Use 1-node-flip and best stepfunction to answer this question because it should show the best effect
+
+
+Q2: Can subsequent (possibly random) moves in your neighbourhood(s) reach
+any valid solution in the search space?
+A2: ?
+
+Q3: How many iterations does it take to reach local optima? What does this say about your neighbourhood(s)?
+
+Q4: How does incremental evaluation work for your neighbourhoods?
+see description of neigborhoods in section \ref{neighborhoods}.
 
 
 
