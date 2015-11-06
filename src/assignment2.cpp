@@ -15,7 +15,7 @@
 
 #include <neighborhood_1_edge_move.h>
 #include <neighborhood_1_node_flip.h>
-#include <neighborhood_node_edge_move.h>
+#include <neighborhood_node_edge_shift.h>
 #include <neighborhood_1_node_edge_move.h>
 
 #include <time.h>
@@ -71,8 +71,8 @@ solution execute_neighborhood( const solution & sol, neighborhood_t neighborhood
 	    
         case NODE_EDGE:
 	  // for each node, we can move each edge only (num_pages-1) times.
-	  return execute_step( neighborhood_node_edge_move_begin(sol),
-                               neighborhood_node_edge_move_end(sol),
+	  return execute_step( neighborhood_node_edge_shift_begin(sol),
+                               neighborhood_node_edge_shift_end(sol),
                                step_func, num_vertices * (num_pages-1), time);
 
         case NODE_EDGE_1:

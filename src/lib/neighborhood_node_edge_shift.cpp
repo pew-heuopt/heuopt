@@ -2,23 +2,23 @@
 #include <stdexcept>
 #include <cassert>
 
-#include "neighborhood_node_edge_move.h"
+#include "neighborhood_node_edge_shift.h"
 
 
 //#define DEBUG 1
 
 
-const_neighborhood_node_edge_move_iterator neighborhood_node_edge_move_begin( const solution & init_solution )
+const_neighborhood_node_edge_shift_iterator neighborhood_node_edge_shift_begin( const solution & init_solution )
 {
     assert( init_solution.get_pages() && "solution with no pages not supported" );
-    return const_neighborhood_node_edge_move_iterator( init_solution );
+    return const_neighborhood_node_edge_shift_iterator( init_solution );
 }
 
 
-const_neighborhood_node_edge_move_iterator neighborhood_node_edge_move_end( const solution & init_solution )
+const_neighborhood_node_edge_shift_iterator neighborhood_node_edge_shift_end( const solution & init_solution )
 {
     assert( init_solution.get_pages() && "solution with no pages not supported" );
-    auto it= neighborhood_node_edge_move_begin(init_solution);
+    auto it= neighborhood_node_edge_shift_begin(init_solution);
     it.set_to_end();
 
 
@@ -26,7 +26,7 @@ const_neighborhood_node_edge_move_iterator neighborhood_node_edge_move_end( cons
 }
 
 // constructor
-const_neighborhood_node_edge_move_iterator::const_neighborhood_node_edge_move_iterator( const solution & _init_solution )
+const_neighborhood_node_edge_shift_iterator::const_neighborhood_node_edge_shift_iterator( const solution & _init_solution )
 : init_solution( _init_solution ),
   solution_without_node_edges( _init_solution ),
 
@@ -42,7 +42,7 @@ const_neighborhood_node_edge_move_iterator::const_neighborhood_node_edge_move_it
 
 }
 
-// void const_neighborhood_node_edge_move_iterator::start_new_target_iteration()
+// void const_neighborhood_node_edge_shift_iterator::start_new_target_iteration()
 // {
 //     assert( current_edge_it != current_page->edges.end() );
 
@@ -71,7 +71,7 @@ const_neighborhood_node_edge_move_iterator::const_neighborhood_node_edge_move_it
 //  return solution corresponding to current iterator state?
 // */
 
-solution const_neighborhood_node_edge_move_iterator::operator*() const
+solution const_neighborhood_node_edge_shift_iterator::operator*() const
 {
     solution sol( init_solution );
 
@@ -88,30 +88,45 @@ solution const_neighborhood_node_edge_move_iterator::operator*() const
 
     unsigned int selPage= 0;
     unsigned int selEdge= 0;
-    std::cout << "looping over all edges" << std::endl;
+    //std::cout << "looping over all edges" << std::endl;
     // loop over all pages
     for(solution::const_page_iterator_t page_it = sol.page_begin(); page_it != sol.page_end();++page_it) {
-      std::cout << "loooop:" << selPage << std::endl;
+      // std::cout << "On page:" << selPage << std::endl;
       selEdge =0;
+      // loop over all edges on page
       for(solution::page::const_edge_iterator_t edge_it = (*page_it).edges.begin();edge_it != (*page_it).edges.end();++edge_it) {
-	std::cout << "on edge: " << selEdge << " "<< (*edge_it).first << "/" << (*edge_it).second << std::endl;
+	// std::cout << "Edge: " << selEdge << "/" << selPage << " "<< (*edge_it).first << "/" << (*edge_it).second << std::endl;
 	// if we find an edge then put it into list and remove it
 	if( (*edge_it).first == index_node || (*edge_it).second == index_node) {
 	  removedEdges.push_back(*edge_it);
 	  correspondingPage.push_back(selPage);
-
-	  // sol.remove_edge(selPage, *edge_it); // 
 	}
 	++selEdge;
       }
       
-
-
       // increment selPage
       ++selPage;
     }
 
-    std::cout << "Number of removed edges: " << index_node << "/" << removedEdges.size() << std::endl;	  
+    // remove edges
+    std::list<unsigned int>::iterator cpagesIt= correspondingPage.begin();
+    for(std::list<edge_t>::iterator it= removedEdges.begin(); it != removedEdges.end();++it) {      
+      sol.remove_edge(*cpagesIt,*it);
+      // removing an edge
+      cpagesIt++;
+    }
+
+    // put edges back in
+    cpagesIt= correspondingPage.begin();
+     for(std::list<edge_t>::iterator it= removedEdges.begin(); it != removedEdges.end();++it) {      
+       unsigned int newPage= (*cpagesIt+page_counter) % num_pages;
+      sol.add_edge(newPage,*it);
+      cpagesIt++;
+    }
+   
+    
+
+    //std::cout << "Number of removed edges: " << index_node << "/" << removedEdges.size() << std::endl;	  
 
     // sol.add_edge( target_page, *current_edge_it );
 
@@ -130,17 +145,17 @@ solution const_neighborhood_node_edge_move_iterator::operator*() const
 
 
 // set iterator to last iteration
-void const_neighborhood_node_edge_move_iterator::set_to_end()
+void const_neighborhood_node_edge_shift_iterator::set_to_end()
 {
   // set index_node to last node and maximum page_move
-  std::cout << spine_size << " " << num_pages << " ";
+  // std::cout << spine_size << " " << num_pages << " ";
   index_node= spine_size;
   page_counter= num_pages-1;
 }
 
 
 
-bool const_neighborhood_node_edge_move_iterator::is_end()
+bool const_neighborhood_node_edge_shift_iterator::is_end()
 {
   // final node and we can only move each edge a maximum of (num_pages - 1) times
   return index_node == spine_size && page_counter == num_pages-1;
@@ -149,7 +164,7 @@ bool const_neighborhood_node_edge_move_iterator::is_end()
 
 
 
-void const_neighborhood_node_edge_move_iterator::increment_current_edge()
+void const_neighborhood_node_edge_shift_iterator::increment_current_edge()
 {
     // if( current_page == init_solution.page_end() )
     //     throw std::out_of_range("trying to increment iterator in end position");
@@ -177,7 +192,7 @@ void const_neighborhood_node_edge_move_iterator::increment_current_edge()
 
 }
 
-// bool const_neighborhood_node_edge_move_iterator::current_and_target_same_page()
+// bool const_neighborhood_node_edge_shift_iterator::current_and_target_same_page()
 // {
 //     return( target_page ==
 //             ( current_page - init_solution.page_begin() ) );
@@ -185,7 +200,7 @@ void const_neighborhood_node_edge_move_iterator::increment_current_edge()
 
 
 // increment the iterator
-void const_neighborhood_node_edge_move_iterator::increment()
+void const_neighborhood_node_edge_shift_iterator::increment()
 {
   page_counter++;
   if(page_counter>(num_pages-1)) {
@@ -215,14 +230,14 @@ std::cout << "page_counter: " <<page_counter << " index node: " << index_node <<
 }
 
 
-bool const_neighborhood_node_edge_move_iterator::operator==( const const_neighborhood_node_edge_move_iterator & rhs ) const
+bool const_neighborhood_node_edge_shift_iterator::operator==( const const_neighborhood_node_edge_shift_iterator & rhs ) const
 {
   // if selected node and page_counter are equal:
   return index_node == rhs.index_node &&
     page_counter == rhs.page_counter;
 }
 
-bool const_neighborhood_node_edge_move_iterator::operator!=( const const_neighborhood_node_edge_move_iterator & rhs ) const
+bool const_neighborhood_node_edge_shift_iterator::operator!=( const const_neighborhood_node_edge_shift_iterator & rhs ) const
 {
     return !operator==(rhs);
 }
