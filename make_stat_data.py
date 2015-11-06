@@ -31,7 +31,7 @@ program_instances= {
 
                      'lsr-1node-rand' : { 'bin' : 'src/assignment2', 
                                                'opt' : [ '--neighborhood', '1-node',
-                                                         '--step-func', 'rand'] },
+                                                         '--step-func', 'random'] },
 
 
 
@@ -45,7 +45,7 @@ program_instances= {
 
                      'lsr-1edge-rand' : { 'bin' : 'src/assignment2', 
                                                'opt' : [ '--neighborhood', '1-edge',
-                                                         '--step-func', 'rand'] },
+                                                         '--step-func', 'random'] },
 
 
 
@@ -59,7 +59,7 @@ program_instances= {
 
                      'lsr-1node-edge-rand' : { 'bin' : 'src/assignment2', 
                                                'opt' : [ '--neighborhood', '1-node-edge',
-                                                         '--step-func', 'rand'] },
+                                                         '--step-func', 'random'] },
 
 #
 # assignament 1
