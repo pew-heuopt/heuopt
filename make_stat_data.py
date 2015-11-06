@@ -95,7 +95,7 @@ def write_statfile( program_instances, results, filename, instance_property ) :
 
     for input_instance in input_instances :
         result_line= input_instance;
-        for program_name in program_instances:
+        for program_name in sorted( program_instances, key=program_instances.get) :
             if( instance_property in results[program_name][input_instance] ) :
                 val= results[program_name][input_instance][instance_property]
             else :
@@ -179,7 +179,7 @@ if __name__ == '__main__' :
 
         for input_instance in input_instances :
 
-            results[program_name][input_instance]= execute_program( program_instance, input_instance,  output_dir + input_instance + '.be');
+            results[program_name][input_instance]= execute_program( program_instance, input_instance,  output_dir + program_name + "_" +input_instance + '.be');
 
     write_statfile( program_instances, results, "stagnation_stat.data", "stagnation" )
     write_statfile( program_instances, results, "timeout_stat.data", "timeout" )
