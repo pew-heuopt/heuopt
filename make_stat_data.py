@@ -6,7 +6,6 @@ import os, subprocess, re
 
 input_dir= "instances/"
 input_instances= [
-
                    'automatic-1.txt',
                    'automatic-2.txt',
                    'automatic-3.txt',
@@ -22,33 +21,45 @@ input_instances= [
 output_dir= "output/"
 
 program_instances= { 
-                     'lsearch-1node-first' : { 'bin' : 'src/assignment2', 
+                     'lsr-1node-first' : { 'bin' : 'src/assignment2', 
                                                'opt' : [  '--neighborhood', '1-node',
                                                           '--step-func', 'first'] },
 
-                     'lsearch-1node-best' : { 'bin' : 'src/assignment2', 
+                     'lsr-1node-best' : { 'bin' : 'src/assignment2', 
                                               'opt' : [ '--neighborhood', '1-node',
                                                         '--step-func', 'best'] },
 
-                     'lsearch-1node-random' : { 'bin' : 'src/assignment2', 
+                     'lsr-1node-rand' : { 'bin' : 'src/assignment2', 
                                                'opt' : [ '--neighborhood', '1-node',
-                                                         '--step-func', 'random'] },
+                                                         '--step-func', 'rand'] },
 
 
 
-
-
-                     'lsearch-1edge-first' : { 'bin' : 'src/assignment2', 
+                     'lsr-1edge-first' : { 'bin' : 'src/assignment2', 
                                                'opt' : [  '--neighborhood', '1-edge',
                                                           '--step-func', 'first'] },
 
-                     'lsearch-1edge-best' : { 'bin' : 'src/assignment2', 
+                     'lsr-1edge-best' : { 'bin' : 'src/assignment2', 
                                               'opt' : [ '--neighborhood', '1-edge',
                                                         '--step-func', 'best'] },
 
-                     'lsearch-1edge-random' : { 'bin' : 'src/assignment2', 
+                     'lsr-1edge-rand' : { 'bin' : 'src/assignment2', 
                                                'opt' : [ '--neighborhood', '1-edge',
-                                                         '--step-func', 'random'] },
+                                                         '--step-func', 'rand'] },
+
+
+
+                     'lsr-1node-edge-first' : { 'bin' : 'src/assignment2', 
+                                               'opt' : [  '--neighborhood', '1-node-edge',
+                                                          '--step-func', 'first'] },
+
+                     'lsr-1node-edge-best' : { 'bin' : 'src/assignment2', 
+                                              'opt' : [ '--neighborhood', '1-node-edge',
+                                                        '--step-func', 'best'] },
+
+                     'lsr-1node-edge-rand' : { 'bin' : 'src/assignment2', 
+                                               'opt' : [ '--neighborhood', '1-node-edge',
+                                                         '--step-func', 'rand'] },
 
 #
 # assignament 1
@@ -85,7 +96,11 @@ def write_statfile( program_instances, results, filename, instance_property ) :
     for input_instance in input_instances :
         result_line= input_instance;
         for program_name in program_instances:
-            result_line = result_line + " " + str(results[program_name][input_instance][instance_property])
+            if( instance_property in results[program_name][input_instance] ) :
+                val= results[program_name][input_instance][instance_property]
+            else :
+                val= 0
+            result_line = result_line + " " + str()
         stat_file.write( result_line + "\n" )
 
 
@@ -123,6 +138,13 @@ def execute_program( program_instance, input_instance, filename ) :
 
         linestr= line.rstrip();
 
+        match= re.search("stagnation: (\d+)", linestr)
+        if match:
+            num= match.group(1);
+            results['stagnation']= int(num)
+            continue
+
+
         match= re.search("crossings sum: (\d+)", linestr)
         if match:
             num= match.group(1);
@@ -159,6 +181,8 @@ if __name__ == '__main__' :
 
             results[program_name][input_instance]= execute_program( program_instance, input_instance,  output_dir + input_instance + '.be');
 
+    write_statfile( program_instances, results, "stagnation_stat.data", "stagnation" )
+    write_statfile( program_instances, results, "timeout_stat.data", "timeout" )
     write_statfile( program_instances, results, "crossings_stat.data", "crossings" )
     write_statfile( program_instances, results, "time_stat.data", "time" )
 

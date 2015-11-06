@@ -22,6 +22,8 @@
 #include <stepfunctions.h>
 
 
+//#define DEBUG 1
+
 enum step_func_t { FIRST, BEST, RANDOM };
 enum neighborhood_t { NODE_1, EDGE_1, NODE_EDGE, NODE_EDGE_1 };
 
@@ -75,8 +77,8 @@ solution execute_neighborhood( const solution & sol, neighborhood_t neighborhood
 
         case NODE_EDGE_1:
 
-    	  return execute_step( neighborhood_node_edge_move_begin(sol),
-                               neighborhood_node_edge_move_end(sol),
+    	  return execute_step( neighborhood_1_node_edge_move_begin(sol),
+                               neighborhood_1_node_edge_move_end(sol),
                                step_func, 
 
                                // actually this is not true ;) there would be min max
@@ -105,7 +107,8 @@ int main( int argc, char **argv)
 
     std::string step_func_str;
     std::string neighborhood_str;
-    int timeout= 60 * 5;
+    int timeout= 60 * 2;
+    std::string spine_order_opt_str;
 
     // use boost graph library to calc connected components
 
@@ -117,9 +120,12 @@ int main( int argc, char **argv)
          ("neighborhood", boost::program_options::value<std::string>(&neighborhood_str), 
  	                   "stepping function: 1-node | 1-edge | node-edge | 1-node-edge")
 
-
          ("step-func", boost::program_options::value<std::string>(&step_func_str), 
  	                   "stepping function: first|best|random default: first")
+
+         ("spine-order", boost::program_options::value<std::string>(&spine_order_opt_str), 
+                       "spine order: ascend|sorted|component default: sorted")
+
              ;
 
     if( common_cmdline( argc, argv,
@@ -174,7 +180,23 @@ int main( int argc, char **argv)
         }
     } 
 
-        
+
+    enum spine_order_opt_t { SORTED, ASCEND };
+    spine_order_opt_t spine_order_opt= SORTED;
+    if( vm.count("spine-order") )
+    {
+        if( spine_order_opt_str == "sorted" )
+            spine_order_opt= SORTED;
+        else if( spine_order_opt_str == "ascend" )
+            spine_order_opt= ASCEND;
+	    else 
+        {
+            std::cerr << "unkown spine-order" << std::endl
+                      << desc << std::endl;
+            return 1;
+        }
+    }
+    
 
     //
     // instance input
@@ -204,7 +226,9 @@ int main( int argc, char **argv)
 
 
     // now we have more than 2 options
-    std::vector<vertex_t> spine_order( spine_order_num_edges(instance->getAdjacencyList()) );
+    // we use the ascending as random alternative
+    std::vector<vertex_t> spine_order( spine_order_opt == ASCEND ? spine_order_ascending(n_vertices) :
+                                                                   spine_order_num_edges(instance->getAdjacencyList()) );
     
     solution sol(instance->getK(), spine_order);
     //
@@ -225,19 +249,48 @@ int main( int argc, char **argv)
     // local search
     //
     solution best= sol;
+    int num_iterations= 0;
+    int last_improvement_iteration= 0;
+    int max_stagnation= 5;
+
     while(1)
     {
         solution local_search_sol= execute_neighborhood( best, neighborhood, step_func, time );
 
         if( best.get_crossings() > local_search_sol.get_crossings() ) 
         {
-	        cout << "improvement found";
+#ifdef DEBUG            
+            std::cout << "found improvement" << std::endl;
+#endif // DEBUG            
+            last_improvement_iteration= num_iterations;
             best= local_search_sol;
 	    }
-        if( time.over_thresold() )
+        else
+        {
+#ifdef DEBUG            
+            std::cout << "no improvement" << std::endl;
+#endif // DEBUG            
+        }
+
+
+        if( time.over_thresold() || 
+            (num_iterations-last_improvement_iteration) > max_stagnation )
         {
             break;
         }
+
+        num_iterations++;
+    }
+
+
+    // if we died because of stagnation
+    if( (num_iterations-last_improvement_iteration) > max_stagnation )
+    {
+        std::cout << "stagnation: " << last_improvement_iteration << std::endl;
+    }
+    else
+    {
+        std::cout << "timeout: 1" << std::endl;
     }
 
 
