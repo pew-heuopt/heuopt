@@ -251,7 +251,7 @@ int main( int argc, char **argv)
     solution best= sol;
     int num_iterations= 0;
     int last_improvement_iteration= 0;
-    int max_stagnation= 5;
+    int max_stagnation= 10;
 
     while(1)
     {
