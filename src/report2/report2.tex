@@ -93,12 +93,9 @@ We use the following neighbourhoods:
     This neighbourhood is defined as all subsets where two vertices of the initial solution are flipped. 
     \begin{itemize}
         \item Size of neigborhood: $n(n-1)/2$
-        \item Objective Function: Very intensive because we change the spine order.
+        \item Objective Function: Incremental, crossings from flipped vertices are subtracted and recalculated.
 
     \end{itemize}
-
-    Combination of big neigborhood size and complex objective function makes this  a omputationally intensive variant.
-    However, we expect this to give large improvements at least for small graphs.
 
 	
 \item[1-edge move] This neighbourhood consists of all solutions where one edge is moved to a different page. 
@@ -107,9 +104,6 @@ We use the following neighbourhoods:
         \item Objective Function: Incremental, only crossings for moved edges are recalculated.
     \end{itemize}
    
-    The incremental objective function and the moderat neighborhood size makes this variant computational feasible.
-
-    TODO: number of steps to reach local optimum
 	
 \item[1-node edge move] This neighbourhood consists of all solutions where the edges of
 	one vertex on a specific page are moved to all different pages. 
@@ -119,8 +113,6 @@ We use the following neighbourhoods:
         \item Objective Function: Incremental, only crossings for moved edges are recalculated.
     \end{itemize}
     
-    This also allows for incremental neighbourhoods, the
-		size is $(pages-1) |N(v_i)|$
 
 \end{description}
 
@@ -145,64 +137,100 @@ We implemented the following thre stepfunctions:
 %%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 %%% NEIGHBORHOODS HERE
 \section{Results}
+
 We executed the code on a desktop computer with a Core i7 Quad-Core
 CPU with 2.67Ghz and 24 GB of main memory. Table~\ref{tab:results}
 shows the results of our local search. 
 
+We consider a local optimum if we cannot find a better solution after 10 iterations.
+We have set a timout of 5 minutes for the calculations.
 
 \paragraph{Best neighborhood step function strategy}
+
 We compare the results for
 three different neighboorhoods and all the implemented step-functions.
-Overall, the combination of the 1-node-flip neighborhood and the best
-step-function shows the best improvements. For example, it finds a
-solution with only $12$ edge-crossings for the instance automatic-4.
-Not surprisingly, it also has the highest run-time.
+
+The best performing neighboorhood structure is \texttt{1-node-flip}, as
+shown in table~\ref{tab:results}.
+For smaller instances (1-5), the \texttt{1-node-flip} in combination with 
+the \texttt{first} delivers the best results.
+For bigger instances (6-10) the \texttt{1-node-flip}  finds 
+better solutions in combination with the \texttt{random} stepfunction.
+
+
+
+A very interesting result is the performance of the \texttt{best} stepfunction
+for the \texttt{1-node-flip}. For the given instances the \texttt{best} function
+reaches a local optimum very quickly while \texttt{random} and \texttt{first} 
+are calculating more iterations or even calculate until timeout for bigger
+instances and can find better solutions beside the local optimum of the \texttt{best} 
+variant.
+%
+%Overall, the combination of the 1-node-flip neighborhood and the best
+%step-function shows the best improvements. For example, it finds a
+%solution with only $12$ edge-crossings for the instance automatic-4.
+%Not surprisingly, it also has the highest run-time.
+
+
+
 
 \paragraph{Initial Solution}
-It is important to use a good initial solution. First, because this
-helps to end up in a good local solution.\footnote{For example, the
-  results shown on the AC cluster indicate that it should be possible
-  to find a solution with zero crossings. However, our local solution
-  is not able to find them given the initial solutions provided by our
-  construction heuristic.} Second, it can reduce the run-time of the
-algorithm because it might reduce the number of steps taken to reach
-the local optimum.
+The choice of the initial solution is crucial to achieve results in reasonable calculation time.
+Using random initialization can easily degenerate into random search or end in a 
+local optimum with less improvement to a random solution itself.
 
-When we compare the results with a random initial solution we could
-measure an avg increase of XXX crossings 
-\footnote{measured with 1-node flip and best stepfunction}.
+
+
+% TODO:
+%When we compare the results with a random initial solution we could
+%measure an avg increase of XXX crossings 
+%\footnote{measured with 1-node flip and first stepfunction}.
+
+
+% OLD:
+
+%It is important to use a good initial solution
+%. First, because this
+%helps to end up in a good local solution.\footnote{For example, the
+%  results shown on the AC cluster indicate that it should be possible
+%  to find a solution with zero crossings. However, our local solution
+%  is not able to find them given the initial solutions provided by our
+%  construction heuristic.} Second, it can reduce the run-time of the
+%algorithm because it might reduce the number of steps taken to reach
+%the local optimum.
+
+
+\paragraph{Neighborhoods}
+Incremental objective functions implemented as described in section \ref{neighborhoods}
+are performing equally well for all 3 neighborhoods.
+
+Subsequent (possibly random) moves in our neighbourhoods can only reach
+valid solutions in the search space because every solution in our neighborhoods
+is valid.
 
 \paragraph{Reaching local optimum}
+If a local optimum is reached it is found in less than 10 iterations in most cases.
+As you can see in table ~\ref{tab:results} there are only a few exceptions.
+The results with iterations=$-1$ didn't reach a local optimum and ran into our
+timeout condition.
 
 
-%% Q1: Does using a good initial solution help? \\
-%% A1: It's very important to have a good initial solution. First, because it helps to end up
-%% in a good local optimum. Second, because it significantly reduces the run-time of the algorithm.
 
-%% TODO: wo steht Q1?
-
-%% Does it yield a gain if compared to simply using random initial solutions?
-%% TODO: Use 1-node-flip and best stepfunction to answer this question because it should show the best effect
-
-%% TODO: ??? Ich glaub da verstehen wir die Frage unterschiedlich
 
 
 %% Q2: Can subsequent (possibly random) moves in your neighbourhood(s) reach
 %% any valid solution in the search space?
 %% A2: 
 
-%% Q3: How many iterations does it take to reach local optima? What does this say about your neighbourhood(s)?
-
-%% Q4: How does incremental evaluation work for your neighbourhoods?
-%% see description of neigborhoods in section \ref{neighborhoods}.
 
 
 \begin{landscape}
 \begin{table}
   \scriptsize
   \input{resultsTab}
-\caption{This table shows the results of our local search. For each instance, we show the number of crossings (first row), the iteration 
-needed to reach the local optimum (second row, first value) and the run-time of our algorithm (second row, second value).}
+\caption{Local search results. For each instance, we show the number of crossings (first row), the iteration 
+needed to reach the local optimum (second row, first value) and the run-time of our algorithm (second row, second value).
+If no local optimum was found the number of iterations is -1. }
 \label{tab:results}
 \end{table}
 \end{landscape}
