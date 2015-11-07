@@ -22,7 +22,7 @@
 #include <stepfunctions.h>
 
 
-//#define DEBUG 1
+// #define DEBUG 1
 
 enum step_func_t { FIRST, BEST, RANDOM };
 enum neighborhood_t { NODE_1, EDGE_1, NODE_EDGE, NODE_EDGE_1 };
