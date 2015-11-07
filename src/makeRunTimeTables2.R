@@ -37,6 +37,9 @@ stagnation_num <- read.table("output/stagnation_stat.data",sep=" ",header=TRUE,
 time_num <- read.table("output/time_stat.data",sep=" ",header=TRUE,
                         row.names=1)
 
+### determine best method (i.e. min crossing)
+minCrossings <- apply(crossings_num,1,min)
+
 ### format the column headers
 COLNAMES <- list()
 COLNAMES[["lsr.1node.first"]] <- "\\begin{minipage}[c]{1.4cm}\\centering 1-Node \\\\ (first)\\end{minipage}"
@@ -57,17 +60,26 @@ time <- toFormattedChar(time_num,digits=2,big.mark=",")
 ### merge them together..
 for(selCol in colnames(crossings)) {
     for(selRow in rownames(crossings)) {
+        ##
+        boldBefore <- ""
+        boldAfter <- ""
+        if(crossings_num[selRow,selCol]==minCrossings[selRow]) {
+            boldBefore <- "\\textbf{*"
+            boldAfter <- "*}"
+        }
         crossings[selRow,selCol] <- paste("\\vspace{0.02cm} \\begin{minipage}[c]{1.5cm} \\centering",
-                                          paste(crossings[selRow,selCol],"\\\\",
+                                          paste(boldBefore,crossings[selRow,selCol],boldAfter,"\\\\",
                                           stagnation[selRow,selCol]," / ",
                                           time[selRow,selCol],"",
                                           sep=""),"\\end{minipage}")
     }
 }
+
 colnames(crossings) <- as.character(COLNAMES[colnames(crossings)])
 alignString <- paste("l",paste(rep("c",ncol(crossings)),sep="",collapse=""),sep="")
 xtab <- xtable(crossings,align=alignString)
 ### print table and write it to a file
+
 print(xtab,floating=FALSE,file="src/report2/resultsTab.tex",hline.after=NULL,
       sanitize.text.function=function(x){x},
       add.to.row=list(
