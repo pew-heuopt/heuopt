@@ -74,7 +74,7 @@ neighborhoods that we define and then outline the step functions used.
     	sol (*$\leftarrow$*) calculate initial solution
 	repeat:
 		choose sol' (*$\in$*) N(x) 
-		if (*$f(sol')$*) (*$\leq$*) f(sol) then
+		if (*$f(sol')$*) (*$\leq$*) (*$f(sol)$*) then
 			sol (*$\leftarrow$*) sol'
 	until stopping criteria satisfied
     end
@@ -150,22 +150,25 @@ We have set a timout of 5 minutes for the calculations.
 We compare the results for three different neighboorhoods and all the
 implemented step-functions.
 
-The best performing neighboorhood structure is \texttt{1-node-flip}, as
-shown in Table~\ref{tab:results}.
-For smaller instances (1-5), the \texttt{1-node-flip} in combination with 
-the \texttt{first} delivers the best results.
-For bigger instances (6-10), the \texttt{1-node-flip}  finds 
-better solutions in combination with the \texttt{random} stepfunction.
+Depending on the size of the instance, either \texttt{1-node-flip} or
+\texttt{1-node-edge-move} yield the best results. These neighborhoods
+outperfom \texttt{1-edge-move}, which only moves edges but leaves the
+vertex order unchanged, in most cases. For smaller instances (1-5), the
+\texttt{1-node-flip} in combination with the \texttt{best} step-function delivers
+the best results.  For bigger instances (6-10), the
+\texttt{1-node-flip} finds better solutions in combination with the
+\texttt{random} step-function.\footnote{Note that for large instances,
+  \texttt{1-node-flip} and \texttt{1-node-edge move} are stopped by
+  our run-time restrictions. Thus, these strategies might be too
+  computationally intensive for our setup.}
 
+A very interesting result is the performance of the \texttt{best}
+step-function for both the \texttt{1-node-flip} and the
+\texttt{1-node-edge move}. For the given instances, it seems to be
+important to look for the best improvement and the first step as
+\texttt{first} and \texttt{random} tend to get stuck in worse local
+optima.
 
-
-A very interesting result is the performance of the \texttt{best} stepfunction
-for the \texttt{1-node-flip}. For the given instances, the \texttt{best} function
-reaches a local optimum very quickly while \texttt{random} and \texttt{first} 
-are calculating more iterations or even calculate until timeout for bigger
-instances and can find better solutions beside the local optimum of the \texttt{best} 
-variant.
-%
 %Overall, the combination of the 1-node-flip neighborhood and the best
 %step-function shows the best improvements. For example, it finds a
 %solution with only $12$ edge-crossings for the instance automatic-4.
@@ -175,16 +178,16 @@ variant.
 
 
 \paragraph{Initial Solution}
-The choice of the initial solution is crucial to achieve results in reasonable calculation time.
-Using random initialization can easily degenerate into random search or end in a 
-local optimum with less improvement to a random solution itself.
+The choice of the initial solution is crucial to achieve results in
+reasonable calculation time.  Using random initialization might
+degenerate into random search or end in a bad local optimum with less
+improvement.
 
 
 
 % TODO:
-When we compare the results with a random initial solution, we could
-measure an avg increase of 55\% crossings.
-\footnote{measured with 1-node flip and \texttt{first} stepfunction}
+When we compare the results to a random initial solution, we could
+measure an average increase of 55\% crossings.\footnote{measured with 1-node flip and \texttt{first} stepfunction}
 %
 
 %instance    lsr-1node-first-rand    lsr-1node-first-init    sub         
@@ -215,8 +218,8 @@ measure an avg increase of 55\% crossings.
 
 
 \paragraph{Neighborhoods}
-Incremental objective functions implemented as described in section \ref{neighborhoods}
-are performing equally well for all 3 neighborhoods.
+Incremental objective functions implemented as described in Section~\ref{neighborhoods}
+are performing equally well for all three neighborhoods.
 
 Subsequent (possibly random) moves in our neighborhoods can only reach
 valid solutions in the search space because every solution in our neighborhoods
@@ -224,13 +227,11 @@ is valid.
 
 \paragraph{Reaching local optimum}
 If a local optimum is reached it is found in less than 10 iterations
-in most cases.  As you can see in table ~\ref{tab:results} there are
-only a few exceptions.  The results with iterations=$-1$ didn't reach
-a local optimum and ran into our timeout condition. For one instance,
+in most cases.  As can be seen in Table~\ref{tab:results}, there are
+only a few exceptions. The results with iterations=$-1$ did not reach
+a local optimum and ran into our time-out condition. For one instance,
 we do not find an improvement. So with respect to our neighborhood, we
 seem to be in a local optimum.
-
-
 
 
 
