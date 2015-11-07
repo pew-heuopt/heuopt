@@ -28,7 +28,9 @@ crossings_num <- read.table("output/crossings_stat.data",sep=" ",header=TRUE,
                         row.names=1)
 
 ## change the order
-crossings_num <- crossings_num[,c(4,8,7,5,9,2,6,3,1)]
+crossings_num <- crossings_num[,c("lsr.1node.first","lsr.1node.best","lsr.1node.rand",
+                                  "lsr.1edge.first","lsr.1edge.best","lsr.1edge.rand","lsr.1node.edge.first",
+                                  "lsr.1node.edge.best","lsr.1node.edge.rand")]
 
 stagnation_num <- read.table("output/stagnation_stat.data",sep=" ",header=TRUE,
                         row.names=1)
