@@ -1,6 +1,30 @@
 setwd("~/REPOS/heuopt/")
 library(xtable)
 
+
+
+
+##' format matrix using formatC
+##'
+##' .. content for \details{} ..
+##' @title 
+##' @param x 
+##' @param digits 
+##' @param big.mark 
+##' @param format 
+##' @return 
+##' @author Alexander
+toFormattedChar <- function(x,digits=2,big.mark=".",format="f") {
+    resMat <- formatC(x[,1],digits=digits,big.mark=big.mark,format=format)
+    for(i in 2:ncol(x)) {
+        resMat <- cbind(resMat,formatC(x[,i],digits=digits,big.mark=big.mark,format=format))
+    }
+    rownames(resMat) <- rownames(x)
+    colnames(resMat) <- colnames(x)
+    return(resMat)
+}
+
+
 crossings_num <- read.table("output/crossings_stat.data",sep=" ",header=TRUE,
                         row.names=1)
 
@@ -47,7 +71,7 @@ xtab <- xtable(crossings,align=alignString)
 print(xtab,floating=FALSE,file="src/report2/resultsTab.tex",hline.after=NULL,
       sanitize.text.function=function(x){x},
       add.to.row=list(
-           pos=list(-1,0,nrow(res),1,2,3,4,5,6,7,8,9),
+           pos=list(-1,0,nrow(xtab),1,2,3,4,5,6,7,8,9),
            command=c('\\toprule ',
                     '\\midrule ',
                     '\\bottomrule ',' \\midrule ',' \\midrule ',' \\midrule ',
@@ -60,24 +84,3 @@ print(xtab,floating=FALSE,file="src/report2/resultsTab.tex",hline.after=NULL,
 
 
 
-
-
-##' format matrix using formatC
-##'
-##' .. content for \details{} ..
-##' @title 
-##' @param x 
-##' @param digits 
-##' @param big.mark 
-##' @param format 
-##' @return 
-##' @author Alexander
-toFormattedChar <- function(x,digits=2,big.mark=".",format="f") {
-    resMat <- formatC(x[,1],digits=digits,big.mark=big.mark,format=format)
-    for(i in 2:ncol(x)) {
-        resMat <- cbind(resMat,formatC(x[,i],digits=digits,big.mark=big.mark,format=format))
-    }
-    rownames(resMat) <- rownames(x)
-    colnames(resMat) <- colnames(x)
-    return(resMat)
-}
