@@ -1,0 +1,20 @@
+hot0250266@behemoth:~/assignment2$ hot2015submit assignment2 automatic-1 lsr-1node-first_automatic-1.txt.be 
+{"result": 21}
+hot0250266@behemoth:~/assignment2$ hot2015submit assignment2 automatic-2 lsr-1node-best_automatic-2.txt.be 
+{"result": 30}
+hot0250266@behemoth:~/assignment2$ hot2015submit assignment2 automatic-3 lsr-1edge-best_automatic-3.txt.be 
+{"result": 79}
+hot0250266@behemoth:~/assignment2$ hot2015submit assignment2 automatic-4 lsr-1node-best_automatic-4.txt.be 
+{"result": 12}
+hot0250266@behemoth:~/assignment2$ hot2015submit assignment2 automatic-5 lsr-1node-best_automatic-5.txt.be 
+{"result": 32}
+hot0250266@behemoth:~/assignment2$ hot2015submit assignment2 automatic-7 lsr-1edge-best_automatic-7.txt.be 
+{"result": 137629}
+hot0250266@behemoth:~/assignment2$ hot2015submit assignment2 automatic-10 lsr-1edge-first_automatic-10.txt.be 
+{"result": 53952}
+hot0250266@behemoth:~/assignment2$ hot2015submit assignment2 automatic-8 lsr-1node-edge-best_automatic-8.txt.be 
+{"result": 498763}
+hot0250266@behemoth:~/assignment2$ hot2015submit assignment2 automatic-9 lsr-1node-edge-best_automatic-9.txt.be 
+{"result": 1186295}
+hot0250266@behemoth:~/assignment2$ hot2015submit assignment2 automatic-6 lsr-1node-edge-best_automatic-6.txt.be 
+{"result": 5965084}
