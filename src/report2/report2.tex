@@ -71,15 +71,18 @@ neighborhoods that we define and then outline the step functions used.
     input: Graph 
     output: Improved solution
     begin
-    	sol = calculate initial solution
+    	sol (*$\leftarrow$*) calculate initial solution
 	repeat:
-		choose an sol' $\in$ N(x) 
-		if f($sol'$) $\leq$ f(sol) then
-			sol = $sol'$
+		choose sol' (*$\in$*) N(x) 
+		if (*$f(sol')$*) (*$\leq$*) f(sol) then
+			sol (*$\leftarrow$*) sol'
 	until stopping criteria satisfied
     end
 \end{algorithm}
 
+
+%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%%% NEIGHBORHOODS HERE
 \subsection{Neighborhoods}
 \label{neighborhoods}
 We use the following neighbourhoods:
@@ -121,58 +124,74 @@ We use the following neighbourhoods:
 
 \end{description}
 
-
+%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%%% STEPFUNCTIONS HERE
 \subsection{Stepfunctions}
 
 We implemented the following thre stepfunctions:
 
 \begin{description}
-\item[first] 
-\item[best] 
-\item[random] 
+\item[first] This step-function selects the first better solution found in the neighborhood.
+\item[best] This step-function iterates over all elements of the neighbourhood and chooses the best one.
+\item[random] This step-function selects a random element of the neighbourhood. 
 \end{description}
 
 
+%%% REMOVED, I don't think this is necessary
+%%\section{Solution Representation}
+%%The same as in exercise 1. Do we need this subsection?
 
-\section{Solution Representation}
-The same as in exercise 1. Do we need this subsection?
 
+%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%%% NEIGHBORHOODS HERE
 \section{Results}
-%%% den doppelten Verweis auf Table 3 gestrichen
 We executed the code on a desktop computer with a Core i7 Quad-Core
 CPU with 2.67Ghz and 24 GB of main memory. Table~\ref{tab:results}
-shows the results of our randomized algorithm, where we have choosen
-to perform $n=4$ permutations of vertices to generete $k=5$ different
-solutions.
+shows the results of our local search. We compare the results for
+three different neighboorhoods and all the implemented step-functions.
+Overall, the combination of the 1-node-flip neighborhood and the best
+step-function shows the best improvements. For example, it finds a
+solution with only $12$ edge-crossings for the instance automatic-4.
+Not surprisingly, it also has the highest run-time.
+
+It is important to use a good initial solution. First, because this
+helps to end up in a good local solution.\footnote{For example, the
+  results shown on the AC cluster indicate that it should be possible
+  to find a solution with zero crossings. However, our local solution
+  is not able to find them given the initial solutions provided by our
+  construction heuristic.} Second, it can reduce the run-time of the
+algorithm because it might reduce the number of steps taken to reach
+the local optimum.
 
 
-improve our deterministic approach.
+%% Q1: Does using a good initial solution help? \\
+%% A1: It's very important to have a good initial solution. First, because it helps to end up
+%% in a good local optimum. Second, because it significantly reduces the run-time of the algorithm.
 
-Q1: Does using a good initial solution help? \\
-A1: It's very important to have a good initial solution. First, because it helps to end up
-in a good local optimum. Second, because it significantly reduces the run-time of the algorithm.
+%% TODO: wo steht Q1?
 
-TODO: wo steht Q1?
+%% Does it yield a gain if compared to simply using random initial solutions?
+%% TODO: Use 1-node-flip and best stepfunction to answer this question because it should show the best effect
 
-Does it yield a gain if compared to simply using random initial solutions?
-TODO: Use 1-node-flip and best stepfunction to answer this question because it should show the best effect
+%% TODO: ??? Ich glaub da verstehen wir die Frage unterschiedlich
 
 
-Q2: Can subsequent (possibly random) moves in your neighbourhood(s) reach
-any valid solution in the search space?
-A2: ?
+%% Q2: Can subsequent (possibly random) moves in your neighbourhood(s) reach
+%% any valid solution in the search space?
+%% A2: 
 
-Q3: How many iterations does it take to reach local optima? What does this say about your neighbourhood(s)?
+%% Q3: How many iterations does it take to reach local optima? What does this say about your neighbourhood(s)?
 
-Q4: How does incremental evaluation work for your neighbourhoods?
-see description of neigborhoods in section \ref{neighborhoods}.
+%% Q4: How does incremental evaluation work for your neighbourhoods?
+%% see description of neigborhoods in section \ref{neighborhoods}.
 
 
 \begin{landscape}
 \begin{table}
   \scriptsize
   \input{resultsTab}
-\caption{This table shows}
+\caption{This table shows the results of our local search. For each instance, we show the number of crossings (first row), the iteration 
+needed to reach the local optimum (second row, first value) and the run-time of our algorithm (second row, second value).}
 \label{tab:results}
 \end{table}
 \end{landscape}
