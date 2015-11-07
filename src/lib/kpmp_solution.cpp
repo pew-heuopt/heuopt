@@ -150,9 +150,26 @@ void solution::swap_vertices( size_t index1, size_t index2 )
         throw std::out_of_range("swap vertices outside of index range");
     }
 
-    std::swap( spine_order[index1], spine_order[index2] );
+    std::list<std::pair<page_iterator_t,edge_t> > touching_edges;
+
+    // collect touching edges
+    for( auto p= pages.begin(); p != pages.end(); ++p )
+        for( auto e= p->edges.begin(); e != p->edges.end(); ++e )
+            if( e->first == index1 || e->first== index2 ||
+                e->second == index1 || e->second== index2 )
+            {
+                touching_edges.push_back( make_pair(p,*e) );
+            }
+
+    // remove touching edges
+    for( auto i= touching_edges.begin(); i != touching_edges.end(); ++i )
+        remove_edge( * i->first, i->second );
+
 
     // 
+    // swapping
+    std::swap( spine_order[index1], spine_order[index2] );
+
     // new order map
     int order_count= 0;
 
@@ -161,9 +178,14 @@ void solution::swap_vertices( size_t index1, size_t index2 )
         spine_order_map[ *v ]= order_count++;
     }
 
+
+    // re -add edges
+    for( auto i= touching_edges.begin(); i != touching_edges.end(); ++i )
+        add_edge( * i->first, i->second );
+    /*
     // recalc all pages
     for( auto i= pages.begin(); i != pages.end(); ++i )
-        recalc_page( *i );
+        recalc_page( *i ); */
 
 }
 

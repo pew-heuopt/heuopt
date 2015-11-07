@@ -107,7 +107,7 @@ int main( int argc, char **argv)
 
     std::string step_func_str;
     std::string neighborhood_str;
-    int timeout= 60 * 2;
+    int timeout= 60 * 5;
     std::string spine_order_opt_str;
 
     // use boost graph library to calc connected components
