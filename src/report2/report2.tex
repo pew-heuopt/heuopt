@@ -152,20 +152,22 @@ implemented step-functions.
 
 Depending on the size of the instance, either \texttt{1-node-flip} or
 \texttt{1-node-edge-move} yield the best results. These neighborhoods
-outperfom \texttt{1-edge-move}, which only moves edges but leaves the
-vertex order unchanged, in most cases. For smaller instances (1-5), the
+outperfom \texttt{1-edge-move}
+%, which only moves edges but leaves the vertex order unchanged
+, in most cases. For smaller instances (1-5), the
 \texttt{1-node-flip} in combination with the \texttt{best} step-function delivers
-the best results.  For bigger instances (6-10), the
-\texttt{1-node-flip} finds better solutions in combination with the
-\texttt{random} step-function.\footnote{Note that for large instances,
-  \texttt{1-node-flip} and \texttt{1-node-edge move} are stopped by
-  our run-time restrictions. Thus, these strategies might be too
-  computationally intensive for our setup.}
+the best results.  
+For bigger instances (6-10), the
+\texttt{1-node-edge-move} finds better solutions in combination with the
+\texttt{best} step-function. 
+Note that for large instances,
+\texttt{1-node-flip} and \texttt{1-node-edge move} are stopped by
+our run-time restrictions before they can reach a local optimum. 
 
 A very interesting result is the performance of the \texttt{best}
 step-function for both the \texttt{1-node-flip} and the
 \texttt{1-node-edge move}. For the given instances, it seems to be
-important to look for the best improvement and the first step as
+important to look for the best improvement, 
 \texttt{first} and \texttt{random} tend to get stuck in worse local
 optima.
 
@@ -187,7 +189,7 @@ improvement.
 
 % TODO:
 When we compare the results to a random initial solution, we could
-measure an average increase of 55\% crossings.\footnote{measured with 1-node flip and \texttt{first} stepfunction}
+measure an average increase of 55\% crossings.\footnote{measured with 1-node flip and \texttt{best} stepfunction}
 %
 
 %instance    lsr-1node-first-rand    lsr-1node-first-init    sub         
