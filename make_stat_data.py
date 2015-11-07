@@ -99,7 +99,7 @@ def write_statfile( program_instances, results, filename, instance_property ) :
             if( instance_property in results[program_name][input_instance] ) :
                 val= results[program_name][input_instance][instance_property]
             else :
-                val= 0
+                val= -1
             result_line = result_line + " " + str(val)
         stat_file.write( result_line + "\n" )
 
