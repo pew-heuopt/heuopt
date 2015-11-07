@@ -141,6 +141,7 @@ void solution::add_vertices_to_spine_order( const std::vector<vertex_t> & new_ve
 }
 
 
+#include <iostream>
 void solution::swap_vertices( size_t index1, size_t index2 )
 {
 
@@ -155,8 +156,8 @@ void solution::swap_vertices( size_t index1, size_t index2 )
     // collect touching edges
     for( auto p= pages.begin(); p != pages.end(); ++p )
         for( auto e= p->edges.begin(); e != p->edges.end(); ++e )
-            if( e->first == index1 || e->first== index2 ||
-                e->second == index1 || e->second== index2 )
+            if( e->first == spine_order[index1] || e->first== spine_order[index2] ||
+                e->second == spine_order[index1] || e->second== spine_order[index2] )
             {
                 touching_edges.push_back( make_pair(p,*e) );
             }
@@ -165,14 +166,12 @@ void solution::swap_vertices( size_t index1, size_t index2 )
     for( auto i= touching_edges.begin(); i != touching_edges.end(); ++i )
         remove_edge( * i->first, i->second );
 
-
     // 
     // swapping
     std::swap( spine_order[index1], spine_order[index2] );
 
     // new order map
     int order_count= 0;
-
     for( auto v=spine_order.begin(); v!= spine_order.end(); ++v  )
     {
         spine_order_map[ *v ]= order_count++;
@@ -182,11 +181,16 @@ void solution::swap_vertices( size_t index1, size_t index2 )
     // re -add edges
     for( auto i= touching_edges.begin(); i != touching_edges.end(); ++i )
         add_edge( * i->first, i->second );
+
+    
+    
     /*
     // recalc all pages
     for( auto i= pages.begin(); i != pages.end(); ++i )
-        recalc_page( *i ); */
+        recalc_page( *i ); 
 
+    std::cerr << "get_crossings(): " << get_crossings() << " before " << cr << std::endl;
+   */ 
 }
 
 void solution::recalc_page( page & p )
@@ -196,6 +200,7 @@ void solution::recalc_page( page & p )
     auto edge_list= p.edges;
 
     p.crossings= 0;
+    
     p.edges.clear();
 
     for( auto i= edge_list.begin(); i != edge_list.end(); ++i )

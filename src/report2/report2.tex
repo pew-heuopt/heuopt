@@ -147,13 +147,18 @@ We implemented the following thre stepfunctions:
 \section{Results}
 We executed the code on a desktop computer with a Core i7 Quad-Core
 CPU with 2.67Ghz and 24 GB of main memory. Table~\ref{tab:results}
-shows the results of our local search. We compare the results for
+shows the results of our local search. 
+
+
+\paragraph{Best neighborhood step function strategy}
+We compare the results for
 three different neighboorhoods and all the implemented step-functions.
 Overall, the combination of the 1-node-flip neighborhood and the best
 step-function shows the best improvements. For example, it finds a
 solution with only $12$ edge-crossings for the instance automatic-4.
 Not surprisingly, it also has the highest run-time.
 
+\paragraph{Initial Solution}
 It is important to use a good initial solution. First, because this
 helps to end up in a good local solution.\footnote{For example, the
   results shown on the AC cluster indicate that it should be possible
@@ -162,6 +167,12 @@ helps to end up in a good local solution.\footnote{For example, the
   construction heuristic.} Second, it can reduce the run-time of the
 algorithm because it might reduce the number of steps taken to reach
 the local optimum.
+
+When we compare the results with a random initial solution we could
+measure an avg increase of XXX crossings 
+\footnote{measured with 1-node flip and best stepfunction}.
+
+\paragraph{Reaching local optimum}
 
 
 %% Q1: Does using a good initial solution help? \\
