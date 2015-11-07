@@ -85,12 +85,12 @@ neighborhoods that we define and then outline the step functions used.
 %%% NEIGHBORHOODS HERE
 \subsection{Neighborhoods}
 \label{neighborhoods}
-We use the following neighbourhoods:
+We use the following neighborhoods:
 
 \begin{description}
 \item[1-node flip] 
     
-    This neighbourhood is defined as all subsets where two vertices of the initial solution are flipped. 
+    This neighborhood is defined as all subsets where two vertices of the initial solution are flipped. 
     \begin{itemize}
         \item Size of neigborhood: $n(n-1)/2$
         \item Objective Function: Incremental, crossings from flipped vertices are subtracted and recalculated.
@@ -98,18 +98,18 @@ We use the following neighbourhoods:
     \end{itemize}
 
 	
-\item[1-edge move] This neighbourhood consists of all solutions where one edge is moved to a different page. 
+\item[1-edge move] This neighborhood consists of all solutions where one edge is moved to a different page. 
      \begin{itemize}
         \item Size of neigborhood: $(pages-1) edges$ 
         \item Objective Function: Incremental, only crossings for moved edges are recalculated.
     \end{itemize}
    
 	
-\item[1-node edge move] This neighbourhood consists of all solutions where the edges of
+\item[1-node edge move] This neighborhood consists of all solutions where the edges of
 	one vertex on a specific page are moved to all different pages. 
 
     \begin{itemize}
-        \item Size of neigborhood: $(pages-1) edges$ as worst case \footnote{depending on number of edges on respective node pages}.
+        \item Size of neigborhood: $(pages-1) edges$ as worst case.\footnote{depending on number of edges on respective node pages}
         \item Objective Function: Incremental, only crossings for moved edges are recalculated.
     \end{itemize}
     
@@ -124,8 +124,8 @@ We implemented the following thre stepfunctions:
 
 \begin{description}
 \item[first] This step-function selects the first better solution found in the neighborhood.
-\item[best] This step-function iterates over all elements of the neighbourhood and chooses the best one.
-\item[random] This step-function selects a random element of the neighbourhood. 
+\item[best] This step-function iterates over all elements of the neighborhood and chooses the best one.
+\item[random] This step-function selects a random element of the neighborhood. 
 \end{description}
 
 
@@ -147,20 +147,20 @@ We have set a timout of 5 minutes for the calculations.
 
 \paragraph{Best neighborhood step function strategy}
 
-We compare the results for
-three different neighboorhoods and all the implemented step-functions.
+We compare the results for three different neighboorhoods and all the
+implemented step-functions.
 
 The best performing neighboorhood structure is \texttt{1-node-flip}, as
-shown in table~\ref{tab:results}.
+shown in Table~\ref{tab:results}.
 For smaller instances (1-5), the \texttt{1-node-flip} in combination with 
 the \texttt{first} delivers the best results.
-For bigger instances (6-10) the \texttt{1-node-flip}  finds 
+For bigger instances (6-10), the \texttt{1-node-flip}  finds 
 better solutions in combination with the \texttt{random} stepfunction.
 
 
 
 A very interesting result is the performance of the \texttt{best} stepfunction
-for the \texttt{1-node-flip}. For the given instances the \texttt{best} function
+for the \texttt{1-node-flip}. For the given instances, the \texttt{best} function
 reaches a local optimum very quickly while \texttt{random} and \texttt{first} 
 are calculating more iterations or even calculate until timeout for bigger
 instances and can find better solutions beside the local optimum of the \texttt{best} 
@@ -182,9 +182,9 @@ local optimum with less improvement to a random solution itself.
 
 
 % TODO:
-When we compare the results with a random initial solution we could
-measure an avg increase of 55\% crossings
-\footnote{measured with 1-node flip and \texttt{first} stepfunction}.
+When we compare the results with a random initial solution, we could
+measure an avg increase of 55\% crossings.
+\footnote{measured with 1-node flip and \texttt{first} stepfunction}
 %
 
 %instance    lsr-1node-first-rand    lsr-1node-first-init    sub         
@@ -218,35 +218,21 @@ measure an avg increase of 55\% crossings
 Incremental objective functions implemented as described in section \ref{neighborhoods}
 are performing equally well for all 3 neighborhoods.
 
-Subsequent (possibly random) moves in our neighbourhoods can only reach
+Subsequent (possibly random) moves in our neighborhoods can only reach
 valid solutions in the search space because every solution in our neighborhoods
 is valid.
 
 \paragraph{Reaching local optimum}
-If a local optimum is reached it is found in less than 10 iterations in most cases.
-As you can see in table ~\ref{tab:results} there are only a few exceptions.
-The results with iterations=$-1$ didn't reach a local optimum and ran into our
-timeout condition.
+If a local optimum is reached it is found in less than 10 iterations
+in most cases.  As you can see in table ~\ref{tab:results} there are
+only a few exceptions.  The results with iterations=$-1$ didn't reach
+a local optimum and ran into our timeout condition. For many graphs,
+we do not find an improvement. So with respect to our neighborhood, we
+seem to be in a local optimum.
 
 
 
 
-
-%% Q2: Can subsequent (possibly random) moves in your neighbourhood(s) reach
-%% any valid solution in the search space?
-%% A2: 
-Some notes about our neighborhoods:
-
-\begin{itemize}
-  \item For many graphs, we do not find an improvement. So with respect to our neighborhood we
-  seem to be in a local optimum. 
-  \item It seems to be important to use the ``best''
-    step-function. Iteratively using the ``first'' does not yield the
-    same optimum. Once we choose an element of the neighborhood, other
-    neighbors of the initial neighborhood cannot be reached
-    anymore.\footnote{This seems intuitiv given the definitions of our
-      neighborhood}
-\end{itemize}
 
 
 
@@ -256,9 +242,12 @@ Some notes about our neighborhoods:
 \begin{table}
   \scriptsize
   \input{resultsTab}
-\caption{Local search results. For each instance, we show the number of crossings (first row), the iteration 
-needed to reach the local optimum (second row, first value) and the run-time of our algorithm (second row, second value).
-If no local optimum was found the number of iterations is -1. }
+\caption{Local search results. For each instance, we show the number
+  of crossings (first row), the iteration needed to reach the local
+  optimum (second row, first value) and the run-time in seconds of our
+  algorithm (second row, second value).  If no local optimum was found
+  the number of iterations is -1. The best solution is highlighted in
+  bold.}
 \label{tab:results}
 \end{table}
 \end{landscape}
