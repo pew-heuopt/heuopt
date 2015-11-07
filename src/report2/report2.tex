@@ -179,6 +179,20 @@ the local optimum.
 %% Q2: Can subsequent (possibly random) moves in your neighbourhood(s) reach
 %% any valid solution in the search space?
 %% A2: 
+Some notes about our neighborhoods:
+
+\begin{itemize}
+  \item For many graphs, we do not find an improvement. So with respect to our neighborhood we
+  seem to be in a local optimum. 
+  \item It seems to be important to use the ``best''
+    step-function. Iteratively using the ``first'' does not yield the
+    same optimum. Once we choose an element of the neighborhood, other
+    neighbors of the initial neighborhood cannot be reached
+    anymore.\footnote{This seems intuitiv given the definitions of our
+      neighborhood}
+\end{itemize}
+
+
 
 %% Q3: How many iterations does it take to reach local optima? What does this say about your neighbourhood(s)?
 
