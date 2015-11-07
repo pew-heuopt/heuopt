@@ -10,17 +10,27 @@ input_instances= [
                    'automatic-2.txt',
                    'automatic-3.txt',
                    'automatic-4.txt',
-                   'automatic-5.txt',
-                   'automatic-6.txt',
-                   'automatic-7.txt',
-                   'automatic-8.txt',
-                   'automatic-9.txt',
-                   'automatic-10.txt',
+#                   'automatic-5.txt',
+#                   'automatic-6.txt',
+#                   'automatic-7.txt',
+#                   'automatic-8.txt',
+#                   'automatic-9.txt',
+#                   'automatic-10.txt',
                    ]
 
 output_dir= "output/"
 
 program_instances= { 
+#                     'lsr-1node-first-init' : { 'bin' : 'src/assignment2', 
+#                                               'opt' : [  '--neighborhood', '1-node',
+#                                                          '--spine-order', 'ascend',
+#                                                          '--step-func', 'first'] },
+#
+#                     'lsr-1node-first-rand' : { 'bin' : 'src/assignment2', 
+#                                               'opt' : [  '--neighborhood', '1-node',
+#                                                          '--step-func', 'first'] },
+
+
                      'lsr-1node-first' : { 'bin' : 'src/assignment2', 
                                                'opt' : [  '--neighborhood', '1-node',
                                                           '--step-func', 'first'] },
@@ -33,34 +43,34 @@ program_instances= {
                                                'opt' : [ '--neighborhood', '1-node',
                                                          '--step-func', 'random'] },
 
-
-
-                     'lsr-1edge-first' : { 'bin' : 'src/assignment2', 
-                                               'opt' : [  '--neighborhood', '1-edge',
-                                                          '--step-func', 'first'] },
-
-                     'lsr-1edge-best' : { 'bin' : 'src/assignment2', 
-                                              'opt' : [ '--neighborhood', '1-edge',
-                                                        '--step-func', 'best'] },
-
-                     'lsr-1edge-rand' : { 'bin' : 'src/assignment2', 
-                                               'opt' : [ '--neighborhood', '1-edge',
-                                                         '--step-func', 'random'] },
-
-
-
-                     'lsr-1node-edge-first' : { 'bin' : 'src/assignment2', 
-                                               'opt' : [  '--neighborhood', '1-node-edge',
-                                                          '--step-func', 'first'] },
-
-                     'lsr-1node-edge-best' : { 'bin' : 'src/assignment2', 
-                                              'opt' : [ '--neighborhood', '1-node-edge',
-                                                        '--step-func', 'best'] },
-
-                     'lsr-1node-edge-rand' : { 'bin' : 'src/assignment2', 
-                                               'opt' : [ '--neighborhood', '1-node-edge',
-                                                         '--step-func', 'random'] },
-
+#
+#
+#                     'lsr-1edge-first' : { 'bin' : 'src/assignment2', 
+#                                               'opt' : [  '--neighborhood', '1-edge',
+#                                                          '--step-func', 'first'] },
+#
+#                     'lsr-1edge-best' : { 'bin' : 'src/assignment2', 
+#                                              'opt' : [ '--neighborhood', '1-edge',
+#                                                        '--step-func', 'best'] },
+#
+#                     'lsr-1edge-rand' : { 'bin' : 'src/assignment2', 
+#                                               'opt' : [ '--neighborhood', '1-edge',
+#                                                         '--step-func', 'random'] },
+#
+#
+#
+#                     'lsr-1node-edge-first' : { 'bin' : 'src/assignment2', 
+#                                               'opt' : [  '--neighborhood', '1-node-edge',
+#                                                          '--step-func', 'first'] },
+#
+#                     'lsr-1node-edge-best' : { 'bin' : 'src/assignment2', 
+#                                              'opt' : [ '--neighborhood', '1-node-edge',
+#                                                        '--step-func', 'best'] },
+#
+#                     'lsr-1node-edge-rand' : { 'bin' : 'src/assignment2', 
+#                                               'opt' : [ '--neighborhood', '1-node-edge',
+#                                                         '--step-func', 'random'] },
+#
 #
 # assignament 1
 #
@@ -95,7 +105,8 @@ def write_statfile( program_instances, results, filename, instance_property ) :
 
     for input_instance in input_instances :
         result_line= input_instance;
-        for program_name in sorted( program_instances, key=program_instances.get) :
+        #for program_name in sorted( program_instances, key=program_instances.get) :
+        for program_name in program_instances :
             if( instance_property in results[program_name][input_instance] ) :
                 val= results[program_name][input_instance][instance_property]
             else :
