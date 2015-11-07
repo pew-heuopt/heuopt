@@ -3,6 +3,8 @@
 \usepackage{caption}
 \usepackage{color}
 \usepackage{booktabs}
+\usepackage{lscape}
+\usepackage{tabularx}
 
 \newcounter{nalg}[section] % defines algorithm counter for section
 \renewcommand{\thenalg}{\thesection .\arabic{nalg}} %defines appearance of the algorithm counter
@@ -59,17 +61,17 @@
 
 \section{Local Search}
 \label{sec:deterministic}
-In this programming exercise, we improve the results of the construction
-heuristic developed in the previous exercise by using a local search. In the following
-subsection we will first explain the neighborhoods that we define and then outline the
-step functions used.
+In this programming exercise, we improve the results of the
+construction heuristic developed in the previous exercise by using a
+local search. In the following subsection, we will first explain the
+neighborhoods that we define and then outline the step functions used.
 
 %%% brauchen wir sowas?
 \begin{algorithm}[caption={Local search}]
-    input: Initial solution
+    input: Graph 
     output: Improved solution
     begin
-    	sol = initial solution;
+    	sol = calculate initial solution
 	repeat:
 		choose an sol' $\in$ N(x) 
 		if f($sol'$) $\leq$ f(sol) then
@@ -88,14 +90,13 @@ We use the following neighbourhoods:
     This neighbourhood is defined as all subsets where two vertices of the initial solution are flipped. 
     \begin{itemize}
         \item Size of neigborhood: $n(n-1)/2$
-        \item Objective Function: Very intensive becuase we change the spine order.
+        \item Objective Function: Very intensive because we change the spine order.
 
     \end{itemize}
 
     Combination of big neigborhood size and complex objective function makes this  a omputationally intensive variant.
     However, we expect this to give large improvements at least for small graphs.
 
-    TODO: number of steps to reach local optimum
 	
 \item[1-edge move] This neighbourhood consists of all solutions where one edge is moved to a different page. 
      \begin{itemize}
@@ -166,6 +167,15 @@ Q3: How many iterations does it take to reach local optima? What does this say a
 Q4: How does incremental evaluation work for your neighbourhoods?
 see description of neigborhoods in section \ref{neighborhoods}.
 
+
+\begin{landscape}
+\begin{table}
+  \scriptsize
+  \input{resultsTab}
+\caption{This table shows}
+\label{tab:results}
+\end{table}
+\end{landscape}
 
 
 
