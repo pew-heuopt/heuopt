@@ -64,7 +64,7 @@
 In this programming exercise, we improve the results of the
 construction heuristic developed in the previous exercise by using a
 local search. In the following subsection, we will first explain the
-neighborhoods that we define and then outline the step functions used.
+neighborhoods that we define and then outline the step-functions used.
 
 %%% brauchen wir sowas?
 \begin{algorithm}[caption={Local search}]
@@ -152,9 +152,7 @@ implemented step-functions.
 
 Depending on the size of the instance, either \texttt{1-node-flip} or
 \texttt{1-node-edge-move} yield the best results. These neighborhoods
-outperfom \texttt{1-edge-move}
-%, which only moves edges but leaves the vertex order unchanged
-, in most cases. For smaller instances (1-5), the
+outperfom \texttt{1-edge-move} in most cases. For smaller instances (1-5), the
 \texttt{1-node-flip} in combination with the \texttt{best} step-function delivers
 the best results.  
 For bigger instances (6-10), the
