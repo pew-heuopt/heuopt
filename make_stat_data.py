@@ -21,55 +21,69 @@ input_instances= [
 output_dir= "output/"
 
 program_instances= { 
-#                     'lsr-1node-first-init' : { 'bin' : 'src/assignment2', 
+
+
+#
+# assignment 3
+#
+                     'general-vns' : { 'bin' : 'src/assignment3', 
+                                       'opt' : [  ] },
+
+
+#
+# assignment 2
+#
+
+
+##                     'lsr-1node-first-init' : { 'bin' : 'src/assignment2', 
+##                                               'opt' : [  '--neighborhood', '1-node',
+##                                                          '--spine-order', 'ascend',
+##                                                          '--step-func', 'first'] },
+##
+##                     'lsr-1node-first-rand' : { 'bin' : 'src/assignment2', 
+##                                               'opt' : [  '--neighborhood', '1-node',
+##                                                          '--step-func', 'first'] },
+#
+#
+#                     'lsr-1node-first' : { 'bin' : 'src/assignment2', 
 #                                               'opt' : [  '--neighborhood', '1-node',
-#                                                          '--spine-order', 'ascend',
 #                                                          '--step-func', 'first'] },
 #
-#                     'lsr-1node-first-rand' : { 'bin' : 'src/assignment2', 
-#                                               'opt' : [  '--neighborhood', '1-node',
+#                     'lsr-1node-best' : { 'bin' : 'src/assignment2', 
+#                                              'opt' : [ '--neighborhood', '1-node',
+#                                                        '--step-func', 'best'] },
+#
+#                     'lsr-1node-rand' : { 'bin' : 'src/assignment2', 
+#                                               'opt' : [ '--neighborhood', '1-node',
+#                                                         '--step-func', 'random'] },
+#
+#
+#
+#                     'lsr-1edge-first' : { 'bin' : 'src/assignment2', 
+#                                               'opt' : [  '--neighborhood', '1-edge',
 #                                                          '--step-func', 'first'] },
-
-
-                     'lsr-1node-first' : { 'bin' : 'src/assignment2', 
-                                               'opt' : [  '--neighborhood', '1-node',
-                                                          '--step-func', 'first'] },
-
-                     'lsr-1node-best' : { 'bin' : 'src/assignment2', 
-                                              'opt' : [ '--neighborhood', '1-node',
-                                                        '--step-func', 'best'] },
-
-                     'lsr-1node-rand' : { 'bin' : 'src/assignment2', 
-                                               'opt' : [ '--neighborhood', '1-node',
-                                                         '--step-func', 'random'] },
-
-
-
-                     'lsr-1edge-first' : { 'bin' : 'src/assignment2', 
-                                               'opt' : [  '--neighborhood', '1-edge',
-                                                          '--step-func', 'first'] },
-
-                     'lsr-1edge-best' : { 'bin' : 'src/assignment2', 
-                                              'opt' : [ '--neighborhood', '1-edge',
-                                                        '--step-func', 'best'] },
-
-                     'lsr-1edge-rand' : { 'bin' : 'src/assignment2', 
-                                               'opt' : [ '--neighborhood', '1-edge',
-                                                         '--step-func', 'random'] },
-
-
-
-                     'lsr-1node-edge-first' : { 'bin' : 'src/assignment2', 
-                                               'opt' : [  '--neighborhood', '1-node-edge',
-                                                          '--step-func', 'first'] },
-
-                     'lsr-1node-edge-best' : { 'bin' : 'src/assignment2', 
-                                              'opt' : [ '--neighborhood', '1-node-edge',
-                                                        '--step-func', 'best'] },
-
-                     'lsr-1node-edge-rand' : { 'bin' : 'src/assignment2', 
-                                               'opt' : [ '--neighborhood', '1-node-edge',
-                                                         '--step-func', 'random'] },
+#
+#                     'lsr-1edge-best' : { 'bin' : 'src/assignment2', 
+#                                              'opt' : [ '--neighborhood', '1-edge',
+#                                                        '--step-func', 'best'] },
+#
+#                     'lsr-1edge-rand' : { 'bin' : 'src/assignment2', 
+#                                               'opt' : [ '--neighborhood', '1-edge',
+#                                                         '--step-func', 'random'] },
+#
+#
+#
+#                     'lsr-1node-edge-first' : { 'bin' : 'src/assignment2', 
+#                                               'opt' : [  '--neighborhood', '1-node-edge',
+#                                                          '--step-func', 'first'] },
+#
+#                     'lsr-1node-edge-best' : { 'bin' : 'src/assignment2', 
+#                                              'opt' : [ '--neighborhood', '1-node-edge',
+#                                                        '--step-func', 'best'] },
+#
+#                     'lsr-1node-edge-rand' : { 'bin' : 'src/assignment2', 
+#                                               'opt' : [ '--neighborhood', '1-node-edge',
+#                                                         '--step-func', 'random'] },
 
 #
 # assignament 1

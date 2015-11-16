@@ -6,9 +6,11 @@ LIBSTAT = $(LIBDIR)/libkpmp.a
 ASSIGNMENT1_1= assignment1_1
 ASSIGNMENT1_2= assignment1_2
 ASSIGNMENT2= assignment2
+ASSIGNMENT3= assignment3
 
 
-ASSIGNMENTS= $(ASSIGNMENT1_1) $(ASSIGNMENT1_2) $(ASSIGNMENT2)
+ASSIGNMENTS= $(ASSIGNMENT1_1) $(ASSIGNMENT1_2) $(ASSIGNMENT2) $(ASSIGNMENT3)
+
 
 INC = $(LIBDIR)
 
@@ -47,6 +49,8 @@ $(ASSIGNMENT1_2): $(LIBSTAT) $(ASSIGNMENT1_2).cpp
 $(ASSIGNMENT2): $(LIBSTAT) $(ASSIGNMENT2).cpp
 	$(CXX) -o $(ASSIGNMENT2) -I $(INC) $(CXXFLAGS) $(ASSIGNMENT2).cpp $(LIBSTAT) -lboost_program_options -lboost_timer
 
+$(ASSIGNMENT3): $(LIBSTAT) $(ASSIGNMENT3).cpp
+	$(CXX) -o $(ASSIGNMENT3) -I $(INC) $(CXXFLAGS) $(ASSIGNMENT3).cpp $(LIBSTAT) -lboost_program_options -lboost_timer
 
 
 clean: 
