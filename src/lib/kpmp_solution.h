@@ -61,6 +61,14 @@ public:
  
     void add_vertices_to_spine_order( const std::vector<vertex_t> & v );
 
+    /** 
+     *  index1: [0,size) 
+     *  to_pos: [0,size] 
+     */ 
+    void move_vertex( size_t index1, size_t to_pos );
+    /**
+     */
+    void move_vertices( const std::list< std::pair<size_t,size_t> > & move_list );
     void swap_vertices( size_t index1, size_t index2 );
     void recalc_page( page & p );
 

@@ -142,6 +142,93 @@ void solution::add_vertices_to_spine_order( const std::vector<vertex_t> & new_ve
 
 
 #include <iostream>
+
+template<typename T>
+void move_range(size_t start, size_t length, size_t dst, std::vector<T> & v)
+{
+  const size_t final_dst = dst > start ? dst - length : dst;
+
+  std::vector<T> tmp(v.begin() + start, v.begin() + start + length);
+  v.erase(v.begin() + start, v.begin() + start + length);
+  v.insert(v.begin() + final_dst, tmp.begin(), tmp.end());
+}
+
+template<typename T>
+void append_range(size_t start, size_t length, std::vector<T> & v)
+{
+
+  std::vector<T> tmp(v.begin() + start, v.begin() + start + length);
+  v.erase(v.begin() + start, v.begin() + start + length);
+  v.insert( v.end(),tmp.begin(), tmp.end());
+}
+
+
+
+void solution::move_vertex( size_t index1, size_t to_pos )
+{
+    std::list< std::pair<size_t,size_t> > move_list {std::make_pair(index1, to_pos) };
+
+    move_vertices( move_list );
+}
+
+
+void solution::move_vertices( const std::list< std::pair<size_t,size_t> > & move_list )
+{
+    std::list<std::pair<page_iterator_t,edge_t> > touching_edges;
+
+    for( auto i= move_list.begin(); i!= move_list.end(); ++i )
+    {
+        size_t index1= i->first;
+        size_t to_pos= i->second;
+
+        if( index1 >= spine_order.size() ||
+            to_pos > spine_order.size() )
+        {
+            throw std::out_of_range("move vertices outside of index range");
+        }
+
+
+        // collect touching edges
+        for( auto p= pages.begin(); p != pages.end(); ++p )
+            for( auto e= p->edges.begin(); e != p->edges.end(); ++e )
+                if( e->first == spine_order[index1] || 
+                    e->second == spine_order[index1]  )
+                {
+                    touching_edges.push_back( make_pair(p,*e) );
+                }
+    }
+
+    // remove touching edges
+    for( auto i= touching_edges.begin(); i != touching_edges.end(); ++i )
+        remove_edge( * i->first, i->second );
+
+    // 
+    // moving spine order
+    for( auto i= move_list.begin(); i!= move_list.end(); ++i )
+    {
+        size_t index1= i->first;
+        size_t to_pos= i->second;
+
+        if( to_pos < spine_order.size() )
+            move_range( index1, 1, to_pos, spine_order );
+        else
+            append_range( index1, 1, spine_order );
+    }        
+
+    // new order map
+    int order_count= 0;
+    for( auto v=spine_order.begin(); v!= spine_order.end(); ++v  )
+    {
+        spine_order_map[ *v ]= order_count++;
+    }
+
+
+    // re -add edges
+    for( auto i= touching_edges.begin(); i != touching_edges.end(); ++i )
+        add_edge( * i->first, i->second );
+    
+}
+
 void solution::swap_vertices( size_t index1, size_t index2 )
 {
 

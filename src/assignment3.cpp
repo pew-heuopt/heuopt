@@ -15,6 +15,8 @@
 
 #include <neighborhood_1_edge_move.h>
 #include <neighborhood_1_node_flip.h>
+#include <neighborhood_1_node_move.h>
+#include <neighborhood_x_node_move_random.h>
 #include <neighborhood_node_edge_shift.h>
 #include <neighborhood_1_node_edge_move.h>
 
@@ -25,7 +27,7 @@
 // #define DEBUG 1
 
 enum step_func_t { FIRST, BEST, RANDOM };
-enum neighborhood_t { NODE_1, EDGE_1, NODE_EDGE, NODE_EDGE_1 };
+enum neighborhood_t { NODE_1, EDGE_1, NODE_EDGE, NODE_EDGE_1, NODE_MOVE_1, NODE_MOVE_RANDOM_2, NODE_MOVE_RANDOM_3};
 
 
 
@@ -86,6 +88,19 @@ solution execute_neighborhood( const solution & sol, neighborhood_t neighborhood
 
                                time); 
 
+        case NODE_MOVE_1: 
+
+            return execute_step( neighborhood_1_node_move_begin(sol),
+                                 neighborhood_1_node_move_end(sol),
+                                 step_func, (num_vertices-1) * (num_vertices-1), 
+                                 time  );
+
+        case NODE_MOVE_RANDOM_2: 
+
+            return execute_step( neighborhood_x_node_move_random_begin(sol,2),
+                                 neighborhood_x_node_move_random_end(sol,2),
+                                 step_func,1, 
+                                 time  );
 
         default:
                    throw std::runtime_error("unsupported stepfunction");
@@ -284,7 +299,7 @@ int main( int argc, char **argv)
     timer time(timeout);
 
 
-    std::list<neighborhood_t> stochastic_neighborhoods { NODE_1 };
+    std::list<neighborhood_t> stochastic_neighborhoods { NODE_1, NODE_MOVE_1, NODE_MOVE_RANDOM_2, NODE_MOVE_RANDOM_2 };
     std::list<neighborhood_t> deterministic_neighborhoods { EDGE_1, NODE_EDGE_1 };
 
     general_vns( sol, stochastic_neighborhoods, deterministic_neighborhoods, time );

@@ -325,6 +325,68 @@ BOOST_AUTO_TEST_CASE( neighborhood_1_node_flip  )
 
 
 //
+// neighborhood_1_node_move iterator
+//
+
+#include <neighborhood_1_node_move.h>
+
+BOOST_AUTO_TEST_CASE( neighborhood_1_node_move  )
+{
+
+
+    solution sol(1, std::vector< vertex_t > {1,0,2,3}  );
+
+    sol.add_edge( 0, edge_t(1,2) );
+    sol.add_edge( 0, edge_t(0,3) );
+   
+
+    unsigned num_iterations= 0;
+    for( auto i= neighborhood_1_node_move_begin( sol ); 
+         i != neighborhood_1_node_move_end( sol ); 
+         ++i )
+    {
+        solution s= *i;
+
+        if( num_iterations == 2 || 
+            num_iterations == 7 )
+        {
+            BOOST_CHECK( s.get_crossings() == 1 );
+        }
+        else
+            BOOST_CHECK( s.get_crossings() == 0 );
+
+        ++num_iterations;
+    }
+
+    // num iterations should be (n-1) **2 
+    BOOST_CHECK_MESSAGE( num_iterations == 9, "should be " << 9 << "but is " << num_iterations  );
+}
+
+
+
+BOOST_AUTO_TEST_CASE( neighborhood_1_node_move_check_num  )
+{
+    solution sol(1, std::vector< vertex_t > {1,0,2,3,1}  );
+
+    unsigned num_iterations= 0;
+    for( auto i= neighborhood_1_node_move_begin( sol ); 
+         i != neighborhood_1_node_move_end( sol ); 
+         ++i )
+    {
+        solution s= *i;
+
+        ++num_iterations;
+    }
+
+    // num iterations should be (n-1) **2 
+    BOOST_CHECK_MESSAGE( num_iterations == 16, "should be " << 16 << "but is " << num_iterations  );
+
+
+}
+
+
+
+//
 // neighborhood_1_node_edge_move iterator
 //
 
