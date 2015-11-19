@@ -174,7 +174,7 @@ void solution::move_vertex( size_t index1, size_t to_pos )
 
 void solution::move_vertices( const std::list< std::pair<size_t,size_t> > & move_list )
 {
-    std::list<std::pair<page_iterator_t,edge_t> > touching_edges;
+    std::list<std::pair<page_iterator_t,edge_t> > all_touching_edges;
 
     for( auto i= move_list.begin(); i!= move_list.end(); ++i )
     {
@@ -188,6 +188,8 @@ void solution::move_vertices( const std::list< std::pair<size_t,size_t> > & move
         }
 
 
+        std::list<std::pair<page_iterator_t,edge_t> > touching_edges;
+
         // collect touching edges
         for( auto p= pages.begin(); p != pages.end(); ++p )
             for( auto e= p->edges.begin(); e != p->edges.end(); ++e )
@@ -195,25 +197,22 @@ void solution::move_vertices( const std::list< std::pair<size_t,size_t> > & move
                     e->second == spine_order[index1]  )
                 {
                     touching_edges.push_back( make_pair(p,*e) );
+                    all_touching_edges.push_back( make_pair(p,*e) );
                 }
-    }
 
-    // remove touching edges
-    for( auto i= touching_edges.begin(); i != touching_edges.end(); ++i )
-        remove_edge( * i->first, i->second );
+        // remove touching edges
+        for( auto i= touching_edges.begin(); i != touching_edges.end(); ++i )
+            remove_edge( * i->first, i->second );
 
-    // 
-    // moving spine order
-    for( auto i= move_list.begin(); i!= move_list.end(); ++i )
-    {
-        size_t index1= i->first;
-        size_t to_pos= i->second;
+        // 
+        // moving spine order
 
         if( to_pos < spine_order.size() )
             move_range( index1, 1, to_pos, spine_order );
         else
             append_range( index1, 1, spine_order );
-    }        
+
+    }
 
     // new order map
     int order_count= 0;
@@ -224,7 +223,7 @@ void solution::move_vertices( const std::list< std::pair<size_t,size_t> > & move
 
 
     // re -add edges
-    for( auto i= touching_edges.begin(); i != touching_edges.end(); ++i )
+    for( auto i= all_touching_edges.begin(); i != all_touching_edges.end(); ++i )
         add_edge( * i->first, i->second );
     
 }
