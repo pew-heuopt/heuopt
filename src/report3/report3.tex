@@ -59,8 +59,11 @@
 \maketitle
 
 
-\section{Local Search}
-\label{sec:deterministic}
+\section{General Variable Neighborhood search}
+\label{sec:general_vns}
+
+TODO: wrong algorithm, we are implementing general VNS, see slide 11.
+
 In this programming exercise, we build on our local search from the
 previous exercise and implement a variable neighborhood search
 heuristic.
@@ -87,14 +90,25 @@ heuristic.
 %%% NEIGHBORHOODS HERE
 \subsection{Neighborhoods}
 \label{neighborhoods}
-We re-use the neighborhoods from assignment two and added a additional ones.
+We re-use the neighborhoods from assignment two and added a parameterized node move variant:
 
-[TODO: should we use paramiterized ones?]
+\begin{description}
+\item[X-node-move] 
+Defined as all subsets where X vertices of the initial solution are moved to other positions.
+
+\begin{itemize}
+\item Size of neigborhood: $(n-1)^2 * X $
+\item Objective Function: Incremental, only crossings for moved edges are recalculated.
+\end{itemize}
+
+\end{description}
+ 
+The neighborhoods from last assignement:
 
 \begin{description}
 \item[1-node flip] 
     
-    This neighborhood is defined as all subsets where two vertices of the initial solution are flipped. 
+    This neighborhood is defined as all subsets where two vertices of the initial solution are flipped.
     \begin{itemize}
         \item Size of neigborhood: $n(n-1)/2$
         \item Objective Function: Incremental, crossings from flipped vertices are subtracted and recalculated.
@@ -120,24 +134,23 @@ We re-use the neighborhoods from assignment two and added a additional ones.
 
 \end{description}
 
-%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
-%%% STEPFUNCTIONS HERE
-\subsection{Stepfunctions}
 
-We also re-use the step-functions from assignment 2. For computational
-reasons, we only use the \texttt{first} and \texttt{random}
-step-functions for the large instances.
+
+\subsection{Neigborhoodstructures in General VNS}
+
+As shown in the algorithm in section \ref{sec:general_vns} we define two non-overlapping sets of neigborhoods:
 
 \begin{description}
-\item[first] This step-function selects the first better solution found in the neighborhood.
-\item[best] This step-function iterates over all elements of the neighborhood and chooses the best one.
-\item[random] This step-function selects a random element of the neighborhood. 
+
+    \item{VNS}: used for the shaking, we decided to take the complex neighborhoods here, which dannot be completly searched.
+                
+                1-node-move, 2-node-move, 3-node-move
+                
+    \item{VND}: used for variable neighborhood descent in the inner loop:
+         
+                1-edge-move, 1-node-edge-move
+
 \end{description}
-
-
-%%% REMOVED, I don't think this is necessary
-%%\section{Solution Representation}
-%%The same as in exercise 1. Do we need this subsection?
 
 
 %%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
@@ -148,10 +161,11 @@ We executed the code on a desktop computer with a Core i7 Quad-Core
 CPU with 2.67Ghz and 24 GB of main memory. Table~\ref{tab:results}
 shows the results of our local search. 
 
-We consider a local optimum if we cannot find a better solution after 10 iterations.
 We have set a timout of 5 minutes for the calculations.
 
-\paragraph{Best neighborhood step function strategy}
+
+% there are no stepfunctions
+%\paragraph{Best neighborhood step function strategy}
 
 
 %Overall, the combination of the 1-node-flip neighborhood and the best
@@ -165,6 +179,8 @@ We have set a timout of 5 minutes for the calculations.
 \paragraph{Order of the neighborhoods}
 
 TODO: I would guess it does matter... we probably should run some experiments...
+
+see experiments in assignment3\_stats.sh
 
 
 
