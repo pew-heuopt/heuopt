@@ -106,6 +106,7 @@ def main(argv):
 
     for input_instance in make_stat_data.input_instances :
 
+        print input_instance 
         stat_results[input_instance]= {}
         program_results= []
 

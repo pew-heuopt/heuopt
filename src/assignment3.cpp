@@ -3,6 +3,7 @@
 #include <fstream>
 #include <algorithm>
 #include <vector>
+#include <sstream>
 
 #include <boost/timer/timer.hpp>
 
@@ -102,6 +103,14 @@ solution execute_neighborhood( const solution & sol, neighborhood_t neighborhood
                                  step_func,1, 
                                  time  );
 
+        case NODE_MOVE_RANDOM_3: 
+
+            return execute_step( neighborhood_x_node_move_random_begin(sol,3),
+                                 neighborhood_x_node_move_random_end(sol,3),
+                                 step_func,1, 
+                                 time  );
+
+
         default:
                    throw std::runtime_error("unsupported stepfunction");
 
@@ -196,6 +205,37 @@ void general_vns( solution & best,
 
 
 
+neighborhood_t str_2_neighborhood( const std::string & neighborhood_str )
+{
+    if( neighborhood_str == "1-node" )
+        return NODE_1;
+    else if( neighborhood_str == "1-edge" )
+        return EDGE_1;
+    else if( neighborhood_str == "node-edge" )
+        return NODE_EDGE;
+    else if( neighborhood_str == "1-node-edge" )
+        return NODE_EDGE_1;
+    else if( neighborhood_str == "1-node-move" )
+        return NODE_MOVE_1;
+    else if( neighborhood_str == "2-node-move" )
+        return NODE_MOVE_RANDOM_2;
+    else if( neighborhood_str == "3-node-move" )
+        return NODE_MOVE_RANDOM_3;
+
+    std::stringstream ss;
+    ss << "unkown neighborhood " << neighborhood_str ;
+
+    throw std::runtime_error( ss.str() );
+}
+
+
+void str_2_neighborhood( const std::vector<std::string> & neighborhood_strs, std::list<neighborhood_t> & neighborhoods )
+{
+    for( auto i= neighborhood_strs.begin(); i!=neighborhood_strs.end(); ++i )
+        neighborhoods.push_back( str_2_neighborhood( *i ) );
+
+}
+
 
 
 int main( int argc, char **argv)
@@ -215,6 +255,7 @@ int main( int argc, char **argv)
 
     // use boost graph library to calc connected components
 
+
     desc.add_options()
 
          ("timeout", boost::program_options::value<int>(&timeout), 
@@ -222,6 +263,10 @@ int main( int argc, char **argv)
 
          ("spine-order", boost::program_options::value<std::string>(&spine_order_opt_str), 
                        "spine order: ascend|sorted|component default: sorted")
+
+         ("stochastic-neighborhoods", boost::program_options::value<std::vector<std::string> >()->multitoken(), "stochastic neighborhoods to execute")
+
+         ("deterministic-neighborhoods", boost::program_options::value<std::vector<std::string> >()->multitoken(), "deterministic neighborhoods to execute")
 
              ;
 
@@ -265,7 +310,22 @@ int main( int argc, char **argv)
         return 1;
     }
 
+
+
    
+    if( vm["stochastic-neighborhoods"].empty() || (vm["stochastic-neighborhoods"].as<vector<std::string> >()).size() == 0 )
+    {
+        std::cerr << "no stochastic neighborhoods given" << std::endl;
+        return 1;
+    }
+
+    if( vm["deterministic-neighborhoods"].empty() || (vm["deterministic-neighborhoods"].as<vector<std::string> >()).size() == 0 )
+    {
+        std::cerr << "no deterministic neighborhoods given" << std::endl;
+        return 1;
+    }
+
+
     
     size_t n_vertices= instance->getNumVertices();
 
@@ -299,8 +359,14 @@ int main( int argc, char **argv)
     timer time(timeout);
 
 
-    std::list<neighborhood_t> stochastic_neighborhoods { NODE_1, NODE_MOVE_1, NODE_MOVE_RANDOM_2, NODE_MOVE_RANDOM_2 };
-    std::list<neighborhood_t> deterministic_neighborhoods { EDGE_1, NODE_EDGE_1 };
+    //std::list<neighborhood_t> stochastic_neighborhoods { NODE_MOVE_1, NODE_MOVE_RANDOM_2, NODE_MOVE_RANDOM_3 };
+    std::list<neighborhood_t> stochastic_neighborhoods;
+
+    str_2_neighborhood( vm["stochastic-neighborhoods"].as<vector<std::string> >(), stochastic_neighborhoods );
+
+    //std::list<neighborhood_t> deterministic_neighborhoods { EDGE_1, NODE_EDGE_1 };
+    std::list<neighborhood_t> deterministic_neighborhoods;
+    str_2_neighborhood( vm["deterministic-neighborhoods"].as<vector<std::string> >(), deterministic_neighborhoods );
 
     general_vns( sol, stochastic_neighborhoods, deterministic_neighborhoods, time );
 

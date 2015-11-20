@@ -11,11 +11,11 @@ input_instances= [
                    'automatic-3.txt',
                    'automatic-4.txt',
                    'automatic-5.txt',
-                   'automatic-6.txt',
-                   'automatic-7.txt',
-                   'automatic-8.txt',
-                   'automatic-9.txt',
-                   'automatic-10.txt',
+#                   'automatic-6.txt',
+#                   'automatic-7.txt',
+#                   'automatic-8.txt',
+#                   'automatic-9.txt',
+#                   'automatic-10.txt',
                    ]
 
 output_dir= "output/"
@@ -27,7 +27,19 @@ program_instances= {
 # assignment 3
 #
                      'general-vns' : { 'bin' : 'src/assignment3', 
-                                       'opt' : [  ] },
+                                       'opt' : [ '--stochastic-neighborhoods', '1-node-move', '2-node-move', '3-node-move',
+                                                 '--deterministic-neighborhoods', '1-edge', '1-node-edge'
+                                               ] },
+
+                     'general-vns-stoch-order' : { 'bin' : 'src/assignment3', 
+                                       'opt' : [ '--stochastic-neighborhoods', '3-node-move', '2-node-move', '1-node-move',
+                                                 '--deterministic-neighborhoods', '1-edge', '1-node-edge'
+                                               ] },
+
+                     'general-vns-det-order' : { 'bin' : 'src/assignment3', 
+                                       'opt' : [ '--stochastic-neighborhoods', '1-node-move', '2-node-move', '3-node-move',
+                                                 '--deterministic-neighborhoods', '1-node-edge', '1-edge'
+                                               ] },
 
 
 #
