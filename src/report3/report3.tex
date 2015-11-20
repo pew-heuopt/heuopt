@@ -1,0 +1,193 @@
+\documentclass{scrartcl}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{color}
+\usepackage{booktabs}
+\usepackage{lscape}
+\usepackage{tabularx}
+
+\newcounter{nalg}[section] % defines algorithm counter for section
+\renewcommand{\thenalg}{\thesection .\arabic{nalg}} %defines appearance of the algorithm counter
+\DeclareCaptionLabelFormat{algocaption}{Algorithm \thenalg} % defines a new caption label as Algorithm x.y
+
+\lstnewenvironment{algorithm}[1][] %defines the algorithm listing environment
+{   
+    \refstepcounter{nalg} %increments algorithm number
+    \captionsetup{labelformat=algocaption,labelsep=colon} %defines the
+                                                          %caption
+                                                          %setup for:
+                                                          %it ises
+                                                          %label
+                                                          %format as
+                                                          %the
+                                                          %declared
+                                                          %caption
+                                                          %label above
+                                                          %and makes
+                                                          %label and
+                                                          %caption
+                                                          %text to be
+                                                          %separated
+                                                          %by a ':'
+    \lstset{ %this is the stype
+        frame=tB,
+        numbers=left, 
+        numberstyle=\tiny,
+        basicstyle=\scriptsize, 
+        keywordstyle=\color{black}\bfseries,
+        escapeinside={(*}{*)},
+        keywords={,input, output, return, datatype, function, in, if, else, foreach, while, begin, end, } 
+        numbers=left,
+        xleftmargin=.04\textwidth,
+        #1 % this is to add specific settings to an usage of this environment (for instnce, the caption and referable label)
+    }
+}
+{}
+
+
+
+
+
+\author{Alexander Eisl (0250266), Peter Wiedermann (0025999)}
+
+\date{\today}
+
+
+\title{Heuristic Optimization Techniques \\ Exercise 3}
+
+\begin{document}
+\maketitle
+
+
+\section{Local Search}
+\label{sec:deterministic}
+In this programming exercise, we build on our local search from the
+previous exercise and implement a variable neighborhood search
+heuristic.
+
+%%% brauchen wir sowas?
+\begin{algorithm}[caption={Variable Neighborhood Search}]
+    input: Graph 
+    output: Improved solution
+    begin
+        l (*$\leftarrow$*) 1;
+	repeat:
+    	find (*$x'$*) with (*$f(x') \leq f(x''), \forall x'' \in N_l(x) $*) calculate initial solution
+        if (*f($x') < f(x)$*) then
+           (*$x \leftarrow x'$*);
+           l (*$\leftarrow$*) 1;
+        else 
+           l (*$\leftarrow$*) l + 1
+	until  (*$l > l_{max}$*)
+    end
+\end{algorithm}
+
+
+%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%%% NEIGHBORHOODS HERE
+\subsection{Neighborhoods}
+\label{neighborhoods}
+We re-use the neighborhoods from assignment two and added a additional ones.
+
+[TODO: should we use paramiterized ones?]
+
+\begin{description}
+\item[1-node flip] 
+    
+    This neighborhood is defined as all subsets where two vertices of the initial solution are flipped. 
+    \begin{itemize}
+        \item Size of neigborhood: $n(n-1)/2$
+        \item Objective Function: Incremental, crossings from flipped vertices are subtracted and recalculated.
+
+    \end{itemize}
+
+	
+\item[1-edge move] This neighborhood consists of all solutions where one edge is moved to a different page. 
+     \begin{itemize}
+        \item Size of neigborhood: $(pages-1) edges$ 
+        \item Objective Function: Incremental, only crossings for moved edges are recalculated.
+    \end{itemize}
+   
+	
+\item[1-node edge move] This neighborhood consists of all solutions where the edges of
+	one vertex on a specific page are moved to all different pages. 
+
+    \begin{itemize}
+        \item Size of neigborhood: $(pages-1) edges$ as worst case.\footnote{depending on number of edges on respective node pages}
+        \item Objective Function: Incremental, only crossings for moved edges are recalculated.
+    \end{itemize}
+    
+
+\end{description}
+
+%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%%% STEPFUNCTIONS HERE
+\subsection{Stepfunctions}
+
+We also re-use the step-functions from assignment 2. For computational
+reasons, we only use the \texttt{first} and \texttt{random}
+step-functions for the large instances.
+
+\begin{description}
+\item[first] This step-function selects the first better solution found in the neighborhood.
+\item[best] This step-function iterates over all elements of the neighborhood and chooses the best one.
+\item[random] This step-function selects a random element of the neighborhood. 
+\end{description}
+
+
+%%% REMOVED, I don't think this is necessary
+%%\section{Solution Representation}
+%%The same as in exercise 1. Do we need this subsection?
+
+
+%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%%% NEIGHBORHOODS HERE
+\section{Results}
+
+We executed the code on a desktop computer with a Core i7 Quad-Core
+CPU with 2.67Ghz and 24 GB of main memory. Table~\ref{tab:results}
+shows the results of our local search. 
+
+We consider a local optimum if we cannot find a better solution after 10 iterations.
+We have set a timout of 5 minutes for the calculations.
+
+\paragraph{Best neighborhood step function strategy}
+
+
+%Overall, the combination of the 1-node-flip neighborhood and the best
+%step-function shows the best improvements. For example, it finds a
+%solution with only $12$ edge-crossings for the instance automatic-4.
+%Not surprisingly, it also has the highest run-time.
+
+
+
+
+\paragraph{Order of the neighborhoods}
+
+TODO: I would guess it does matter... we probably should run some experiments...
+
+
+
+
+
+
+
+
+
+\begin{landscape}
+\begin{table}
+  \scriptsize
+  \input{resultsTab}
+\caption{Local search results. For each instance, we show the number
+  of crossings (first row), the iteration needed to reach the local
+  optimum (second row, first value) and the run-time in seconds of our
+  algorithm (second row, second value).  If no local optimum was found
+  the number of iterations is -1. The best solution is highlighted in
+  bold.}
+\label{tab:results}
+\end{table}
+\end{landscape}
+
+
+
+\end{document}
