@@ -62,31 +62,31 @@
 \section{General Variable Neighborhood search}
 \label{sec:general_vns}
 
-In this programming exercise, we implement a  generalized variable neighborhood
-search heuristic, reusing the neighborhoods from our previous exercise.
-The algorithm is implemented as shown in the following listing:
+In this programming exercise, we implement a generalized variable
+neighborhood search heuristic, re-using the neighborhoods from the
+previous exercise. We implement the algorithm as shown on page 11 of
+the lecture slides on VNS + VDS.
 
-TODO: algo
 
 
 %%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 %%% NEIGHBORHOODS HERE
 \subsection{Neighborhoods}
 \label{neighborhoods}
-We re-use the neighborhoods from assignment two and add a parameterized node move variant:
+We re-use the neighborhoods from Assignment~2 and add a parameterized node-move variant:
 
 \begin{description}
 \item[X-node-move] 
 Defined as all subsets where X vertices of the initial solution are moved to other positions.
 
 \begin{itemize}
-\item Size of neigborhood: $(n-1)^2 * X $
+\item Size of neigborhood: $(n-1)^2 \cdot X $
 \item Objective Function: Incremental, only crossings for moved edges are recalculated.
 \end{itemize}
 
 \end{description}
  
-The neighborhoods from last assignement:
+The neighborhoods from the previous assignment:
 
 \begin{description}
 \item[1-node flip] 
@@ -110,8 +110,10 @@ The neighborhoods from last assignement:
 	one vertex on a specific page are moved to all different pages. 
 
     \begin{itemize}
-        \item Size of neigborhood: $(pages-1) edges$ as worst case.\footnote{depending on number of edges on respective node pages}
-        \item Objective Function: Incremental, only crossings for moved edges are recalculated.
+        \item Size of neigborhood: $(pages-1) edges$ as worst
+          case.\footnote{depending on number of edges on the respective
+            node pages} %% FIXME: node pages?
+        \item Objective Function: Incremental, only crossings for moved edges are re-calculated.
     \end{itemize}
     
 
@@ -122,16 +124,17 @@ The neighborhoods from last assignement:
 \subsection{Neigborhoodstructures in General VNS}
 \label{neighborhood_orders}
 
-As shown in the algorithm in section \ref{sec:general_vns} we define two non-overlapping sets of neigborhoods:
+We define two non-overlapping sets of neigborhoods for the outer and inner loop:
 
 \begin{description}
 
-    \item{VNS}: used for the shaking, we decided to take the complex neighborhoods here, which dannot be completly searched.
-                We use the following order:
+    \item{VNS}: used for the shaking, we decided to take the complex
+      neighborhoods here, because it would be costly to search them
+      completely. We use the following order:
                 
                 1-node-move, 2-node-move, 3-node-move
                 
-    \item{VND}: used for variable neighborhood descent in the inner loop in the following order:
+    \item{VND}: used for variable neighborhood descent in the inner loop. We use use the following order:
          
                 1-edge-move, 1-node-edge-move
 
@@ -146,52 +149,75 @@ We executed the code on a desktop computer with a Core i7 Quad-Core
 CPU with 2.67Ghz and 24 GB of main memory. 
 
 \paragraph{}
-We have set a timout of 5 minutes for the calculations.
-Because we are relying on random calculations, all measurements are given as 
-statistic evaluation over 30 runs.
+We set a timeout of 5 minutes for the calculations.  Because we
+are relying on random calculations, we provide the summary statistics
+of the results over 30 independent runs.
 
 
 \paragraph{}
-Table~\ref{tab:resultsOverall} shows the number of crossings
-for the GVNS using the order of neighborhoods as described in section \ref{neighborhood_orders}, 
-table  \ref{tab:Timing} shows the respective timings.
+Table~\ref{tab:resultsOverall} shows the number of crossings for the
+GVNS using the order of neighborhoods as described in Section~\ref{neighborhood_orders}.
+The corresponding run-times are reported in Table~\ref{tab:Timing}.
 
-We find that for the small instances the GVNS finds better
-solutions than the local search we used in the previous
-exercise. The timing in Table~\ref{tab:Timing} shows that for
-larger instances (except instance 7) the maximum run-time is usually exhausted and, as a
+We find that for the small instances, the GVNS finds better solutions
+than the local search we used in the previous exercise. The timing in
+Table~\ref{tab:Timing} shows that for larger instances (except for
+instance 7) the maximum run-time is usually exhausted and, as a
 result, we do not find large improvements compared to the local search
 in the previous exercise.
 
+\paragraph{Order of the neighborhoods}
+We run two additional experiments where we change the order of the
+neighborhoods.\footnote{see Section~\ref{neighborhood_orders} for the
+  original order}
 
-%
-%
-%\paragraph{Order of the neighborhoods}
-%Tables~\ref{tab:resultsDeterministic} and \ref{tab:resultsStochastic}
-%show the results when we change the order of our neighborhoods. In
-%Table~/ref{tab:resultsDeterminstic} we report the results where we
-%keep the order of the stochastic neighborhoods used for shaking the
-%same and invert the order of the other
-%neighborhoods. Table~\ref{tab:resultsStochastic} shows the results
-%where we flip the order of the neighborhoods used for shaking and keep
-%the others the same. As expected, changing the order of our
-%neighborhoods does influence the results of the GVNS.
-%
+Tables~\ref{tab:resultsVns} and ~\ref{tab:TimingVns} show the
+results when we reverse the order of the VNS neighborhoods
+used for the shaking.\footnote{Unfortunately, our script which executed
+  the experiments did not include a character string specifying the
+  experiment and, thus, re-used the filenames of our output files. As a result,
+  we have to re-run our computations to get all the output files
+  necessary for the submission on the cluster. Runtimes and crossing
+  numbers were recorded separately and are correct. Because of the
+  random nature of our algorithm, the crossing numbers of the solutions that we will
+  submit on the cluster tomorrow might be different. Please note that
+  the submission deadline on TUWEL seems to be too early (Sunday,
+  00:00) and different from the one mentioned in the assignment
+  (Sunday, 23:55).}
+
+As we can see, the reverse order of the VNS neighborhoods improves the minimum number of crossings. If we are looking
+at the timing results of instance 7 in Table~\ref{tab:TimingVns}, we see that the variance in the runtime is significantly
+higher than in the original order.
+%% TODO: removed; I wouldn't call hitting the max run-time 'stability'
+%% This means that we get a better minimum for the cost of stability of the solution,
+%%originating in the fact that we start exchaning 3 random vertices, than just 1 as in the original order.
 
 
-
-
-
-
-
-
-\begin{table}[H]
+\begin{table}[!H]
   \centering
   \scriptsize
   \input{crossingsTab}
 \caption{Number of crossings using default neighborhood order}
 \label{tab:resultsOverall}
 \end{table}
+
+\begin{table}[!H]
+  \centering
+  \scriptsize
+  \input{crossingsTab-stoch-order}
+\caption{Number of crossings using reverse order of VNS neighborhood}
+\label{tab:resultsVns}
+\end{table}
+
+\begin{table}[!H]
+  \centering
+  \scriptsize
+  \input{crossingsTab-det}
+\caption{Number of crossings using reverse order of VND neighborhood}
+\label{tab:resultsVnd}
+\end{table}
+
+\clearpage
 
 \begin{table}[H]
   \centering
@@ -201,42 +227,12 @@ in the previous exercise.
 \label{tab:Timing}
 \end{table}
 
-
-\paragraph{Order of the neighborhoods}
-
-We make two addittional experiments where we change the order of neighborhoods as defined
-in section \ref{neighborhood_orders}.
-
-
-\begin{table}[H]
-  \centering
-  \scriptsize
-  \input{crossingsTab-stoch-order}
-\caption{Number of crossings using reverse order of VNS neighborhood}
-\label{tab:resultsVns}
-\end{table}
-
-
-
 \begin{table}[H]
   \centering
   \scriptsize
   \input{timeTab-stoch-order}
 \caption{Runtime in seconds using reverse order of VNS neighborhood}
 \label{tab:TimingVns}
-\end{table}
-
-
-
-Tables~\ref{tab:resultsVns} and ~\ref{tab:TimingVns} show the respective results when we reverse
-the order of the VNS neighborhoods used for the shaking.
-
-\begin{table}[H]
-  \centering
-  \scriptsize
-  \input{crossingsTab-det}
-\caption{Number of crossings using reverse order of VND neighborhood}
-\label{tab:resultsVnd}
 \end{table}
 
 \begin{table}[H]
@@ -247,15 +243,6 @@ the order of the VNS neighborhoods used for the shaking.
 \label{tab:TimingVnd}
 \end{table}
 
-Tables~\ref{tab:resultsVnd} and ~\ref{tab:TimingVnd} show the respective results when we reverse
-the order of the VND neighborhoods used for neighborhood descent.
-
-
-
-As we can see, the reverse order of the VNS neighborhoods improves the minimum number of crossings. If we are looking
-at the timing results of instance 7 in table \ref{tab:TimingVns}, we see that the variance in the runtime is significantly
-higher than in the original order. This means that we get a better minimum for the cost of stability of the solution,
-originating in the fact that we start exchaning 3 random vertices, than just 1 as in the original order.
 
 
 
