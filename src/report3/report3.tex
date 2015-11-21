@@ -155,8 +155,35 @@ statistic evaluation over 30 runs.
 Table~\ref{tab:resultsOverall} shows the number of crossings
 for the GVNS using the order of neighborhoods as described in section \ref{neighborhood_orders}, 
 table  \ref{tab:Timing} shows the respective timings.
-For all the complex instances, except instance 7, we run into our 5 minute timeout. For 
-the smaller instances the local minimum can be found in less than 1s.
+
+We find that for the small instances the GVNS finds better
+solutions than the local search we used in the previous
+exercise. The timing in Table~\ref{tab:Timing} shows that for
+larger instances (except instance 7) the maximum run-time is usually exhausted and, as a
+result, we do not find large improvements compared to the local search
+in the previous exercise.
+
+
+%
+%
+%\paragraph{Order of the neighborhoods}
+%Tables~\ref{tab:resultsDeterministic} and \ref{tab:resultsStochastic}
+%show the results when we change the order of our neighborhoods. In
+%Table~/ref{tab:resultsDeterminstic} we report the results where we
+%keep the order of the stochastic neighborhoods used for shaking the
+%same and invert the order of the other
+%neighborhoods. Table~\ref{tab:resultsStochastic} shows the results
+%where we flip the order of the neighborhoods used for shaking and keep
+%the others the same. As expected, changing the order of our
+%neighborhoods does influence the results of the GVNS.
+%
+
+
+
+
+
+
+
 
 \begin{table}[H]
   \centering
@@ -230,7 +257,6 @@ at the timing results of instance 7 in table \ref{tab:TimingVns}, we see that th
 higher than in the original order. This means that we get a better minimum for the cost of stability of the solution,
 originating in the fact that we start exchaning 3 random vertices, than just 1 as in the original order.
 
-In general we can see that the results are an improvment compared to the implementation of exercise 2.
 
 
 
