@@ -185,12 +185,15 @@ used for the shaking.\footnote{Unfortunately, our script which executed
   00:00) and different from the one mentioned in the assignment
   (Sunday, 23:55).}
 
-As we can see, the reverse order of the VNS neighborhoods improves the minimum number of crossings. If we are looking
-at the timing results of instance 7 in Table~\ref{tab:TimingVns}, we see that the variance in the runtime is significantly
-higher than in the original order.
-%% TODO: removed; I wouldn't call hitting the max run-time 'stability'
-%% This means that we get a better minimum for the cost of stability of the solution,
-%%originating in the fact that we start exchaning 3 random vertices, than just 1 as in the original order.
+As we can see, the reverse order of the VNS neighborhoods improves the
+minimum number of crossings for many instances. If we are looking at
+the timing results of instance 7, in Table~\ref{tab:TimingVns}, we see
+that the variance in the runtime is higher than in the original order.
+%%% removed 'significantly' as this could imply some statistical test which we didn't run
+This might imply that we get a better minimum for the cost of
+stability of the solution, originating from the fact that we start
+exchaning 3 random vertices, than just 1 as in the original order. However,
+the fact that we hit the maximum run-time in many cases makes this difficult to interpret.
 
 
 \begin{table}[!H]
