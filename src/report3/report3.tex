@@ -120,12 +120,14 @@ The neighborhoods from last assignement:
 
 
 \subsection{Neigborhoodstructures in General VNS}
-
-As shown in the algorithm in section \ref{sec:general_vns} we define two non-overlapping sets of neigborhoods:
+We define two non-overlapping sets of neighborhoods and use the
+neighborhoods in the specified order:
 
 \begin{description}
 
-    \item{VNS}: used for the shaking, we decided to take the complex neighborhoods here, which dannot be completly searched.
+    \item{VNS}: used for the shaking, we decided to take the complex
+      neighborhoods here, which would be difficult to search
+      completely.
                 
                 1-node-move, 2-node-move, 3-node-move
                 
@@ -149,15 +151,13 @@ our algorithm can be seen in \ref{tab:Timing}
 
 We have set a timout of 5 minutes for the calculations.
 
+Overall, we find that for the small instances the GVNS finds better
+solutions than the local search we used in the previous
+exercise. Tables~\ref{tab:timing}--\ref{tab:stoch} show that for
+larger instances the maximum run-time is usually exhausted and, as a
+result, we do not find large improvements compared to the local search
+in the previous exercise.
 
-% there are no stepfunctions
-%\paragraph{Best neighborhood step function strategy}
-
-
-%Overall, the combination of the 1-node-flip neighborhood and the best
-%step-function shows the best improvements. For example, it finds a
-%solution with only $12$ edge-crossings for the instance automatic-4.
-%Not surprisingly, it also has the highest run-time.
 
 
 
@@ -186,7 +186,9 @@ neighborhoods does influence the results of the GVNS.
   \centering
   \scriptsize
   \input{crossingsTab}
-\caption{This table shows the results of our algorithm.}
+\caption{This table shows the results of our algorithm. We report the variance, average, standard deviation
+  and minimum number of crossings for $30$ runs. The column \texttt{min\_run} specifies the run which resulted
+  in the lowest number of crossings.}
 \label{tab:resultsOverall}
 \end{table}
 
@@ -195,7 +197,7 @@ neighborhoods does influence the results of the GVNS.
   \scriptsize
   \input{crossingsTab-det}
 \caption{This table shows the results of our algorithm using when we
-  flipped the order of the deterministic neighborhoods.}
+  flipped the order of the neighborhoods used in the inner loop.}
 \label{tab:resultsDeterministic}
 \end{table}
 
@@ -203,8 +205,8 @@ neighborhoods does influence the results of the GVNS.
   \centering
   \scriptsize
   \input{crossingsTab-stoch-order}
-\caption{This table shows the results of our algorithm where we
-  flipped the order of the stochastic neighborhoods used for shaking.}
+\caption{This table shows the results of our algorithm when we flipped
+  the order of the neighborhoods used for shaking.}
 \label{tab:resultsStochastic}
 \end{table}
 
@@ -220,16 +222,18 @@ neighborhoods does influence the results of the GVNS.
   \centering
   \scriptsize
   \input{timeTab-det-order}
-\caption{This table shows the runtime of our algorithm (det-order).}
-\label{tab:Timing}
+\caption{This table shows the runtime of our algorithm when we flipped
+  the order of the neighborhoods used in the inner loop.}
+\label{tab:Timing-det}
 \end{table}
 
 \begin{table}[H]
   \centering
   \scriptsize
   \input{timeTab-stoch-order}
-\caption{This table shows the runtime of our algorithm (stoch-order).}
-\label{tab:Timing}
+\caption{This table shows the runtime of our algorithm when we flipped
+  the order of the neighborhoods used for shaking.}
+\label{tab:Timing-stoch}
 \end{table}
 
 \end{document}
