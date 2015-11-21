@@ -62,28 +62,11 @@
 \section{General Variable Neighborhood search}
 \label{sec:general_vns}
 
-TODO: wrong algorithm, we are implementing general VNS, see slide 11.
-
 In this programming exercise, we build on our local search from the
-previous exercise and implement a variable neighborhood search
-heuristic.
+previous exercise and implement a generalized variable neighborhood
+search heuristic.
 
-%%% brauchen wir sowas?
-\begin{algorithm}[caption={Variable Neighborhood Search}]
-    input: Graph 
-    output: Improved solution
-    begin
-        l (*$\leftarrow$*) 1;
-	repeat:
-    	find (*$x'$*) with (*$f(x') \leq f(x''), \forall x'' \in N_l(x) $*) calculate initial solution
-        if (*f($x') < f(x)$*) then
-           (*$x \leftarrow x'$*);
-           l (*$\leftarrow$*) 1;
-        else 
-           l (*$\leftarrow$*) l + 1
-	until  (*$l > l_{max}$*)
-    end
-\end{algorithm}
+
 
 
 %%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
@@ -158,8 +141,11 @@ As shown in the algorithm in section \ref{sec:general_vns} we define two non-ove
 \section{Results}
 
 We executed the code on a desktop computer with a Core i7 Quad-Core
-CPU with 2.67Ghz and 24 GB of main memory. Table~\ref{tab:results}
-shows the results of our local search. 
+CPU with 2.67Ghz and 24 GB of main
+memory. Table~\ref{tab:resultsOverall} shows the number of crossings
+for the GVNS. We report average and standard deviations for $30$
+executions as well as the minim number of crossings. The run-time of
+our algorithm can be seen in \ref{tab:Timing}
 
 We have set a timout of 5 minutes for the calculations.
 
@@ -177,33 +163,73 @@ We have set a timout of 5 minutes for the calculations.
 
 
 \paragraph{Order of the neighborhoods}
-
-TODO: I would guess it does matter... we probably should run some experiments...
-
-see experiments in assignment3\_stats.sh
-
-
-
-
-
-
-
+Tables~\ref{tab:resultsDeterministic} and \ref{tab:resultsStochastic}
+show the results when we change the order of our neighborhoods. In
+Table~/ref{tab:resultsDeterminstic} we report the results where we
+keep the order of the stochastic neighborhoods used for shaking the
+same and invert the order of the other
+neighborhoods. Table~\ref{tab:resultsStochastic} shows the results
+where we flip the order of the neighborhoods used for shaking and keep
+the others the same. As expected, changing the order of our
+neighborhoods does influence the results of the GVNS.
 
 
-\begin{landscape}
-\begin{table}
+
+
+
+
+
+
+
+
+\begin{table}[H]
+  \centering
   \scriptsize
-  \input{resultsTab}
-\caption{Local search results. For each instance, we show the number
-  of crossings (first row), the iteration needed to reach the local
-  optimum (second row, first value) and the run-time in seconds of our
-  algorithm (second row, second value).  If no local optimum was found
-  the number of iterations is -1. The best solution is highlighted in
-  bold.}
-\label{tab:results}
+  \input{crossingsTab}
+\caption{This table shows the results of our algorithm.}
+\label{tab:resultsOverall}
 \end{table}
-\end{landscape}
 
+\begin{table}[H]
+  \centering
+  \scriptsize
+  \input{crossingsTab-det}
+\caption{This table shows the results of our algorithm using when we
+  flipped the order of the deterministic neighborhoods.}
+\label{tab:resultsDeterministic}
+\end{table}
 
+\begin{table}[H]
+  \centering
+  \scriptsize
+  \input{crossingsTab-stoch-order}
+\caption{This table shows the results of our algorithm where we
+  flipped the order of the stochastic neighborhoods used for shaking.}
+\label{tab:resultsStochastic}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \scriptsize
+  \input{timeTab}
+\caption{This table shows the runtime of our algorithm.}
+\label{tab:Timing}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \scriptsize
+  \input{timeTab-det-order}
+\caption{This table shows the runtime of our algorithm (det-order).}
+\label{tab:Timing}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \scriptsize
+  \input{timeTab-stoch-order}
+\caption{This table shows the runtime of our algorithm (stoch-order).}
+\label{tab:Timing}
+\end{table}
 
 \end{document}
