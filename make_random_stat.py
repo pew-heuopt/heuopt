@@ -120,7 +120,7 @@ def main(argv):
 
         for i in range (0,(NUM_RUNS-1)) :
 
-            res= make_stat_data.execute_program( program_instance, input_instance,  make_stat_data.output_dir + input_instance + '_' + str(i) + '.be' )
+            res= make_stat_data.execute_program( program_instance, input_instance,  make_stat_data.output_dir + program + '_' + input_instance + '_' + str(i) + '.be' )
             program_results.append( res  )
 
             for program_property in  PROGRAM_PROPERTIES :
