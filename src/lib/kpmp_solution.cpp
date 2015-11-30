@@ -120,6 +120,21 @@ void solution::remove_edge(  page & p, const edge_t & e, int crossings )
 
 }
 
+
+void solution::add_vertices_to_spine_order( const vertex_t & new_vertex )
+{
+    if( vertex_in_spine(new_vertex) )
+        throw std::runtime_error("vertex already in spine");
+
+    int spine_i= spine_order.size();
+
+    spine_order.resize( spine_order.size() + 1 );
+    spine_order[spine_i]= new_vertex;
+
+    spine_order_map[new_vertex] = spine_i;
+}
+
+
 void solution::add_vertices_to_spine_order( const std::vector<vertex_t> & new_vertices )
 {
     int spine_i= spine_order.size();

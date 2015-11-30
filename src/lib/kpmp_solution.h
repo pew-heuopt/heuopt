@@ -59,6 +59,7 @@ public:
     void remove_edge(  unsigned int page, const edge_t & e, int crossings );
     void remove_edge(  page & p, const edge_t & e, int crossings );
  
+    void add_vertices_to_spine_order( const vertex_t & new_vertex );
     void add_vertices_to_spine_order( const std::vector<vertex_t> & v );
 
     /** 
