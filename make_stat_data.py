@@ -22,25 +22,34 @@ output_dir= "output/"
 
 program_instances= { 
 
+#
+# assignment 4
+#
+
+                     'aco-local' : { 'bin' : 'src/assignment4', 
+                                     'opt' : [ '--num-ants', '10',
+                                               '--num-runs', '1'
+                                             ] },
+
 
 #
 # assignment 3
 #
-                     'general-vns' : { 'bin' : 'src/assignment3', 
-                                       'opt' : [ '--stochastic-neighborhoods', '1-node-move', '2-node-move', '3-node-move',
-                                                 '--deterministic-neighborhoods', '1-edge', '1-node-edge'
-                                               ] },
-
-                     'general-vns-stoch-order' : { 'bin' : 'src/assignment3', 
-                                       'opt' : [ '--stochastic-neighborhoods', '3-node-move', '2-node-move', '1-node-move',
-                                                 '--deterministic-neighborhoods', '1-edge', '1-node-edge'
-                                               ] },
-
-                     'general-vns-det-order' : { 'bin' : 'src/assignment3', 
-                                       'opt' : [ '--stochastic-neighborhoods', '1-node-move', '2-node-move', '3-node-move',
-                                                 '--deterministic-neighborhoods', '1-node-edge', '1-edge'
-                                               ] },
-
+#                     'general-vns' : { 'bin' : 'src/assignment3', 
+#                                       'opt' : [ '--stochastic-neighborhoods', '1-node-move', '2-node-move', '3-node-move',
+#                                                 '--deterministic-neighborhoods', '1-edge', '1-node-edge'
+#                                               ] },
+#
+#                     'general-vns-stoch-order' : { 'bin' : 'src/assignment3', 
+#                                       'opt' : [ '--stochastic-neighborhoods', '3-node-move', '2-node-move', '1-node-move',
+#                                                 '--deterministic-neighborhoods', '1-edge', '1-node-edge'
+#                                               ] },
+#
+#                     'general-vns-det-order' : { 'bin' : 'src/assignment3', 
+#                                       'opt' : [ '--stochastic-neighborhoods', '1-node-move', '2-node-move', '3-node-move',
+#                                                 '--deterministic-neighborhoods', '1-node-edge', '1-edge'
+#                                               ] },
+#
 
 #
 # assignment 2
