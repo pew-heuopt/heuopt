@@ -1,0 +1,243 @@
+\documentclass{scrartcl}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{color}
+\usepackage{booktabs}
+\usepackage{lscape}
+\usepackage{tabularx}
+
+\newcounter{nalg}[section] % defines algorithm counter for section
+\renewcommand{\thenalg}{\thesection .\arabic{nalg}} %defines appearance of the algorithm counter
+\DeclareCaptionLabelFormat{algocaption}{Algorithm \thenalg} % defines a new caption label as Algorithm x.y
+
+\lstnewenvironment{algorithm}[1][] %defines the algorithm listing environment
+{   
+    \refstepcounter{nalg} %increments algorithm number
+    \captionsetup{labelformat=algocaption,labelsep=colon} %defines the
+                                                          %caption
+                                                          %setup for:
+                                                          %it ises
+                                                          %label
+                                                          %format as
+                                                          %the
+                                                          %declared
+                                                          %caption
+                                                          %label above
+                                                          %and makes
+                                                          %label and
+                                                          %caption
+                                                          %text to be
+                                                          %separated
+                                                          %by a ':'
+    \lstset{ %this is the stype
+        frame=tB,
+        numbers=left, 
+        numberstyle=\tiny,
+        basicstyle=\scriptsize, 
+        keywordstyle=\color{black}\bfseries,
+        escapeinside={(*}{*)},
+        keywords={,input, output, return, datatype, function, in, if, else, foreach, while, begin, end, } 
+        numbers=left,
+        xleftmargin=.04\textwidth,
+        #1 % this is to add specific settings to an usage of this environment (for instnce, the caption and referable label)
+    }
+}
+{}
+
+
+
+
+
+\author{Alexander Eisl (0250266), Peter Wiedermann (0025999)}
+
+\date{\today}
+
+
+\title{Heuristic Optimization Techniques \\ Exercise 3}
+
+\begin{document}
+\maketitle
+
+
+\section{General Variable Neighborhood search}
+\label{sec:general_vns}
+
+In this programming exercise, we implement ACO.
+
+
+\subsection{Algorithm}
+
+\begin{algorithm}[caption={Local search}]
+    input: Graph 
+    output: Improved solution
+    begin
+        initialize ant colony;
+        for each (*$t \leftarrow 1,...,t_max$*) do
+      	    for each ant (*$k = 1,...,m$*) do
+               choose random start;
+               walk through construction graph according to $p_{ij}$
+            end for
+        end for
+        Apply pheromones;
+        Evaporate pheromones;
+    end
+\end{algorithm}
+
+Ants select the next vertex in the construction graph based on the
+transition probabilities $p_{ij}$ from vertex $i$ to $j$. The
+probabilities are calculated as a function of the pheromones
+$\tau_{ij}$ and the local information $\nu_{ij}$.
+
+
+
+%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%%% NEIGHBORHOODS HERE
+\subsection{Construction graph}
+\label{construction_graph}
+
+We build our construction graph in a two-step procedure. The first
+part of our construction graph represents the spine-order. The second
+part represents the edge allocation.
+
+[TODO: Illustration?]
+
+
+
+
+\subsection{Local Information}
+\label{local_information}
+
+Local information is calculated different for the two parts of our construction graph.
+
+\begin{description}
+
+    \item{Spine-Order}: Local information is proportional to the number of edges of the
+      nodes in the neighboorhood of $i$.
+                
+     \begin{equation*}
+       \nu_{ij} = Number of edges of each vertex $j$
+     \end{equation*}
+
+     Alternatively, we could calculate a similarity index, e.g. (TODO could
+     be more sophisticated)
+
+     \begin{equation*}
+       \nu_{ij} = \frac{Median of adjacent nodes of $i$}{Median of adjacent nodes of $j$}
+     \end{equation*}
+                
+
+    \item{Edge-Allocation}: 
+
+\end{description}
+
+
+%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%%% NEIGHBORHOODS HERE
+\section{Results}
+
+We executed the code on a desktop computer with a Core i7 Quad-Core
+CPU with 2.67Ghz and 24 GB of main memory. 
+
+\paragraph{}
+We set a timeout of 5 minutes for the calculations.  Because we
+are relying on random calculations, we provide the summary statistics
+of the results over 30 independent runs.
+
+
+\paragraph{}
+Table~\ref{tab:resultsOverall} shows the number of crossings for the
+GVNS using the order of neighborhoods as described in Section~\ref{neighborhood_orders}.
+The corresponding run-times are reported in Table~\ref{tab:Timing}.
+
+We find that for the small instances, the GVNS finds better solutions
+than the local search we used in the previous exercise. The timing in
+Table~\ref{tab:Timing} shows that for larger instances (except for
+instance 7) the maximum run-time is usually exhausted and, as a
+result, we do not find large improvements compared to the local search
+in the previous exercise.
+
+\paragraph{Order of the neighborhoods}
+We run two additional experiments where we change the order of the
+neighborhoods.\footnote{see Section~\ref{neighborhood_orders} for the
+  original order}
+
+Tables~\ref{tab:resultsVns} and ~\ref{tab:TimingVns} show the results
+when we reverse the order of the VNS neighborhoods used for the
+shaking.\footnote{Unfortunately, we have to re-run our computations
+  because we have overwritten our result files. Runtimes and crossing
+  numbers were recorded separately and are correct. Because of the
+  random nature of our algorithm, the crossing numbers of the
+  solutions that we will submit on the cluster tomorrow might be
+  different. Please note that the submission deadline on TUWEL seems
+  to be too early (Sunday, 00:00) and different from the one mentioned
+  in the assignment (Sunday, 23:55).}
+
+As we can see, the reverse order of the VNS neighborhoods improves the
+minimum number of crossings for many instances. If we are looking at
+the timing results of instance 7, in Table~\ref{tab:TimingVns}, we see
+that the variance in the runtime is higher than in the original order.
+%%% removed 'significantly' as this could imply some statistical test which we didn't run
+This might imply that we get a better minimum for the cost of
+stability of the solution, originating from the fact that we start
+exchanging 3 random vertices, than just 1 as in the original
+order. However, the fact that we hit the maximum run-time in many
+cases makes this difficult to interpret.
+
+
+\begin{table}[!H]
+  \centering
+  \scriptsize
+  \input{crossingsTab}
+\caption{Number of crossings using default neighborhood order}
+\label{tab:resultsOverall}
+\end{table}
+
+\begin{table}[!H]
+  \centering
+  \scriptsize
+  \input{crossingsTab-stoch-order}
+\caption{Number of crossings using reverse order of VNS neighborhood}
+\label{tab:resultsVns}
+\end{table}
+
+\begin{table}[!H]
+  \centering
+  \scriptsize
+  \input{crossingsTab-det}
+\caption{Number of crossings using reverse order of VND neighborhood}
+\label{tab:resultsVnd}
+\end{table}
+
+\clearpage
+
+\begin{table}[H]
+  \centering
+  \scriptsize
+  \input{timeTab}
+\caption{Runtime in seconds using default neighborhood order}
+\label{tab:Timing}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \scriptsize
+  \input{timeTab-stoch-order}
+\caption{Runtime in seconds using reverse order of VNS neighborhood}
+\label{tab:TimingVns}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \scriptsize
+  \input{timeTab-det-order}
+\caption{Runtime in seconds using reverse order of VND neighborhood}
+\label{tab:TimingVnd}
+\end{table}
+
+
+
+
+
+
+
+\end{document}
