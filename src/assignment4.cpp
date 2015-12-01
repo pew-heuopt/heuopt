@@ -3,6 +3,7 @@
 #include <fstream>
 #include <algorithm>
 #include <cassert>
+#include <chrono>
 
 #include <boost/shared_ptr.hpp>
 
@@ -12,11 +13,319 @@
 #include <kpmp_solution.h>
 #include <spine.h>
 
-//#define DEBUG 1
+#define DEBUG 1
+
+#define PROBABILISTIC_DECISION 1
+
+
+// making this global for performance reasons
+std::default_random_engine generator(std::chrono::system_clock::now().time_since_epoch().count());
+
+struct pathsegment
+{
+   pathsegment( int _cost )
+    : cost(_cost), 
+      weight(0.0)
+    {
+    };
+
+    double cost; 
+    double weight;
+
+};
+struct pathsegment_edge : pathsegment
+{
+    pathsegment_edge( int _page, edge_t _edge, int _cost )
+    : pathsegment(_cost),
+      page(_page),
+      edge(_edge)
+    {
+    };
+
+    int page;
+    edge_t edge; 
+};
+
+
+struct pathsegment_vertex : pathsegment
+{
+    pathsegment_vertex( vertex_t _vertex, int _cost )
+    : pathsegment(_cost),
+      vertex(_vertex)
+    {
+    };
+
+    vertex_t vertex;
+};
+
+
+class pheromone_matrix_edge
+{
+public:    
+    pheromone_matrix_edge(double _initial_val)
+    : initial_val( _initial_val )
+    {
+    }
+
+    double get_pheromone(int page, const edge_t & e)
+    {
+        return initial_val;
+    }
+ 
+
+private:
+
+    double initial_val;
+    std::map<int, std::map<vertex_t, std::map<vertex_t, double> > > pheromone_tree;
+};
+
+
+class pheromone_matrix_vertex
+{
+
+public:    
+    pheromone_matrix_vertex(double _initial_val)
+    : initial_val( _initial_val )
+    {
+    }
+
+    double get_pheromone(const vertex_t & from, vertex_t & to)
+    {
+        return initial_val;
+    }
+ 
+
+private:
+
+    double initial_val;
+    std::map<vertex_t, std::map<vertex_t, double> > pheromone_tree;
+};
+
+
+
+
+
+int build_local_pathsegment_edge_costs( const solution & sol,
+                                         const std::list<edge_t> & edges, 
+                             std::vector<pathsegment_edge> & pathsegment_edges )
+    
+{
+    assert( pathsegment_edges.size() == 0 );
+
+    int max_cost= 0;
+    int cost_sum= 0;
+
+    for( auto e= edges.begin(); e!=edges.end(); ++e )
+    {
+        for( int p= 0; p<sol.get_pages(); ++p )
+        {
+            int c= sol.try_num_crossing( p, *e );
+
+            if( c > max_cost )
+                max_cost= c;
+
+            pathsegment_edges.push_back( pathsegment_edge(p, *e, c) );
+            cost_sum+=c;
+        }
+    }
+                
+
+#ifdef DEBUG
+    std::cout << "build_local_pathsegment_edges: max_cost= " << max_cost << std::endl;
+#endif // DEBUG    
+
+
+    return cost_sum;
+}
+
+
+
+int increment_local_pathsegment_edge_costs( const solution & sol,
+                                 std::vector<pathsegment_edge> & pathsegment_edges )
+{
+    int max_cost= 0;
+    int cost_sum= 0;
+
+    for( auto ec= pathsegment_edges.begin(); ec!=pathsegment_edges.end(); ++ec )
+    {
+        int c= sol.try_num_crossing( ec->page, ec->edge ) + ec->cost;
+
+        if( c > max_cost )
+                max_cost= c;
+
+        ec->cost= c;
+        cost_sum+= c;
+    }
+
+#ifdef DEBUG
+    std::cout << "increment_local_pathsegment_edges: max_cost= " << max_cost << std::endl;
+#endif // DEBUG    
+
+    return cost_sum;
+}
+ 
+
+
+int build_local_pathsegment_vertexs( const std::vector<std::vector<vertex_t> > & adjacency_list,
+                               const std::map<vertex_t,bool> & vertex_hull,
+                               std::vector<pathsegment_vertex> & pathsegment_vertexs )
+{
+    int max_cost= 0;
+    int cost_sum= 0;
+
+    for( auto e= vertex_hull.begin(); e!=vertex_hull.end(); ++e )
+    {
+        vertex_t v= e->first; 
+        int c= (adjacency_list[v]).size();
+
+        if( c > max_cost )
+            max_cost= c;
+
+        cost_sum+=c;
+        pathsegment_vertexs.push_back( pathsegment_vertex(v, c) );
+    }
+                
+
+#ifdef DEBUG
+    std::cout << "build_local_pathsegment_vertexs: max_cost= " << max_cost << std::endl;
+#endif // DEBUG    
+
+    return cost_sum;
+} 
+
+std::vector<pathsegment_edge> filter_edge( const std::vector<pathsegment_edge> & pathsegment_edges, const edge_t & rm_edge )
+{
+    std::vector<pathsegment_edge> filtered;
+
+    for( auto ec= pathsegment_edges.begin(); ec!=pathsegment_edges.end(); ++ec )
+        if( ec->edge != rm_edge )
+            filtered.push_back( *ec );
+    return filtered;
+}
+
+#ifndef PROBABILISTIC_DECISION
+
+    template<typename T>
+    bool weight_order_func( const T & e1, const T & e2 )
+
+    {
+        return e1.weight > e2.weight;
+    }
+
+
+
+    template<typename T>
+    typename std::vector<T>::const_iterator weight_choose_random_best( const std::vector<T> & list )
+    {
+        auto start= list.begin();
+        auto best_val= start->weight;
+        auto i= start+1;
+
+        for( ; i!=list.end(); ++i )
+        {
+            if( i->weight!= best_val )
+                break;
+        }
+        auto num= i-start;
+
+        return start + rand() % num;
+    }
+
+#endif
+
+
+
+
+template<typename T>
+void calc_weight_relative_cost( std::vector<T> & pathsegment, int base_value )
+{
+    for( auto ec= pathsegment.begin(); ec!=pathsegment.end(); ++ec )
+    {
+        if( base_value == 0 )
+            ec->weight= 1.0;
+        else 
+            ec->weight= (base_value-ec->cost) / base_value ;
+    }
+}
+
+
+template<typename T>
+const T & random_discrete_distribution_weight( const std::vector<T> & weight_container )
+{
+    std::list<double> wlist;
+    for( auto i = weight_container.begin(); i!=weight_container.end(); ++i )
+        wlist.push_back(i->weight);
+
+    std::discrete_distribution<int> distribution(wlist.begin(), wlist.end());
+
+    int choice= distribution(generator);
+
+#ifdef DEBUG
+    std::cout << "rand: distr: " <<  distribution << std::endl;
+    std::cout << "rand: " << choice  << std::endl;
+#endif // DEBUG   
+
+
+    return weight_container[choice];
+}
+
+/**
+ * the ant decides which edge to take next,
+ * ant takes the complete hull into account (multiple edges, each edge for all pages)
+ *
+ * we are using an iterative crossing calculation, so the overhead is minimal
+ */
+void ant_edge_decission_hull_scope( solution & ant_solution, const std::list<edge_t> & edge_hull )
+{
+    std::vector<pathsegment_edge> pathsegment_edges;
+
+    // build local info for edge decission
+    int cost_sum= build_local_pathsegment_edge_costs( ant_solution,
+                            edge_hull, pathsegment_edges );
+
+
+    while( pathsegment_edges.size() )
+    {
+
+        calc_weight_relative_cost( pathsegment_edges, cost_sum );
+
+#ifdef PROBABILISTIC_DECISION
+        // choose probability based
+        pathsegment_edge best_edge= random_discrete_distribution_weight(pathsegment_edges); 
+#else
+        // choose local best 
+        sort( pathsegment_edges.begin(), pathsegment_edges.end(), weight_order_func<pathsegment_edge> );
+        pathsegment_edge best_edge= *weight_choose_random_best(pathsegment_edges); 
+#endif
+
+
+
+        // TODO: remove if everyting is tested
+        //assert( ant_solution.try_num_crossing( best_edge.page, best_edge.edge ) == best_edge.cost );
+        ant_solution.add_edge( best_edge.page, best_edge.edge, best_edge.cost );  // TODO: dangerous ;)
+
+
+        // rebuild local info for next edge decission
+        // we now add this choosen edge to the prior calculated costs to save time
+        {
+            // temporar empty solution for incremental edge crossing calculation
+            solution increment_solution ( ant_solution.get_pages(), ant_solution.get_num_vertices(), ant_solution.get_spine_order() );
+
+            increment_solution.add_edge( best_edge.page, best_edge.edge ); 
+
+
+            pathsegment_edges= filter_edge( pathsegment_edges, best_edge.edge);
+
+            cost_sum= increment_local_pathsegment_edge_costs( increment_solution, pathsegment_edges );
+        }
+
+    }
+
+}
+
 
 
 /** collect edges and add none-added adjacent nodes to the hull 
-    now present because of this next_vertex
  */
 template<typename T1, typename T2>
 void collect_hull( const solution * sol,
@@ -39,181 +348,6 @@ void collect_hull( const solution * sol,
 
 
 
-struct edge_cost
-{
-    edge_cost( int _page, edge_t _edge, int _cost )
-    : page(_page),
-      edge(_edge), 
-      cost(_cost), 
-      weight(0.0)
-    {
-    };
-
-
-
-    int page;
-    edge_t edge; 
-    double cost; 
-    double weight;
-};
-
-
-
-void build_local_edge_costs( const solution & sol,
-                             const std::list<edge_t> & edges, 
-                             std::vector<edge_cost> & edge_costs )
-    
-{
-    assert( edge_costs.size() == 0 );
-
-    int max_cost= 0;
-
-    for( auto e= edges.begin(); e!=edges.end(); ++e )
-    {
-        for( int p= 0; p<sol.get_pages(); ++p )
-        {
-            int c= sol.try_num_crossing( p, *e );
-
-            if( c > max_cost )
-                max_cost= c;
-
-            edge_costs.push_back( edge_cost(p, *e, c) );
-        }
-    }
-                
-
-#ifdef DEBUG
-    std::cout << "build_local_edge_costs: max_cost= " << max_cost << std::endl;
-#endif // DEBUG    
-
-
-    for( auto ec= edge_costs.begin(); ec!=edge_costs.end(); ++ec )
-    {
-        if( max_cost == 0 )
-            ec->weight= 1.0;
-        else 
-            ec->weight= 1.0 - ec->cost / max_cost ;
-    }
-}
-
-std::vector<edge_cost> filter_edge( const std::vector<edge_cost> & edge_costs, const edge_t & rm_edge )
-{
-    std::vector<edge_cost> filtered;
-
-    for( auto ec= edge_costs.begin(); ec!=edge_costs.end(); ++ec )
-        if( ec->edge != rm_edge )
-            filtered.push_back( *ec );
-    return filtered;
-}
-
-
-void increment_local_edge_costs( const solution & sol,
-                                 std::vector<edge_cost> & edge_costs )
-{
-    int max_cost= 0;
-
-    for( auto ec= edge_costs.begin(); ec!=edge_costs.end(); ++ec )
-    {
-        int c= sol.try_num_crossing( ec->page, ec->edge ) + ec->cost;
-
-        if( c > max_cost )
-                max_cost= c;
-
-        ec->cost= c;
-    }
-
-#ifdef DEBUG
-    std::cout << "increment_local_edge_costs: max_cost= " << max_cost << std::endl;
-#endif // DEBUG    
-
-
-    for( auto ec= edge_costs.begin(); ec!=edge_costs.end(); ++ec )
-    {
-        if( max_cost == 0 )
-            ec->weight= 1.0;
-        else 
-            ec->weight= 1.0 - ec->cost / max_cost ;
-    }
-
-}
- 
-struct vertex_cost
-{
-    vertex_cost( vertex_t _vertex, int _cost )
-    : vertex(_vertex),
-      cost(_cost), 
-      weight(0.0)
-    {
-    };
-
-
-    vertex_t vertex;
-    double cost; 
-    double weight;
-
-};
-
-
-
-void build_local_vertex_costs( const std::vector<std::vector<vertex_t> > & adjacency_list,
-                               const std::map<vertex_t,bool> & vertex_hull,
-                               std::vector<vertex_cost> & vertex_costs )
-{
-    int max_cost= 0;
-
-    for( auto e= vertex_hull.begin(); e!=vertex_hull.end(); ++e )
-    {
-        vertex_t v= e->first; 
-        int c= (adjacency_list[v]).size();
-
-        if( c > max_cost )
-            max_cost= c;
-
-        vertex_costs.push_back( vertex_cost(v, c) );
-    }
-                
-
-#ifdef DEBUG
-    std::cout << "build_local_vertex_costs: max_cost= " << max_cost << std::endl;
-#endif // DEBUG    
-
-
-    for( auto ec= vertex_costs.begin(); ec!=vertex_costs.end(); ++ec )
-    {
-        if( max_cost == 0 )
-            ec->weight= 1.0;
-        else 
-            ec->weight= 1.0 - ec->cost / max_cost ;
-    }
-
-
-} 
-
-template<typename T>
-bool weight_order_func( const T & e1, const T & e2 )
-
-{
-    return e1.weight > e2.weight;
-}
-
-
-template<typename T>
-typename std::vector<T>::const_iterator weight_choose_random_best( const std::vector<T> & list )
-{
-    auto start= list.begin();
-    auto best_val= start->weight;
-    auto i= start+1;
-
-    for( ; i!=list.end(); ++i )
-    {
-        if( i->weight!= best_val )
-            break;
-    }
-    auto num= i-start;
-
-    return start + rand() % num;
-}
-
 solution * ant_walk( int num_pages, /*const std::vector<vertex_t> & vertices,*/
                const std::vector<std::vector<vertex_t> > & adjacency_list )
 {
@@ -225,11 +359,10 @@ solution * ant_walk( int num_pages, /*const std::vector<vertex_t> & vertices,*/
     solution * ant_solution= new solution(num_pages, adjacency_list.size());
     assert(ant_solution);
 
-//  TODO: salt if we are done, i like it deterministic when i debug;)    
-//    srand ( time(NULL) );
 
     // generate random start vertex
-    vertex_t next_vertex= rand()%adjacency_list.size() ;
+    std::uniform_int_distribution<int> random_vertex(0, adjacency_list.size()-1);
+    vertex_t next_vertex= random_vertex(generator);
 
     do
     {
@@ -243,58 +376,36 @@ solution * ant_walk( int num_pages, /*const std::vector<vertex_t> & vertices,*/
                       vertex_hull, edge_hull );
 
 
-        // decide edge together with global info
-
-
-        std::vector<edge_cost> edge_costs;
-
-        // build local info for edge decission
-        build_local_edge_costs( *ant_solution,
-                                edge_hull, edge_costs );
-
-
-        while( edge_costs.size() )
-        {
-            sort( edge_costs.begin(), edge_costs.end(), weight_order_func<edge_cost> );
-            edge_cost best_edge= *weight_choose_random_best(edge_costs); 
-
-            //assert( ant_solution->try_num_crossing( best_edge.page, best_edge.edge ) == best_edge.cost );
-            ant_solution->add_edge( best_edge.page, best_edge.edge, best_edge.cost );  // TODO: dangerous ;)
-
-
-            // rebuild local info for next edge decission
-            // we now add this choosen edge to the prior calculated costs to save time
-            {
-                solution increment_solution ( num_pages, adjacency_list.size(),ant_solution->get_spine_order() );
-                increment_solution.add_edge( best_edge.page, best_edge.edge ); 
-
-
-                edge_costs= filter_edge( edge_costs, best_edge.edge);
-
-                increment_local_edge_costs( increment_solution, edge_costs );
-            }
-
-        }
+        ant_edge_decission_hull_scope( *ant_solution, edge_hull );
 
  
 
         if( vertex_hull.size() )
         {
             // decide node together with global info
-            std::vector<vertex_cost> vertex_costs;
-            build_local_vertex_costs( adjacency_list, vertex_hull, vertex_costs);
-            sort( vertex_costs.begin(), vertex_costs.end(), weight_order_func<vertex_cost> );
+            std::vector<pathsegment_vertex> vertex_pathsegment_alternatives;
+            int cost_sum= build_local_pathsegment_vertexs( adjacency_list, vertex_hull, vertex_pathsegment_alternatives);
+            calc_weight_relative_cost( vertex_pathsegment_alternatives, cost_sum );
 
+#ifdef PROBABILISTIC_DECISION
+
+            // probabilisitic choice
+            next_vertex= random_discrete_distribution_weight( vertex_pathsegment_alternatives ).vertex;
+#else
+            // calculate best
             // if there are multiple bests, choos a random
-            next_vertex= weight_choose_random_best( vertex_costs )->vertex;
+            sort( vertex_pathsegment_alternatives.begin(), vertex_pathsegment_alternatives.end(), weight_order_func<pathsegment_vertex> );
+
+            next_vertex= weight_choose_random_best( vertex_pathsegment_alternatives )->vertex;
+#endif
         }
+
+        // we could have islands or not connected vertices
+        // we just add them
         else
         {
-            // we could have islands or not connected vertices
-            // we just add them
             if( ant_solution->get_spine_order().size() < adjacency_list.size() )
             {
-                
                 for( auto i= adjacency_list.begin(); i!=adjacency_list.end(); ++i )
                 {
                     vertex_t v= i - adjacency_list.begin();
@@ -313,7 +424,7 @@ solution * ant_walk( int num_pages, /*const std::vector<vertex_t> & vertices,*/
         std::cout << "next_vertex= " << next_vertex << std::endl;
 #endif // DEBUG
 
-    }while( ant_solution->get_spine_order().size() != adjacency_list.size());
+    } while( ant_solution->get_spine_order().size() != adjacency_list.size());
 
     return ant_solution;
 }

@@ -78,6 +78,10 @@ public:
 
     const int get_pages() const { return pages.size(); };
 
+    /** note that this can be bigger than the number of vertices in the spine_order
+     *  for partial solutions */
+    int get_num_vertices() const { return spine_order_map.size(); };
+
     std::vector< vertex_t > & get_spine_order( ) { return spine_order; };
     const std::vector< vertex_t > & get_spine_order( ) const { return spine_order; };
 
