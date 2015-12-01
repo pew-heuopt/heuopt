@@ -31,8 +31,9 @@ struct pathsegment
 
     double cost; 
     double weight;
-
 };
+
+
 struct pathsegment_edge : pathsegment
 {
     pathsegment_edge( int _page, edge_t _edge, int _cost )
@@ -49,25 +50,45 @@ struct pathsegment_edge : pathsegment
 
 struct pathsegment_vertex : pathsegment
 {
-    pathsegment_vertex( vertex_t _vertex, int _cost )
+    pathsegment_vertex( vertex_t _from, vertex_t _to, int _cost )
     : pathsegment(_cost),
-      vertex(_vertex)
+      from(_from),
+      to(_to)
     {
     };
 
-    vertex_t vertex;
+    vertex_t from,to;
 };
 
 
-class pheromone_matrix_edge
+
+class pheromone_matrix
 {
 public:    
-    pheromone_matrix_edge(double _initial_val)
-    : initial_val( _initial_val )
+    pheromone_matrix(double _initial_val, double _alpha, double _beta)
+    : alpha(_alpha), 
+      beta(_beta),
+      initial_val(_initial_val)
     {
     }
 
-    double get_pheromone(int page, const edge_t & e)
+    const double alpha, beta;
+
+protected:
+
+    double initial_val;
+};
+
+
+class pheromone_matrix_edge : public pheromone_matrix
+{
+public:    
+    pheromone_matrix_edge(double initial_val, double alpha, double beta)
+    : pheromone_matrix( initial_val, alpha, beta )
+    {
+    }
+
+    double get_pheromone( const pathsegment_edge & pe) const
     {
         return initial_val;
     }
@@ -75,21 +96,20 @@ public:
 
 private:
 
-    double initial_val;
     std::map<int, std::map<vertex_t, std::map<vertex_t, double> > > pheromone_tree;
 };
 
 
-class pheromone_matrix_vertex
+class pheromone_matrix_vertex : public pheromone_matrix
 {
 
 public:    
-    pheromone_matrix_vertex(double _initial_val)
-    : initial_val( _initial_val )
+    pheromone_matrix_vertex(double initial_val, double alpha, double beta)
+    : pheromone_matrix( initial_val, alpha, beta )
     {
     }
 
-    double get_pheromone(const vertex_t & from, vertex_t & to)
+    double get_pheromone(const pathsegment_vertex & pv) const
     {
         return initial_val;
     }
@@ -167,8 +187,9 @@ int increment_local_pathsegment_edge_costs( const solution & sol,
 
 
 int build_local_pathsegment_vertexs( const std::vector<std::vector<vertex_t> > & adjacency_list,
-                               const std::map<vertex_t,bool> & vertex_hull,
-                               std::vector<pathsegment_vertex> & pathsegment_vertexs )
+                                     const vertex_t & from_vertex,
+                                     const std::map<vertex_t,bool> & vertex_hull,
+                                     std::vector<pathsegment_vertex> & pathsegment_vertexs )
 {
     int max_cost= 0;
     int cost_sum= 0;
@@ -182,7 +203,7 @@ int build_local_pathsegment_vertexs( const std::vector<std::vector<vertex_t> > &
             max_cost= c;
 
         cost_sum+=c;
-        pathsegment_vertexs.push_back( pathsegment_vertex(v, c) );
+        pathsegment_vertexs.push_back( pathsegment_vertex(from_vertex, v, c) );
     }
                 
 
@@ -248,6 +269,28 @@ void calc_weight_relative_cost( std::vector<T> & pathsegment, int base_value )
     }
 }
 
+template<typename T1, typename T2>
+void apply_pheromones( std::vector<T1> & pathsegment, const T2 & pheromone_matrix )
+{
+    double sum= 0.0;
+    for( auto ec= pathsegment.begin(); ec!=pathsegment.end(); ++ec )
+    {
+        ec->weight= ec->weight * pheromone_matrix.beta *
+                    pheromone_matrix.get_pheromone(*ec) * pheromone_matrix.alpha ;
+
+        sum+= ec->weight;
+    }
+
+
+    for( auto ec= pathsegment.begin(); ec!=pathsegment.end(); ++ec )
+    {
+        if( sum == 0.0 )
+            ec->weight= 1.0;
+        else 
+            ec->weight /= sum;
+    }
+}
+
 
 template<typename T>
 const T & random_discrete_distribution_weight( const std::vector<T> & weight_container )
@@ -256,7 +299,7 @@ const T & random_discrete_distribution_weight( const std::vector<T> & weight_con
     for( auto i = weight_container.begin(); i!=weight_container.end(); ++i )
         wlist.push_back(i->weight);
 
-    std::discrete_distribution<int> distribution(wlist.begin(), wlist.end());
+    std::discrete_distribution<int> distribution( wlist.begin(), wlist.end() );
 
     int choice= distribution(generator);
 
@@ -275,7 +318,8 @@ const T & random_discrete_distribution_weight( const std::vector<T> & weight_con
  *
  * we are using an iterative crossing calculation, so the overhead is minimal
  */
-void ant_edge_decission_hull_scope( solution & ant_solution, const std::list<edge_t> & edge_hull )
+void ant_edge_decission_hull_scope( solution & ant_solution, const std::list<edge_t> & edge_hull,
+                                    const pheromone_matrix_edge & edge_pheromones )
 {
     std::vector<pathsegment_edge> pathsegment_edges;
 
@@ -288,6 +332,8 @@ void ant_edge_decission_hull_scope( solution & ant_solution, const std::list<edg
     {
 
         calc_weight_relative_cost( pathsegment_edges, cost_sum );
+
+        apply_pheromones( pathsegment_edges, edge_pheromones );
 
 #ifdef PROBABILISTIC_DECISION
         // choose probability based
@@ -348,11 +394,11 @@ void collect_hull( const solution * sol,
 
 
 
-solution * ant_walk( int num_pages, /*const std::vector<vertex_t> & vertices,*/
-               const std::vector<std::vector<vertex_t> > & adjacency_list )
-{
-    //std::vector<int> free_vertices( adjacency_list.size(), 0);
+solution * ant_walk( int num_pages,
+                     const std::vector<std::vector<vertex_t> > & adjacency_list,
 
+                     const pheromone_matrix_edge & edge_pheromones, const pheromone_matrix_vertex & vertex_pheromones )
+{
     // everything thats reachable from current added vertices
     std::map<vertex_t,bool> vertex_hull; 
 
@@ -376,21 +422,27 @@ solution * ant_walk( int num_pages, /*const std::vector<vertex_t> & vertices,*/
                       vertex_hull, edge_hull );
 
 
-        ant_edge_decission_hull_scope( *ant_solution, edge_hull );
+        ant_edge_decission_hull_scope( *ant_solution, edge_hull, edge_pheromones );
 
  
 
         if( vertex_hull.size() )
         {
+            // !!! @alex: hier koennte man auch einfach ueber jede edge iterieren, 
+            //            dann waere die entscheidung nur nach pages und wir haetten trotzdem
+            //            haetten wir inseln von subgraphen getrennt
+
             // decide node together with global info
             std::vector<pathsegment_vertex> vertex_pathsegment_alternatives;
-            int cost_sum= build_local_pathsegment_vertexs( adjacency_list, vertex_hull, vertex_pathsegment_alternatives);
+            int cost_sum= build_local_pathsegment_vertexs( adjacency_list, next_vertex, vertex_hull, vertex_pathsegment_alternatives);
             calc_weight_relative_cost( vertex_pathsegment_alternatives, cost_sum );
+
+            apply_pheromones( vertex_pathsegment_alternatives, vertex_pheromones );
 
 #ifdef PROBABILISTIC_DECISION
 
             // probabilisitic choice
-            next_vertex= random_discrete_distribution_weight( vertex_pathsegment_alternatives ).vertex;
+            next_vertex= random_discrete_distribution_weight( vertex_pathsegment_alternatives ).to;
 #else
             // calculate best
             // if there are multiple bests, choos a random
@@ -491,13 +543,17 @@ int main( int argc, char **argv)
 
     boost::shared_ptr<solution> best_solution;
     
+    pheromone_matrix_edge edge_pheromones(0.0001,1,1); 
+    pheromone_matrix_vertex vertex_pheromones(0.0001,1,1);
+
     for( int run=0; run<num_runs; ++run )
     {
         std::vector< boost::shared_ptr<solution> > ant_solutions(num_ants);
 
         for( int ant=0; ant<num_ants; ++ant )
         {
-            ant_solutions[ant]= boost::shared_ptr<solution>( ant_walk(instance->getK(), instance->getAdjacencyList()) );
+            ant_solutions[ant]= boost::shared_ptr<solution>( ant_walk( instance->getK(), instance->getAdjacencyList(),
+                                                                       edge_pheromones, vertex_pheromones ) );
 
 #ifdef DEBUG
                 std::cout << "ant " << ant << ": " << * (ant_solutions[ant]) << ": " << (ant_solutions[ant])->get_crossings()<< std::endl;
@@ -510,6 +566,8 @@ int main( int argc, char **argv)
             }
 
         }
+
+        // TODO: update pheromone_matrices 
     }
 
 
