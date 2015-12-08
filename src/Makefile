@@ -27,7 +27,7 @@ all: runtests $(ASSIGNMENTS)
 release: all
 debug: all	
 
-$(LIBSTAT): $(LIBDIR)/kpmp_instance.o  $(LIBDIR)/kpmp_solution.o  $(LIBDIR)/kpmp_solution_writer.o  $(LIBDIR)/assignment_helpers.o  $(LIBDIR)/spine.o  $(LIBDIR)/neighborhood_node_edge_shift.o  $(LIBDIR)/neighborhood_1_edge_move.o  $(LIBDIR)/neighborhood_1_node_flip.o  $(LIBDIR)/neighborhood_1_node_move.o   $(LIBDIR)/neighborhood_x_node_move_random.o $(LIBDIR)/timer.o $(LIBDIR)/neighborhood_1_node_edge_move.o
+$(LIBSTAT): $(LIBDIR)/kpmp_instance.o  $(LIBDIR)/kpmp_solution.o  $(LIBDIR)/kpmp_solution_writer.o  $(LIBDIR)/assignment_helpers.o  $(LIBDIR)/spine.o  $(LIBDIR)/neighborhood_node_edge_shift.o  $(LIBDIR)/neighborhood_1_edge_move.o  $(LIBDIR)/neighborhood_1_node_flip.o  $(LIBDIR)/neighborhood_1_node_move.o   $(LIBDIR)/neighborhood_x_node_move_random.o $(LIBDIR)/timer.o $(LIBDIR)/neighborhood_1_node_edge_move.o $(LIBDIR)/pheromone.o
 	ar rvs $(LIBSTAT) lib/*.o 
 
 $(LIBDIR)/%.o : $(LIBDIR)/%.cpp $(LIBDIR)/%.h

@@ -13,114 +13,15 @@
 #include <kpmp_solution.h>
 #include <spine.h>
 
-#define DEBUG 1
+#include <pheromone.h>
+
+//#define DEBUG 1
 
 #define PROBABILISTIC_DECISION 1
 
 
 // making this global for performance reasons
 std::default_random_engine generator(std::chrono::system_clock::now().time_since_epoch().count());
-
-struct pathsegment
-{
-   pathsegment( int _cost )
-    : cost(_cost), 
-      weight(0.0)
-    {
-    };
-
-    double cost; 
-    double weight;
-};
-
-
-struct pathsegment_edge : pathsegment
-{
-    pathsegment_edge( int _page, edge_t _edge, int _cost )
-    : pathsegment(_cost),
-      page(_page),
-      edge(_edge)
-    {
-    };
-
-    int page;
-    edge_t edge; 
-};
-
-
-struct pathsegment_vertex : pathsegment
-{
-    pathsegment_vertex( vertex_t _from, vertex_t _to, int _cost )
-    : pathsegment(_cost),
-      from(_from),
-      to(_to)
-    {
-    };
-
-    vertex_t from,to;
-};
-
-
-
-class pheromone_matrix
-{
-public:    
-    pheromone_matrix(double _initial_val, double _alpha, double _beta)
-    : alpha(_alpha), 
-      beta(_beta),
-      initial_val(_initial_val)
-    {
-    }
-
-    const double alpha, beta;
-
-protected:
-
-    double initial_val;
-};
-
-
-class pheromone_matrix_edge : public pheromone_matrix
-{
-public:    
-    pheromone_matrix_edge(double initial_val, double alpha, double beta)
-    : pheromone_matrix( initial_val, alpha, beta )
-    {
-    }
-
-    double get_pheromone( const pathsegment_edge & pe) const
-    {
-        return initial_val;
-    }
- 
-
-private:
-
-    std::map<int, std::map<vertex_t, std::map<vertex_t, double> > > pheromone_tree;
-};
-
-
-class pheromone_matrix_vertex : public pheromone_matrix
-{
-
-public:    
-    pheromone_matrix_vertex(double initial_val, double alpha, double beta)
-    : pheromone_matrix( initial_val, alpha, beta )
-    {
-    }
-
-    double get_pheromone(const pathsegment_vertex & pv) const
-    {
-        return initial_val;
-    }
- 
-
-private:
-
-    double initial_val;
-    std::map<vertex_t, std::map<vertex_t, double> > pheromone_tree;
-};
-
 
 
 
@@ -543,8 +444,10 @@ int main( int argc, char **argv)
 
     boost::shared_ptr<solution> best_solution;
     
-    pheromone_matrix_edge edge_pheromones(0.0001,1,1); 
-    pheromone_matrix_vertex vertex_pheromones(0.0001,1,1);
+    double initial_phero_val= 0.0001;
+    double evaporation_rate= 0.4;
+    pheromone_matrix_edge edge_pheromones(initial_phero_val,1,1); 
+    pheromone_matrix_vertex vertex_pheromones(initial_phero_val,1,1);
 
     for( int run=0; run<num_runs; ++run )
     {
@@ -567,7 +470,15 @@ int main( int argc, char **argv)
 
         }
 
-        // TODO: update pheromone_matrices 
+
+        pheromone_update( ant_solutions, 
+                       vertex_pheromones, edge_pheromones, initial_phero_val );
+
+        edge_pheromones.evaporate( evaporation_rate );
+        vertex_pheromones.evaporate( evaporation_rate );
+
+        std::cout << "edge_pheromones: " << edge_pheromones << std::endl;
+        std::cout << "vertex_pheromones: " << vertex_pheromones << std::endl;
     }
 
 
