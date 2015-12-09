@@ -125,6 +125,7 @@ private:
 std::ostream& operator<<(std::ostream& os, const pheromone_matrix_vertex & vertex_matrix);
 
 
+
 void pheromone_update( const std::vector< boost::shared_ptr<solution> > & solutions, 
                        pheromone_matrix_vertex & matrix_vertex,
                        pheromone_matrix_edge & matrix_edge,

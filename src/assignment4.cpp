@@ -176,8 +176,8 @@ void apply_pheromones( std::vector<T1> & pathsegment, const T2 & pheromone_matri
     double sum= 0.0;
     for( auto ec= pathsegment.begin(); ec!=pathsegment.end(); ++ec )
     {
-        ec->weight= ec->weight * pheromone_matrix.beta *
-                    pheromone_matrix.get_pheromone(*ec) * pheromone_matrix.alpha ;
+        ec->weight= pow(ec->weight, pheromone_matrix.beta) *
+                    pow(pheromone_matrix.get_pheromone(*ec) , pheromone_matrix.alpha) ;
 
         sum+= ec->weight;
     }
@@ -400,11 +400,22 @@ int main( int argc, char **argv)
     int num_ants= 3;
     int num_runs= 5;
    
+    double alpha= 1.0;
+    double beta= 1.0;
+    double evaporation_rate= 0.4;
+
+    bool use_daemon= false;
 
     desc.add_options()
          ("num-ants", boost::program_options::value<int>(&num_ants), "number of ants in one run")
          ("num-runs", boost::program_options::value<int>(&num_runs), "number of ant walks and pheromon steps")
 
+         ("alpha", boost::program_options::value<double>(&alpha), "weight for pheromones in ant decissions (default 1.0)")
+         ("beta", boost::program_options::value<double>(&beta), "weight for local information in ant decissions (default 1.0)")
+
+         ("evaporation", boost::program_options::value<double>(&evaporation_rate), "evaporation rate of pheromones (default 0.4)")
+
+         ("use-daemon", boost::program_options::value<bool>(&use_daemon), "daemon can interact after each run")
              ;
 
     if( common_cmdline( argc, argv,
@@ -444,10 +455,9 @@ int main( int argc, char **argv)
 
     boost::shared_ptr<solution> best_solution;
     
-    double initial_phero_val= 0.0001;
-    double evaporation_rate= 0.4;
-    pheromone_matrix_edge edge_pheromones(initial_phero_val,1,1); 
-    pheromone_matrix_vertex vertex_pheromones(initial_phero_val,1,1);
+    double initial_phero_val= 0.00001;
+    pheromone_matrix_edge edge_pheromones(initial_phero_val,alpha,beta); 
+    pheromone_matrix_vertex vertex_pheromones(initial_phero_val,alpha,beta);
 
     for( int run=0; run<num_runs; ++run )
     {
@@ -474,11 +484,39 @@ int main( int argc, char **argv)
         pheromone_update( ant_solutions, 
                        vertex_pheromones, edge_pheromones, initial_phero_val );
 
+        // daemon actions
+        //
+        if( use_daemon )
+        {
+            sort( ant_solutions.begin(), ant_solutions.end(), 
+                  [](const boost::shared_ptr<solution>&lhs, const boost::shared_ptr<solution>&rhs) { return lhs->get_crossings() < rhs->get_crossings(); } ); 
+
+
+            // the best 20% of solutions are rewarded
+            for( int i= 0; i< num_ants*0.1; ++i )
+            {
+                edge_pheromones.apply_pheromones( *ant_solutions[i], 1.0 );
+                vertex_pheromones.apply_pheromones( *ant_solutions[i], 1.0 );
+            }    
+
+            // punishment makes everyting worse!!!
+            // the worst solution is punished
+            //edge_pheromones.apply_pheromones( *worst_ant, -0.2 );
+            //vertex_pheromones.apply_pheromones( *worst_ant, -0.2 );
+
+
+        }
+
+
+       
         edge_pheromones.evaporate( evaporation_rate );
         vertex_pheromones.evaporate( evaporation_rate );
 
+
+#ifdef DEBUG
         std::cout << "edge_pheromones: " << edge_pheromones << std::endl;
         std::cout << "vertex_pheromones: " << vertex_pheromones << std::endl;
+#endif // DEBUG                
     }
 
 

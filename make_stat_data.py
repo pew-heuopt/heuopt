@@ -10,12 +10,12 @@ input_instances= [
                    'automatic-2.txt',
                    'automatic-3.txt',
                    'automatic-4.txt',
-                   'automatic-5.txt',
-                   'automatic-6.txt',
-                   'automatic-7.txt',
-                   'automatic-8.txt',
-                   'automatic-9.txt',
-                   'automatic-10.txt',
+#                   'automatic-5.txt',
+#                   'automatic-6.txt',
+#                   'automatic-7.txt',
+#                   'automatic-8.txt',
+#                   'automatic-9.txt',
+#                   'automatic-10.txt',
                    ]
 
 output_dir= "output/"
@@ -26,9 +26,110 @@ program_instances= {
 # assignment 4
 #
 
-                     'aco-local' : { 'bin' : 'src/assignment4', 
+
+                     'aco' : { 'bin' : 'src/assignment4', 
                                      'opt' : [ '--num-ants', '10',
-                                               '--num-runs', '1'
+                                               '--num-runs', '10'
+                                             ] },
+
+# more runs are more efficent than more ants                                     
+                     'aco-more-ants' : { 'bin' : 'src/assignment4', 
+                                     'opt' : [ '--num-ants', '30',
+                                               '--num-runs', '10'
+                                             ] },
+
+                     'aco-more-runs' : { 'bin' : 'src/assignment4', 
+                                     'opt' : [ '--num-ants', '10',
+                                               '--num-runs', '30'
+                                             ] },
+
+
+                     'aco-0-alpha' : { 'bin' : 'src/assignment4', 
+                                     'opt' : [ '--alpha', '0.0',
+                                               '--beta', '1.0',
+                                               '--num-ants', '10',
+                                               '--num-runs', '30'
+                                             ] },
+
+
+# zero alpha or beta deliver worse solutions,
+# low alpha delivers worse solutions quicker than low beta
+                     'aco-low-alpha' : { 'bin' : 'src/assignment4', 
+                                     'opt' : [ '--alpha', '0.5',
+                                               '--beta', '1.0',
+                                               '--num-ants', '10',
+                                               '--num-runs', '30'
+                                             ] },
+
+
+
+                     'aco-0-local' : { 'bin' : 'src/assignment4', 
+                                     'opt' : [ '--alpha', '1.0',
+                                               '--beta', '0.0',
+                                               '--num-ants', '10',
+                                               '--num-runs', '30'
+                                             ] },
+
+
+                     'aco-low-local' : { 'bin' : 'src/assignment4', 
+                                     'opt' : [ '--alpha', '1.0',
+                                               '--beta', '0.5',
+                                               '--num-ants', '10',
+                                               '--num-runs', '30'
+                                             ] },
+
+
+# evap delivers better solutions when higher, of course total is worst case ;)
+                     'aco-low-evap' : { 'bin' : 'src/assignment4', 
+                                     'opt' : [ '--alpha', '1.0',
+                                               '--beta', '1.0',
+                                               '--num-ants', '10',
+                                               '--num-runs', '30',
+                                               '--evaporation', '0.3'
+                                             ] },
+
+                     'aco-med-evap' : { 'bin' : 'src/assignment4', 
+                                     'opt' : [ '--alpha', '1.0',
+                                               '--beta', '1.0',
+                                               '--num-ants', '10',
+                                               '--num-runs', '30',
+                                               '--evaporation', '0.6'
+                                             ] },
+
+
+                     'aco-high-evap' : { 'bin' : 'src/assignment4', 
+                                     'opt' : [ '--alpha', '1.0',
+                                               '--beta', '1.0',
+                                               '--num-ants', '10',
+                                               '--num-runs', '30',
+                                               '--evaporation', '0.9'
+                                             ] },
+
+                     'aco-total-evap' : { 'bin' : 'src/assignment4', 
+                                     'opt' : [ '--alpha', '1.0',
+                                               '--beta', '1.0',
+                                               '--num-ants', '10',
+                                               '--num-runs', '30',
+                                               '--evaporation', '1.0'
+                                             ] },
+
+# daemon actions                                     
+                     'aco-no-daemon' : { 'bin' : 'src/assignment4', 
+                                     'opt' : [ '--alpha', '1.0',
+                                               '--beta', '1.0',
+                                               '--num-ants', '10',
+                                               '--num-runs', '30',
+                                               '--evaporation', '0.9',
+                                               '--use-daemon', '0'
+                                             ] },
+
+                     'aco-daemon' : { 'bin' : 'src/assignment4', 
+                                     'opt' : [ '--alpha', '1.0',
+                                               '--beta', '1.0',
+                                               '--num-ants', '10',
+                                               '--num-runs', '30',
+                                               '--evaporation', '0.9',
+                                               '--use-daemon', '1'
                                              ] },
 
 

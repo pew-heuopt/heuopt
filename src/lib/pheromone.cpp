@@ -47,6 +47,8 @@ void pheromone_matrix_edge::apply_pheromones( const solution & sol, double phero
         {
             double & val_writer= get_phero_writer( page_num, *edge_it );
             val_writer+= pheromone;
+            if( val_writer <0.0 )
+                val_writer=0.0;
         }
 
         page_num++;
@@ -166,14 +168,17 @@ void pheromone_matrix_vertex::apply_pheromones( const solution & sol, double phe
         auto next_spine_it= spine_it ; 
         next_spine_it++;
 
-        double & overflow_phero= ( next_spine_it == spine_order.end() ) ? 
+        double & phero_writer= ( next_spine_it == spine_order.end() ) ? 
 
                                  // special case: back and front when we have an overflow
                                  get_phero_writer( *spine_it, spine_order.front() )
                                  :
                                  get_phero_writer( *spine_it, *next_spine_it )    
                                      ;
-        overflow_phero= pheromone;
+        phero_writer= pheromone;
+
+        if( phero_writer <0.0 )
+            phero_writer=0.0;
     }
 }
  
@@ -242,6 +247,8 @@ std::ostream& operator<<(std::ostream& os, const pheromone_matrix_vertex & verte
  *
 *************************************************************************************/
 
+
+
 void pheromone_update( const std::vector< boost::shared_ptr<solution> > & solutions, 
                        pheromone_matrix_vertex & matrix_vertex,
                        pheromone_matrix_edge & matrix_edge,
@@ -262,7 +269,6 @@ void pheromone_update( const std::vector< boost::shared_ptr<solution> > & soluti
             max_crossings= cross;
     }
 
-
 #ifdef DEBUG    
 std::cout << "phero: max: " << max_crossings << " sum:" << sum_crossings << std::endl;
 #endif // DEBUG
@@ -276,17 +282,14 @@ std::cout << "phero: max: " << max_crossings << " sum:" << sum_crossings << std:
                       :
                       (max_crossings - (*sol_it)->get_crossings() ) / double(max_crossings);
 
-        phero= phero * phero * phero * phero;
+        phero= phero * phero;
 
 #ifdef DEBUG    
-std::cout << "phero: spreading " << phero << std::endl; 
+    std::cout << "phero: spreading " << phero << std::endl; 
 #endif // DEBUG
 
         matrix_edge.apply_pheromones( **sol_it, phero );
         matrix_vertex.apply_pheromones( **sol_it, phero );
+
     }
-
-
-
-    // TODO: reset inital value after that?
 }
