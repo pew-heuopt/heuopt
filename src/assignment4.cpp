@@ -543,11 +543,13 @@ int main( int argc, char **argv)
 
     boost::shared_ptr<solution> best_solution;
     
+    // we have two connected construction graphs; one pheromone matrix for each
     pheromone_matrix_edge edge_pheromones(0.0001,1,1); 
     pheromone_matrix_vertex vertex_pheromones(0.0001,1,1);
 
     for( int run=0; run<num_runs; ++run )
     {
+      // vector of solutions
         std::vector< boost::shared_ptr<solution> > ant_solutions(num_ants);
 
         for( int ant=0; ant<num_ants; ++ant )
@@ -558,7 +560,8 @@ int main( int argc, char **argv)
 #ifdef DEBUG
                 std::cout << "ant " << ant << ": " << * (ant_solutions[ant]) << ": " << (ant_solutions[ant])->get_crossings()<< std::endl;
 #endif // DEBUG                
-
+		// remember the best solution
+		// TODO: do we need to do this?
             if( !best_solution ||
                 ant_solutions[ant]->get_crossings() < best_solution->get_crossings() )
             {
