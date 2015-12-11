@@ -28,7 +28,8 @@ std::default_random_engine generator(std::chrono::system_clock::now().time_since
 
 int build_local_pathsegment_edge_costs( const solution & sol,
                                          const std::list<edge_t> & edges, 
-                             std::vector<pathsegment_edge> & pathsegment_edges )
+                                         double beta,
+                                        std::vector<pathsegment_edge> & pathsegment_edges )
     
 {
     assert( pathsegment_edges.size() == 0 );
@@ -40,7 +41,7 @@ int build_local_pathsegment_edge_costs( const solution & sol,
     {
         for( int p= 0; p<sol.get_pages(); ++p )
         {
-            int c= sol.try_num_crossing( p, *e );
+            int c= (beta == 0.0) ? 0.0 : sol.try_num_crossing( p, *e );
 
             if( c > max_cost )
                 max_cost= c;
@@ -61,7 +62,7 @@ int build_local_pathsegment_edge_costs( const solution & sol,
 
 
 
-int increment_local_pathsegment_edge_costs( const solution & sol,
+int increment_local_pathsegment_edge_costs( const solution & sol, double beta , 
                                  std::vector<pathsegment_edge> & pathsegment_edges )
 {
     int max_cost= 0;
@@ -69,7 +70,7 @@ int increment_local_pathsegment_edge_costs( const solution & sol,
 
     for( auto ec= pathsegment_edges.begin(); ec!=pathsegment_edges.end(); ++ec )
     {
-        int c= sol.try_num_crossing( ec->page, ec->edge ) + ec->cost;
+        int c= ( beta == 0.0 ) ? 0.0 : ( sol.try_num_crossing( ec->page, ec->edge ) + ec->cost );
 
         if( c > max_cost )
                 max_cost= c;
@@ -226,7 +227,7 @@ void ant_edge_decission_hull_scope( solution & ant_solution, const std::list<edg
 
     // build local info for edge decission
     int cost_sum= build_local_pathsegment_edge_costs( ant_solution,
-                            edge_hull, pathsegment_edges );
+                            edge_hull, edge_pheromones.beta,  pathsegment_edges );
 
 
     while( pathsegment_edges.size() )
@@ -263,7 +264,7 @@ void ant_edge_decission_hull_scope( solution & ant_solution, const std::list<edg
 
             pathsegment_edges= filter_edge( pathsegment_edges, best_edge.edge);
 
-            cost_sum= increment_local_pathsegment_edge_costs( increment_solution, pathsegment_edges );
+            cost_sum= increment_local_pathsegment_edge_costs( increment_solution, edge_pheromones.beta, pathsegment_edges  );
         }
 
     }
