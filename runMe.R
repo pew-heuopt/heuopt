@@ -1,5 +1,5 @@
 COMMAND <- "src/assignment4"
-
+SEL_INSTANCE <- "instances/automatic-2.txt"
 
 ##' execute C program and collect number of crossings
 ##'
@@ -15,10 +15,10 @@ COMMAND <- "src/assignment4"
 ##' @param script 
 ##' @return 
 ##' @author Alexander
-runMe <- function(nAnts=100,nRuns=10,instance="instances/automatic-1.txt",
-                  outFile="TEST",alpha=1,beta=1,script=COMMAND,n=20) {
+runMe <- function(nAnts,nRuns,instance,outFile,alpha,beta,script,n) {
     res <- numeric(n)
     for(i in 1:n) {
+        outFileString <- paste("output/aco_out_",gsub("/","_",instance),n,".txt",sep="")
         commandString <- paste(script,"--num-ants",nAnts,"--num-runs",nRuns,"--beta",beta,"--alpha",alpha,
                                "--input",instance,"--output",outFile)
         out <- system(commandString,intern=TRUE)
@@ -30,13 +30,26 @@ runMe <- function(nAnts=100,nRuns=10,instance="instances/automatic-1.txt",
     return(list(res=res,avg=mean(res),stdDevs=sd(res)))
 }
 
-
-pRunMe <- function(x,params,nAnts=100,nRuns=10,instance="instances/automatic-1.txt",
-                   outFile="TEST",script=COMMAND,n=20) {
+##' Parallel version of runMe
+##'
+##' @title 
+##' @param x 
+##' @param params 
+##' @param nAnts 
+##' @param nRuns 
+##' @param instance 
+##' @param outFile 
+##' @param script 
+##' @param n 
+##' @return 
+##' @author Alexander
+pRunMe <- function(x,params,instance,script=COMMAND,n=20) {
     alpha <- params[x,"alpha"]
     beta <- params[x,"beta"]
-    res <- runMe(nAnts=nAnts,nRuns=nRuns,instance=instance,
-                 outFile=outFile,alpha=alpha,beta=beta,script=script,n=n)
+    nRuns <- params[x,"nRuns"]
+    nAnts <- params[x,"nAnts"]
+    n <- params[x,"n"]
+    res <- runMe(nAnts=nAnts,nRuns=nRuns,instance=instance,alpha=alpha,beta=beta,script=script,n=n)
     return(res)
 }
 
@@ -46,24 +59,21 @@ library(parallel)
 
 
 
-alpha <- seq(0.1,1,by=0.1)
-beta <- seq(0.1,1,by=0.1)
-params <- expand.grid(alpha,beta)
-colnames(params) <- c("alpha","beta")
+alpha <- seq(0.1,1,by=0.2)
+beta <- seq(0.1,1,by=0.2)
+nRuns <- c(5,10,20)
+nAnts <- c(100,500,1000)
+n <- 20
+params <- expand.grid(alpha,beta,nRuns,nAnts,n)
+colnames(params) <- c("alpha","beta","nRuns","nAnts","n")
 
 
-test <- mclapply(1:nrow(params),pRunMe,params=params,instance="instances/automatic-4.txt",nAnts=10,mc.cores=8)
+optim_res <- mclapply(1:nrow(params),pRunMe,params=params,instance=SEL_INSTANCE,mc.cores=8)
 
+## create object which will be saved
+opt_res <- list(optim_res=optim_res,params=params)
 
-res <- matrix(NA,nrow=length(alpha),ncol=length(beta))
+optResFileString <- paste("output/aco_opt_",gsub("/","_",SEL_INSTANCE),".txt",sep="")
+save(opt_res,file=optResFileString)
 
-
-
-
-for(i in 1:length(alpha)) {
-    cat(i," ")
-    for(j in 1:length(beta)) {
-        res[i,j] <- runMe(1000,20,"instances/automatic-4.txt","TEST",alpha=alpha[i],beta=beta[j])
-    }
-}
 
