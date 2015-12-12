@@ -1,5 +1,5 @@
 COMMAND <- "src/assignment4"
-SEL_INSTANCE <- "instances/automatic-2.txt"
+SEL_INSTANCE <- "instances/automatic-1.txt"
 
 ##' execute C program and collect number of crossings
 ##'
@@ -20,7 +20,7 @@ runMe <- function(nAnts,nRuns,instance,outFile,alpha,beta,script,n) {
     for(i in 1:n) {
         outFileString <- paste("output/aco_out_",gsub("/","_",instance),n,".txt",sep="")
         commandString <- paste(script,"--num-ants",nAnts,"--num-runs",nRuns,"--beta",beta,"--alpha",alpha,
-                               "--input",instance,"--output",outFile)
+                               "--input",instance,"--output",outFileString)
         out <- system(commandString,intern=TRUE)
         crossingSum <- tail(out,1)
         ## regexp would be nice, but so far, stringsplit at " " and take the third element of the resulting vector
@@ -57,8 +57,6 @@ pRunMe <- function(x,params,instance,script=COMMAND,n=20) {
 library(parallel)
 
 
-
-
 alpha <- seq(0.1,1,by=0.2)
 beta <- seq(0.1,1,by=0.2)
 nRuns <- c(5,10,20)
@@ -73,7 +71,7 @@ optim_res <- mclapply(1:nrow(params),pRunMe,params=params,instance=SEL_INSTANCE,
 ## create object which will be saved
 opt_res <- list(optim_res=optim_res,params=params)
 
-optResFileString <- paste("output/aco_opt_",gsub("/","_",SEL_INSTANCE),".txt",sep="")
+optResFileString <- paste("output/aco_opt_",gsub("/","_",SEL_INSTANCE),".Rdata",sep="")
 save(opt_res,file=optResFileString)
 
 
