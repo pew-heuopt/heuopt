@@ -1,17 +1,7 @@
 COMMAND <- "src/assignment4"
 SEL_INSTANCE <- "instances/automatic-4.txt"
 
-##' execute C program and collect number of crossings
-##'
-##' This script executes one run of our C-program. It uses system() and also creates
-##' the command string 
-##' @title 
-##' @param nAnts number of ants
-##' @param nRuns number of runs
-##' @param instance instance file
-##' @param outFile output file
-##' @param alpha 
-##' @param beta 
+
 ##' @param script 
 ##' @return 
 ##' @author Alexander
@@ -56,7 +46,9 @@ pRunMe <- function(x,params,instance,script=COMMAND,n=20) {
 }
 
 
+
 library(parallel)
+
 
 
 ## alpha <- c(0.1,1,2)
@@ -75,6 +67,7 @@ library(parallel)
 
 ## optResFileString <- paste("output/aco_opt_",gsub("/","_",SEL_INSTANCE),".Rdata",sep="")
 ## save(opt_res,file=optResFileString)
+
 
 
 runMeWrapper <- function(x,nAnts,nRuns,instance,alpha,beta,script) {
