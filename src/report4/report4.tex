@@ -62,7 +62,8 @@
 \section{General Variable Neighborhood search}
 \label{sec:general_vns}
 
-In this programming exercise, we implement ACO.
+In this programming exercise, we decided to search for optimal
+solutions using an ant colony optimization (ACO) algorithm.
 
 
 \subsection{Algorithm}
@@ -90,21 +91,41 @@ $\tau_{ij}$ and the local information $\nu_{ij}$.
 
 
 
-%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
-%%% NEIGHBORHOODS HERE
+%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Simple explanation of the construction graph
 \subsection{Construction graph}
 \label{construction_graph}
+We follow the approach used in the previous exercises and build the
+construction graph (CG) in a two-step procedure. The first part of our
+CG represents the spine-order. The second part represents the edge
+allocation. We do not store a representation of our construction graph
+in memory, as this would be very large for the bigger problem
+instances.
 
-We build our construction graph in a two-step procedure. The first
-part of our construction graph represents the spine-order. The second
-part represents the edge allocation.
+\begin{description}
+  \item[spine-order] The CG in this step corresponds to a complete
+    graph of the vertices. An ant can walk from each vertex to every other vertex, but
+    visit each vertex only once. The order in which an ant visits the vertices
+    corresponds to our spine order.
 
-[TODO: Illustration?]
+  \item[page-allocation] For each edge $j$, we create $k$ vertices
+    which representation the page allocation of this edge. An ant can
+    walk from the vertex of edge $j-1$ to $j$ by chosing $k$
+    pathes. Depending on which path the ant choses, edge $j$ is on the
+    corresponding page.
+\end{description}
 
+%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Simple explanation of the construction graph
+\subsection{Pheromone model}
+We implemented a pheromone model which works similarly for the two
+parts of our construction graph. For each walk, we calculate the
+number of crossings $c$ and increase the pheromones on each edge of the
+construction graph by $1/c$.
 
-
-
-\subsection{Local Information}
+%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Heuristic used for local information
+\subsection{Heuristic for local information}
 \label{local_information}
 
 Local information is calculated different for the two parts of our construction graph.
@@ -112,127 +133,80 @@ Local information is calculated different for the two parts of our construction 
 \begin{description}
 
     \item{Spine-Order}: Local information is proportional to the number of edges of the
-      nodes in the neighboorhood of $i$.
-                
-     \begin{equation*}
-       \nu_{ij} = Number of edges of each vertex $j$
-     \end{equation*}
+      nodes in the neighboorhood of $i$.              
 
-     Alternatively, we could calculate a similarity index, e.g. (TODO could
-     be more sophisticated)
-
-     \begin{equation*}
-       \nu_{ij} = \frac{Median of adjacent nodes of $i$}{Median of adjacent nodes of $j$}
-     \end{equation*}
-                
-
-    \item{Edge-Allocation}: 
-
+    \item{Edge-Allocation}: Local information is proportional to the number of additional
+      crossings an edge would introduce when added to page $k$. As this is path-dependent, local
+      information needs to be evaluated for each step an ant takes in this part of the CG.
 \end{description}
+
+\subsection{Deamon Action}
+\label{Deamon Action}
+In addition to the regular pheromone updates, we implement a deamon
+action. This can punish or reward 10 percent of the worst / best
+edges. Our experiments indicate that only the version which gives
+rewards yield better results.
 
 
 %%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 %%% NEIGHBORHOODS HERE
-\section{Results}
-
+\section{Experiments and Results}
 We executed the code on a desktop computer with a Core i7 Quad-Core
-CPU with 2.67Ghz and 24 GB of main memory. 
+CPU with 2.67Ghz and 24 GB of main memory. \\
 
-\paragraph{}
-We set a timeout of 5 minutes for the calculations.  Because we
-are relying on random calculations, we provide the summary statistics
-of the results over 30 independent runs.
-
-
-\paragraph{}
-Table~\ref{tab:resultsOverall} shows the number of crossings for the
-GVNS using the order of neighborhoods as described in Section~\ref{neighborhood_orders}.
-The corresponding run-times are reported in Table~\ref{tab:Timing}.
-
-We find that for the small instances, the GVNS finds better solutions
-than the local search we used in the previous exercise. The timing in
-Table~\ref{tab:Timing} shows that for larger instances (except for
-instance 7) the maximum run-time is usually exhausted and, as a
-result, we do not find large improvements compared to the local search
-in the previous exercise.
-
-\paragraph{Order of the neighborhoods}
-We run two additional experiments where we change the order of the
-neighborhoods.\footnote{see Section~\ref{neighborhood_orders} for the
-  original order}
-
-Tables~\ref{tab:resultsVns} and ~\ref{tab:TimingVns} show the results
-when we reverse the order of the VNS neighborhoods used for the
-shaking.\footnote{Unfortunately, we have to re-run our computations
-  because we have overwritten our result files. Runtimes and crossing
-  numbers were recorded separately and are correct. Because of the
-  random nature of our algorithm, the crossing numbers of the
-  solutions that we will submit on the cluster tomorrow might be
-  different. Please note that the submission deadline on TUWEL seems
-  to be too early (Sunday, 00:00) and different from the one mentioned
-  in the assignment (Sunday, 23:55).}
-
-As we can see, the reverse order of the VNS neighborhoods improves the
-minimum number of crossings for many instances. If we are looking at
-the timing results of instance 7, in Table~\ref{tab:TimingVns}, we see
-that the variance in the runtime is higher than in the original order.
-%%% removed 'significantly' as this could imply some statistical test which we didn't run
-This might imply that we get a better minimum for the cost of
-stability of the solution, originating from the fact that we start
-exchanging 3 random vertices, than just 1 as in the original
-order. However, the fact that we hit the maximum run-time in many
-cases makes this difficult to interpret.
+We run a set of experiments to find out how the different parameters
+($\alpha$ $\beta$) influence the results. We also evaluate how the
+number runs and the size of our ant colony influence to results of our
+optimization. \\
 
 
 \begin{table}[!H]
-  \centering
-  \scriptsize
-  \input{crossingsTab}
-\caption{Number of crossings using default neighborhood order}
-\label{tab:resultsOverall}
+\centering
+\scriptsize  
+\input{runTable}
+\caption{This table shows the number of crossings for instance \texttt{automatic-4} for
+different numbers of runs (columns) and ants (rows).}
+\label{tab:runTable}
 \end{table}
 
-\begin{table}[!H]
-  \centering
-  \scriptsize
-  \input{crossingsTab-stoch-order}
-\caption{Number of crossings using reverse order of VNS neighborhood}
-\label{tab:resultsVns}
-\end{table}
 
 \begin{table}[!H]
-  \centering
-  \scriptsize
-  \input{crossingsTab-det}
-\caption{Number of crossings using reverse order of VND neighborhood}
-\label{tab:resultsVnd}
+\centering
+\scriptsize  
+\input{alphabeta}
+\caption{This table shows the number of crossings for instance \texttt{automatic-4} for
+different weights for $\alpha$ (rows) and $\beta$ (columns).}
+\label{tab:alphabeta}
 \end{table}
+
+
+For computational reasons, we run most of our experiments on selected
+(smaller) problem instances. Table~\ref{tab:runTable} shows the number
+of crossings for different numbers of runs and ants. As expected, both
+runs and ants improve the solution. However, especially in the
+beginning an increase of runs seems to be more beneficial.\\
+
+We tried different parameters for $\alpha$ and
+$\beta$. Table~\ref{tab:alphabeta} shows the number of crossings for
+instance \texttt{automatic-4} for $1000$ ants and $20$ runs.  Overall,
+higher powers seem to favour good solutions. This seems intuitive as
+it gives more weights to better local information / pheromones. For
+this instance and parameterization (runs, ants), the parameter for
+local information seems to be more important. \\
+
+We also run a handful of experiments for the evaporation rate and find that
+higher values tend to give better results.
+
+Table~\ref{tab:results} shows the overall results. For the smaller
+problem instances, we tend to find very good solutions compared to our
+previous exercies. However, for the larger instances we are unable to
+use a sufficient number of ants and runs. Given that the CGs of these
+instances are very large we suspect that we would need a much larger
+number of ants (and/or better local information) to find meaningful
+solutions.
+
 
 \clearpage
-
-\begin{table}[H]
-  \centering
-  \scriptsize
-  \input{timeTab}
-\caption{Runtime in seconds using default neighborhood order}
-\label{tab:Timing}
-\end{table}
-
-\begin{table}[H]
-  \centering
-  \scriptsize
-  \input{timeTab-stoch-order}
-\caption{Runtime in seconds using reverse order of VNS neighborhood}
-\label{tab:TimingVns}
-\end{table}
-
-\begin{table}[H]
-  \centering
-  \scriptsize
-  \input{timeTab-det-order}
-\caption{Runtime in seconds using reverse order of VND neighborhood}
-\label{tab:TimingVnd}
-\end{table}
 
 
 
