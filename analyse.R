@@ -46,10 +46,78 @@ generateComparisonMatrix <- function(d,p,cols2plot,subsetCols,subsetVals) {
 }
 
 
+library(xtable)
 
-generateComparisonMatrix(dat,params,c("nAnts","nRuns"),c("n","beta","alpha"),c(10,1,1))
+runTable <- generateComparisonMatrix(dat,params,c("nAnts","nRuns"),c("n","beta","alpha"),c(10,1,1))
+runTableXtab <- xtable(runTable)
 
-generateComparisonMatrix(dat,params,c("alpha","beta"),c("n","nAnts","nRuns"),c(10,500,10))
+print(runTableXtab,file="src/report4/runTable.tex",floating=FALSE)
+
+
+
+alphaBetaTab <- generateComparisonMatrix(dat,params,c("alpha","beta"),c("n","nAnts","nRuns"),c(10,500,10))
+
+alphaBetaXTab <- xtable(alphaBetaTab)
+print(alphaBetaXTab,file="src/report4/alphabeta.tex",floating=FALSE)
+
+
+
+
+
 
 
 undebug(generateComparisonMatrix)
+
+
+
+
+load("output/res1.rdata")
+load("output/res2.rdata")
+load("output/res3.rdata")
+load("output/res4.rdata")
+load("output/res5.rdata")
+load("output/res6.rdata")
+load("output/res7.rdata")
+load("output/res8.rdata")
+load("output/res9.rdata")
+load("output/res10.rdata")
+
+
+analyseResult <- function(res) {
+    n <- length(res)
+    crossings <- numeric(n)
+    timings <- numeric(n)
+    for(i in 1:n) {
+        crossings[i] <- res[[i]]$res
+        timings[i] <- res[[i]]$timings
+    }
+    minCrossing <- min(crossings)
+    avgCrossing <- mean(crossings)
+    sdCrossing <- sd(crossings)
+    whichMinCrossing <- which(crossings==minCrossing)
+    avgTime <- mean(timings)
+    sdTime <- sd(timings,na.rm=TRUE)
+    
+    return(list(
+        minCrossing=minCrossing,
+        avgCrossing=avgCrossing,
+        sdCrossing=sdCrossing,
+        whichMinCrossing=whichMinCrossing,
+        avgTime=avgTime,
+        sdTime=sdTime))
+}
+
+
+analyseResult(res1)
+analyseResult(res2)
+analyseResult(res3)
+analyseResult(res4)
+analyseResult(res5)
+analyseResult(res6)
+analyseResult(res7)
+analyseResult(res8)
+analyseResult(res9)
+analyseResult(res10)
+
+
+debug(analyseResult)
