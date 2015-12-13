@@ -1,5 +1,5 @@
 COMMAND <- "src/assignment4"
-SEL_INSTANCE <- "instances/automatic-1.txt"
+SEL_INSTANCE <- "instances/automatic-4.txt"
 
 ##' execute C program and collect number of crossings
 ##'
