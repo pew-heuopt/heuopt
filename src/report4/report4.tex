@@ -140,7 +140,7 @@ Local information is calculated different for the two parts of our construction 
       information needs to be evaluated for each step an ant takes in this part of the CG.
 \end{description}
 
-\subsection{Deamon Action}
+\subsection{Daemon Action}
 \label{Deamon Action}
 In addition to the regular pheromone updates, we implement a deamon
 action. This can punish or reward 10 percent of the worst / best
@@ -180,7 +180,8 @@ different weights for $\alpha$ (rows) and $\beta$ (columns).}
 \end{table}
 
 
-For computational reasons, we run most of our experiments on selected
+For computational reasons, we run most of our experiments for the parametrization of
+the algorithm on selected
 (smaller) problem instances. Table~\ref{tab:runTable} shows the number
 of crossings for different numbers of runs and ants. As expected, both
 runs and ants improve the solution. However, especially in the
@@ -207,8 +208,9 @@ solutions.
 
 For selected instances, we executed our algorithm with an even larger
 number of ants/runs and were able to achieve very promising
-results. However, due to the run-time we did not run experiments and
-cannot report averages and standard deviations of our results.
+results. However, due to the run-time we did not run experiments with 
+higher number of ants and runs for the bigger problem instances.
+
 
 
 \begin{table}[!H]
