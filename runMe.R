@@ -84,4 +84,8 @@ runMeWrapper <- function(x,nAnts,nRuns,instance,alpha,beta,script) {
 
 
 
-mclapply(1:10,runMeWrapper,nAnts=50,nRuns=10,instance="instances/automatic-6.txt",alpha=2,beta=2,script=COMMAND)
+res6 <- mclapply(1:10,runMeWrapper,nAnts=50,nRuns=10,instance="instances/automatic-6.txt",alpha=2,beta=2,script=COMMAND,mc.cores=8)
+res7 <- mclapply(1:10,runMeWrapper,nAnts=100,nRuns=20,instance="instances/automatic-7.txt",alpha=2,beta=2,script=COMMAND,mc.cores=8)
+res8 <- mclapply(1:10,runMeWrapper,nAnts=100,nRuns=20,instance="instances/automatic-8.txt",alpha=2,beta=2,script=COMMAND,mc.cores=8)
+res9 <- mclapply(1:10,runMeWrapper,nAnts=50,nRuns=10,instance="instances/automatic-9.txt",alpha=2,beta=2,script=COMMAND,mc.cores=8)
+res10 <- mclapply(1:10,runMeWrapper,nAnts=100,nRuns=20,instance="instances/automatic-10.txt",alpha=2,beta=2,script=COMMAND,mc.cores=8)
