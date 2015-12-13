@@ -12,7 +12,7 @@
 ##' @param script 
 ##' @return 
 ##' @author Alexander
-runMe <- function(nAnts,nRuns,instance,outFile,alpha,beta,script,n) {
+runMe <- function(nAnts,nRuns,instance,outFile,alpha,beta,script,n,outerParallel=TRUE) {
     res <- numeric(n)
     timings <- numeric(n)
     for(i in 1:n) {
