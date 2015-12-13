@@ -15,11 +15,11 @@ SEL_INSTANCE <- "instances/automatic-4.txt"
 ##' @param script 
 ##' @return 
 ##' @author Alexander
-runMe <- function(nAnts,nRuns,instance,outFile,alpha,beta,script,n) {
+runMe <- function(nAnts,nRuns,instance,alpha,beta,script,n,x=NULL) {
     res <- numeric(n)
     timings <- numeric(n)
     for(i in 1:n) {
-        outFileString <- paste("output/aco_out_",gsub("/","_",instance),n,".txt",sep="")
+        outFileString <- paste("output/aco_out_",gsub("/","_",instance),x,n,".txt",sep="")
         commandString <- paste(script,"--num-ants",nAnts,"--num-runs",nRuns,"--beta",beta,"--alpha",alpha,
                                "--input",instance,"--output",outFileString)
         timing <- system.time(out <- system(commandString,intern=TRUE))
@@ -28,9 +28,12 @@ runMe <- function(nAnts,nRuns,instance,outFile,alpha,beta,script,n) {
         res[i] <- as.numeric(strsplit(crossingSum," ")[[1]][3])
         timings[i] <- timing["user.self"]
     }
-    
-    return(list(res=res,avg=mean(res),stdDevs=sd(res),timings=timings,avgTime=mean(timings)))
-}
+    if(n==1) {
+        return(list(res=res,avg=mean(res),timings=timings,avgTime=mean(timings)))
+    } else {
+        return(list(res=res,avg=mean(res),stdDevs=sd(res),timings=timings,avgTime=mean(timings)))
+    }
+} 
 
 ##' Parallel version of runMe
 ##'
@@ -74,3 +77,11 @@ optResFileString <- paste("output/aco_opt_",gsub("/","_",SEL_INSTANCE),".Rdata",
 save(opt_res,file=optResFileString)
 
 
+runMeWrapper <- function(x,nAnts,nRuns,instance,alpha,beta,script) {
+    res1 <- runMe(nAnts=nAnts,nRuns=nRuns,instance=instance,alpha=alpha,beta=beta,script=script,n=1,x=x)
+    return(res1)
+}
+
+
+
+mclapply(1:10,runMeWrapper,nAnts=50,nRuns=10,instance="instances/automatic-6.txt",alpha=2,beta=2,script=COMMAND)
