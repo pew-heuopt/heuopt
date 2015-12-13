@@ -1,5 +1,5 @@
 COMMAND <- "src/assignment4"
-SEL_INSTANCE <- "instances/automatic-1.txt"
+SEL_INSTANCE <- "instances/automatic-4.txt"
 
 ##' execute C program and collect number of crossings
 ##'
@@ -17,30 +17,29 @@ SEL_INSTANCE <- "instances/automatic-1.txt"
 ##' @author Alexander
 runMe <- function(nAnts,nRuns,instance,outFile,alpha,beta,script,n) {
     res <- numeric(n)
+    timings <- numeric(n)
     for(i in 1:n) {
         outFileString <- paste("output/aco_out_",gsub("/","_",instance),n,".txt",sep="")
         commandString <- paste(script,"--num-ants",nAnts,"--num-runs",nRuns,"--beta",beta,"--alpha",alpha,
                                "--input",instance,"--output",outFileString)
-        out <- system(commandString,intern=TRUE)
+        timing <- system.time(out <- system(commandString,intern=TRUE))
         crossingSum <- tail(out,1)
         ## regexp would be nice, but so far, stringsplit at " " and take the third element of the resulting vector
         res[i] <- as.numeric(strsplit(crossingSum," ")[[1]][3])
+        timings[i] <- timing["user.self"]
     }
     
-    return(list(res=res,avg=mean(res),stdDevs=sd(res)))
+    return(list(res=res,avg=mean(res),stdDevs=sd(res),timings=timings,avgTime=mean(timings)))
 }
 
 ##' Parallel version of runMe
 ##'
-##' @title 
-##' @param x 
-##' @param params 
-##' @param nAnts 
-##' @param nRuns 
-##' @param instance 
-##' @param outFile 
-##' @param script 
-##' @param n 
+##' @title Parallel version of runMe
+##' @param x identifier of this instance
+##' @param params parameter matrix
+##' @param instance which graph instance we should use
+##' @param script C++ program to run
+##' @param n number of runs
 ##' @return 
 ##' @author Alexander
 pRunMe <- function(x,params,instance,script=COMMAND,n=20) {
@@ -57,11 +56,11 @@ pRunMe <- function(x,params,instance,script=COMMAND,n=20) {
 library(parallel)
 
 
-alpha <- seq(0.1,1,by=0.2)
-beta <- seq(0.1,1,by=0.2)
-nRuns <- c(5,10,20)
-nAnts <- c(100,500,1000)
-n <- 20
+alpha <- c(0.1,1,2)
+beta <- c(0.1,1,2)
+nRuns <- c(5,10,20,50,100)
+nAnts <- c(100,500,1000,2000)
+n <- 10
 params <- expand.grid(alpha,beta,nRuns,nAnts,n)
 colnames(params) <- c("alpha","beta","nRuns","nAnts","n")
 
