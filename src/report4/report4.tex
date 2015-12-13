@@ -205,24 +205,30 @@ instances are very large we suspect that we would need a much larger
 number of ants (and/or better local information) to find meaningful
 solutions.
 
+For selected instances, we executed our algorithm with an even larger
+number of ants/runs and were able to achieve very promising
+results. However, due to the run-time we did not run experiments and
+cannot report averages and standard deviations of our results.
+
 
 \begin{table}[!H]
 \scriptsize
 \centering
-\begin{tabular}{llllll}
+\begin{tabular}{llcccccc}
 \toprule
-Instance & Avg Crossings & Min Crossings & Std Crossings & Avg Run-Time & Std Run-Time \\
+ & & & \multicolumn{3}{c}{Crossings} & \multicolumn{2}{c}{Time} \\
+Instance & Ants & Runs & avg & min & sd & avg & sd \\
 \midrule
-\texttt{auto-1} & & & & & \\
-\texttt{auto-2} & & & & & \\
-\texttt{auto-3} & & & & & \\
-\texttt{auto-4} & & & & & \\
-\texttt{auto-5} & & & & & \\
-\texttt{auto-6} & & & & & \\
-\texttt{auto-7} & & & & & \\
-\texttt{auto-8} & & & & & \\
-\texttt{auto-9} & & & & & \\
-\texttt{auto-10} & & & & & \\
+\texttt{auto-1} & & & 14.87 & 14 & 0.35 & 61.08 & 0.58  \\
+\texttt{auto-2} & & & 0 & 1.13 & 0.83 & 54.00 & 0.59 \\
+\texttt{auto-3} & & & 171 & 179.87 & 4.19 & 4.58 & 0.5 \\
+\texttt{auto-4} & & & 2 & 4.00 & 1.19 & 72.89 & 1.94 \\
+\texttt{auto-5} & & & 22 & 30.25 & 3.69 & 47.75 & 1.15 \\
+\texttt{auto-6}& & & & & & & \\
+\texttt{auto-7}& & & & & & & \\
+\texttt{auto-8}& & & & & & & \\
+\texttt{auto-9}& & & & & & & \\
+\texttt{auto-10}& & & & & & & \\
 \bottomrule
 
 \end{tabular}
