@@ -73,10 +73,10 @@ solutions using an ant colony optimization (ACO) algorithm.
     output: Improved solution
     begin
         initialize ant colony;
-        for each (*$t \leftarrow 1,...,t_max$*) do
+        for each (*$t \leftarrow 1,...,t_{max}$*) do
       	    for each ant (*$k = 1,...,m$*) do
                choose random start;
-               walk through construction graph according to $p_{ij}$
+               walk through construction graph according to (*$p_{ij}$*)
             end for
         end for
         Apply pheromones;
@@ -165,7 +165,7 @@ optimization. \\
 \scriptsize  
 \input{runTable}
 \caption{This table shows the number of crossings for instance \texttt{automatic-4} for
-different numbers of runs (columns) and ants (rows).}
+different numbers of runs (columns) and ants (rows). We set $\alpha$ and $\beta$ equal to 1.}
 \label{tab:runTable}
 \end{table}
 
@@ -175,7 +175,7 @@ different numbers of runs (columns) and ants (rows).}
 \scriptsize  
 \input{alphabeta}
 \caption{This table shows the number of crossings for instance \texttt{automatic-4} for
-different weights for $\alpha$ (rows) and $\beta$ (columns).}
+different weights for $\alpha$ (rows) and $\beta$ (columns). We use $2,000$ ants and $100$ runs.}
 \label{tab:alphabeta}
 \end{table}
 
@@ -196,7 +196,7 @@ this instance and parameterization (runs, ants), the parameter for
 local information seems to be more important. \\
 
 We also run a handful of experiments for the evaporation rate and find that
-higher values tend to give better results.
+higher values tend to give better results.\\
 
 Table~\ref{tab:results} shows the overall results. For the smaller
 problem instances, we tend to find very good solutions compared to our
@@ -204,7 +204,7 @@ previous exercies. However, for the larger instances we are unable to
 use a sufficient number of ants and runs. Given that the CGs of these
 instances are very large we suspect that we would need a much larger
 number of ants (and/or better local information) to find meaningful
-solutions.
+solutions.\\
 
 For selected instances, we executed our algorithm with an even larger
 number of ants/runs and were able to achieve very promising
