@@ -68,6 +68,10 @@ in combination with Variable Neighborhood Search.
 
 \subsection{Algorithm and Parametrization}
 
+The algorithm is similar to the variant in the last assignment, but in
+addition we are optimizing the solutions of
+the ants after each run before we apply the pheromones:
+
 \begin{algorithm}[caption={Ant Colony - VNS Hybrid}]
     input: Graph 
     output: Improved solution
@@ -79,23 +83,44 @@ in combination with Variable Neighborhood Search.
                walk through construction graph according to (*$p_{ij}$*)
             end for
         end for
-        Apply Variable Neighborhood Search ;
+        Apply Variable Neighborhood Search for all ants;
         Apply pheromones;
         Evaporate pheromones;
     end
 \end{algorithm}
 
 
-
 \subsubsection{Ant Colony Parametrization}
-\label{construction_graph}
+\label{ant_colony}
 
-
+We are using the configuration we have chosen for Assignment 4:
+\begin{itemize}
+\item $\alpha: 2 $
+\item $\beta: 2$
+\item evaporation rate: 0.4
+\end{itemize}
 \subsubsection{Variable Neigborhood Search}
 
-We are using the Generalized Variable Neighborhood Search from Assignment 3.
+We are using the Generalized Variable Neighborhood Search as developed in assignment 3.
+We have set a timeout to 5 minutes for the search.
 
-For the stochastic moves we use the 
+For the stochastic moves we use the following neigborhoods:
+
+\begin{description}
+\item[1-node-move]: Defined as all subsets where 1 vertex of the initial solution is moved to another position.
+\item[2-node-move] 
+Defined as all subsets where 2 vertices of the initial solution are moved to other positions.
+\end{description}
+ 
+For the Variable Neighborhood decent we are using the NEXT best step function, as well as the following 
+neighborhoods:
+
+\begin{description}
+\item[1-edge move] This neighborhood consists of all solutions where one edge is moved to a different page. 
+\item[1-node edge move] This neighborhood consists of all solutions where the edges of
+	one vertex on a specific page are moved to all different pages. 
+\end{description}
+
 
 
 \subsection{Experiments and Results}
