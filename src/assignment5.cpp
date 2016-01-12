@@ -401,10 +401,16 @@ int main( int argc, char **argv)
     // enum neighborhood_t { NODE_1, EDGE_1, NODE_EDGE, NODE_EDGE_1, NODE_MOVE_1, NODE_MOVE_RANDOM_2, NODE_MOVE_RANDOM_3};
     //
     // experiment 1: run 1 ants 5 stat 3, FIRST
-    // std::list<neighborhood_t> vnd_neighborhoods{EDGE_1, NODE_EDGE_1, NODE_1 };
+    //std::list<neighborhood_t> vnd_neighborhoods{EDGE_1, NODE_EDGE_1, NODE_1 };
+    //step_func_t vnd_step= BEST;
     // experiment 2:  run 1 ants 5 stat 3, FIRST
-    std::list<neighborhood_t> stochastic_neighborhoods{NODE_MOVE_RANDOM_2 };
-    std::list<neighborhood_t> vnd_neighborhoods{NODE_EDGE_1 };
+    // std::list<neighborhood_t> stochastic_neighborhoods{NODE_MOVE_1,NODE_MOVE_RANDOM_2 };
+    // std::list<neighborhood_t> vnd_neighborhoods{NODE_EDGE, NODE_EDGE_1 };
+    // step_func_t vnd_step= FIRST;
+    // 
+    // experiment 3:  run 1 ants 5 stat 3, FIRST
+    std::list<neighborhood_t> stochastic_neighborhoods{NODE_MOVE_1,NODE_MOVE_RANDOM_2 };
+    std::list<neighborhood_t> vnd_neighborhoods{NODE_EDGE, NODE_EDGE_1 };
     step_func_t vnd_step= FIRST;
 
     int num_ants= 5;
@@ -507,15 +513,24 @@ int main( int argc, char **argv)
         // use local search to improve results
         if( use_local_search )
         {
+            sort( ant_solutions.begin(), ant_solutions.end(), 
+                  [](const boost::shared_ptr<solution>&lhs, const boost::shared_ptr<solution>&rhs) { return lhs->get_crossings() < rhs->get_crossings(); } ); 
+
+
             while( 1 )
             {
 
+
                 for( unsigned int i=0; i<ant_solutions.size(); ++i )
                 {
-                    //vnd( *ant_solutions[i], vnd_neighborhoods, vnd_step, time );
-                     general_vns( *ant_solutions[i], stochastic_neighborhoods, 
-                                                     vnd_neighborhoods, 
-                                                     vnd_step, time );
+                    vnd( *ant_solutions[i], vnd_neighborhoods, vnd_step, time );
+                    general_vns( *ant_solutions[i], stochastic_neighborhoods, vnd_neighborhoods, vnd_step, time );
+                    if( !best_solution ||
+                        ant_solutions[i]->get_crossings() < best_solution->get_crossings() )
+                    {
+                        best_solution= ant_solutions[i];
+                    }
+
 
 
                 }
