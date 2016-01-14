@@ -8,9 +8,11 @@ ASSIGNMENT1_2= assignment1_2
 ASSIGNMENT2= assignment2
 ASSIGNMENT3= assignment3
 ASSIGNMENT4= assignment4
+ASSIGNMENT5= assignment5
 
 
-ASSIGNMENTS= $(ASSIGNMENT1_1) $(ASSIGNMENT1_2) $(ASSIGNMENT2) $(ASSIGNMENT3) $(ASSIGNMENT4)
+ASSIGNMENTS= $(ASSIGNMENT1_1) $(ASSIGNMENT1_2) $(ASSIGNMENT2) $(ASSIGNMENT3) $(ASSIGNMENT4) $(ASSIGNMENT5)
+
 
 
 INC = $(LIBDIR)
@@ -27,7 +29,7 @@ all: runtests $(ASSIGNMENTS)
 release: all
 debug: all	
 
-$(LIBSTAT): $(LIBDIR)/kpmp_instance.o  $(LIBDIR)/kpmp_solution.o  $(LIBDIR)/kpmp_solution_writer.o  $(LIBDIR)/assignment_helpers.o  $(LIBDIR)/spine.o  $(LIBDIR)/neighborhood_node_edge_shift.o  $(LIBDIR)/neighborhood_1_edge_move.o  $(LIBDIR)/neighborhood_1_node_flip.o  $(LIBDIR)/neighborhood_1_node_move.o   $(LIBDIR)/neighborhood_x_node_move_random.o $(LIBDIR)/timer.o $(LIBDIR)/neighborhood_1_node_edge_move.o $(LIBDIR)/pheromone.o
+$(LIBSTAT): $(LIBDIR)/kpmp_instance.o  $(LIBDIR)/kpmp_solution.o  $(LIBDIR)/kpmp_solution_writer.o  $(LIBDIR)/assignment_helpers.o  $(LIBDIR)/spine.o  $(LIBDIR)/neighborhood_node_edge_shift.o  $(LIBDIR)/neighborhood_1_edge_move.o  $(LIBDIR)/neighborhood_1_node_flip.o  $(LIBDIR)/neighborhood_1_node_move.o   $(LIBDIR)/neighborhood_x_node_move_random.o $(LIBDIR)/timer.o $(LIBDIR)/neighborhood_1_node_edge_move.o $(LIBDIR)/pheromone.o  $(LIBDIR)/local_search_helpers.o
 	ar rvs $(LIBSTAT) lib/*.o 
 
 $(LIBDIR)/%.o : $(LIBDIR)/%.cpp $(LIBDIR)/%.h
@@ -56,6 +58,8 @@ $(ASSIGNMENT3): $(LIBSTAT) $(ASSIGNMENT3).cpp
 $(ASSIGNMENT4): $(LIBSTAT) $(ASSIGNMENT4).cpp
 	$(CXX) -o $(ASSIGNMENT4) -I $(INC) $(CXXFLAGS) $(ASSIGNMENT4).cpp $(LIBSTAT) -lboost_program_options -lboost_timer
 
+$(ASSIGNMENT5): $(LIBSTAT) $(ASSIGNMENT5).cpp
+	$(CXX) -o $(ASSIGNMENT5) -I $(INC) $(CXXFLAGS) $(ASSIGNMENT5).cpp $(LIBSTAT) -lboost_program_options -lboost_timer
 
 clean: 
 	rm -f $(LIBSTAT) $(ASSIGNMENTS) unittests $(LIBDIR)/*.o

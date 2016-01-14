@@ -1,0 +1,136 @@
+\documentclass{scrartcl}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{color}
+\usepackage{booktabs}
+\usepackage{lscape}
+\usepackage{tabularx}
+
+\newcounter{nalg}[section] % defines algorithm counter for section
+\renewcommand{\thenalg}{\thesection .\arabic{nalg}} %defines appearance of the algorithm counter
+\DeclareCaptionLabelFormat{algocaption}{Algorithm \thenalg} % defines a new caption label as Algorithm x.y
+
+\lstnewenvironment{algorithm}[1][] %defines the algorithm listing environment
+{   
+    \refstepcounter{nalg} %increments algorithm number
+    \captionsetup{labelformat=algocaption,labelsep=colon} %defines the
+                                                          %caption
+                                                          %setup for:
+                                                          %it ises
+                                                          %label
+                                                          %format as
+                                                          %the
+                                                          %declared
+                                                          %caption
+                                                          %label above
+                                                          %and makes
+                                                          %label and
+                                                          %caption
+                                                          %text to be
+                                                          %separated
+                                                          %by a ':'
+    \lstset{ %this is the stype
+        frame=tB,
+        numbers=left, 
+        numberstyle=\tiny,
+        basicstyle=\scriptsize, 
+        keywordstyle=\color{black}\bfseries,
+        escapeinside={(*}{*)},
+        keywords={,input, output, return, datatype, function, in, if, else, foreach, while, begin, end, } 
+        numbers=left,
+        xleftmargin=.04\textwidth,
+        #1 % this is to add specific settings to an usage of this environment (for instnce, the caption and referable label)
+    }
+}
+{}
+
+
+
+
+
+\author{Alexander Eisl (0250266), Peter Wiedermann (0025999)}
+
+\date{\today}
+
+
+\title{Heuristic Optimization Techniques \\ Exercise 5 and 6}
+
+\begin{document}
+\maketitle
+
+
+\section{Hybrid Methods - ACO + Local Search}
+\label{sec:hybdrin_methods}
+
+In this programming exercise, we decided to search for optimal
+solutions using our ant colony optimization (ACO) from the last assignment
+in combination with Variable Neighborhood Search.
+
+\subsection{Algorithm and Parametrization}
+
+The algorithm is similar to the variant in the last assignment, but in
+addition we are optimizing the solutions of
+the ants after each run before we apply the pheromones:
+
+\begin{algorithm}[caption={Ant Colony - VNS Hybrid}]
+    input: Graph 
+    output: Improved solution
+    begin
+        initialize ant colony;
+        for each (*$t \leftarrow 1,...,t_{max}$*) do
+      	    for each ant (*$k = 1,...,m$*) do
+               choose random start;
+               walk through construction graph according to (*$p_{ij}$*)
+            end for
+        end for
+        Apply Variable Neighborhood Search for all ants;
+        Apply pheromones;
+        Evaporate pheromones;
+    end
+\end{algorithm}
+
+
+\subsubsection{Ant Colony Parametrization}
+\label{ant_colony}
+
+We are using the configuration we have chosen for Assignment 4:
+\begin{itemize}
+\item $\alpha: 2 $
+\item $\beta: 2$
+\item evaporation rate: 0.4
+\end{itemize}
+\subsubsection{Variable Neigborhood Search}
+
+We are using the Generalized Variable Neighborhood Search as developed in assignment 3.
+We have set a timeout to 5 minutes for the search.
+
+For the stochastic moves we use the following neigborhoods:
+
+\begin{description}
+\item[1-node-move]: Defined as all subsets where 1 vertex of the initial solution is moved to another position.
+\item[2-node-move] 
+Defined as all subsets where 2 vertices of the initial solution are moved to other positions.
+\end{description}
+ 
+For the Variable Neighborhood decent we are using the NEXT best step function, as well as the following 
+neighborhoods:
+
+\begin{description}
+\item[1-edge move] This neighborhood consists of all solutions where one edge is moved to a different page. 
+\item[1-node edge move] This neighborhood consists of all solutions where the edges of
+	one vertex on a specific page are moved to all different pages. 
+\end{description}
+
+
+
+\subsection{Experiments and Results}
+We executed the code on a desktop computer with a Core i7 Quad-Core
+CPU with 2.67Ghz and 24 GB of main memory. \\
+
+We run a set of experiments to find out how the different parameters
+($\alpha$ $\beta$) influence the results. We also evaluate how the
+number runs and the size of our ant colony influence to results of our
+optimization. \\
+
+
+\end{document}
