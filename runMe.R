@@ -85,7 +85,7 @@ save(res1,file="output/res1.rdata")
 res2 <- mclapply(1:8,runMeWrapper,nAnts=10000,nRuns=50,instance="instances/automatic-2.txt",alpha=2,beta=2,script=COMMAND,mc.cores=8)
 save(res2,file="output/res2.rdata")
 
-res3 <- mclapply(1:8,runMeWrapper,nAnts=3000,nRuns=40,instance="instances/automatic-3.txt",alpha=2,beta=2,script=COMMAND,mc.cores=8)
+res3 <- mclapply(1:8,runMeWrapper,nAnts=20000,nRuns=40,instance="instances/automatic-3.txt",alpha=2,beta=2,script=COMMAND,mc.cores=8)
 save(res3,file="output/res3.rdata")
 
 res4 <- mclapply(1:8,runMeWrapper,nAnts=10000,nRuns=40,instance="instances/automatic-4.txt",alpha=2,beta=2,script=COMMAND,mc.cores=8)

@@ -55,7 +55,7 @@ print(runTableXtab,file="src/report4/runTable.tex",floating=FALSE)
 
 
 
-alphaBetaTab <- generateComparisonMatrix(dat,params,c("alpha","beta"),c("n","nAnts","nRuns"),c(10,500,10))
+alphaBetaTab <- generateComparisonMatrix(dat,params,c("alpha","beta"),c("n","nAnts","nRuns"),c(10,2000,100))
 
 alphaBetaXTab <- xtable(alphaBetaTab)
 print(alphaBetaXTab,file="src/report4/alphabeta.tex",floating=FALSE)

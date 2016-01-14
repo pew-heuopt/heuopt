@@ -171,19 +171,16 @@ We run two additional experiments where we change the order of the
 neighborhoods.\footnote{see Section~\ref{neighborhood_orders} for the
   original order}
 
-Tables~\ref{tab:resultsVns} and ~\ref{tab:TimingVns} show the
-results when we reverse the order of the VNS neighborhoods
-used for the shaking.\footnote{Unfortunately, our script which executed
-  the experiments did not include a character string specifying the
-  experiment and, thus, re-used the filenames of our output files. As a result,
-  we have to re-run our computations to get all the output files
-  necessary for the submission on the cluster. Runtimes and crossing
+Tables~\ref{tab:resultsVns} and ~\ref{tab:TimingVns} show the results
+when we reverse the order of the VNS neighborhoods used for the
+shaking.\footnote{Unfortunately, we have to re-run our computations
+  because we have overwritten our result files. Runtimes and crossing
   numbers were recorded separately and are correct. Because of the
-  random nature of our algorithm, the crossing numbers of the solutions that we will
-  submit on the cluster tomorrow might be different. Please note that
-  the submission deadline on TUWEL seems to be too early (Sunday,
-  00:00) and different from the one mentioned in the assignment
-  (Sunday, 23:55).}
+  random nature of our algorithm, the crossing numbers of the
+  solutions that we will submit on the cluster tomorrow might be
+  different. Please note that the submission deadline on TUWEL seems
+  to be too early (Sunday, 00:00) and different from the one mentioned
+  in the assignment (Sunday, 23:55).}
 
 As we can see, the reverse order of the VNS neighborhoods improves the
 minimum number of crossings for many instances. If we are looking at
@@ -192,8 +189,9 @@ that the variance in the runtime is higher than in the original order.
 %%% removed 'significantly' as this could imply some statistical test which we didn't run
 This might imply that we get a better minimum for the cost of
 stability of the solution, originating from the fact that we start
-exchaning 3 random vertices, than just 1 as in the original order. However,
-the fact that we hit the maximum run-time in many cases makes this difficult to interpret.
+exchanging 3 random vertices, than just 1 as in the original
+order. However, the fact that we hit the maximum run-time in many
+cases makes this difficult to interpret.
 
 
 \begin{table}[!H]
