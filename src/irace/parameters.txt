@@ -1,0 +1,5 @@
+# name			switch		type	values		conditions
+alpha			"--alpha "	r (0.00, 3.00)
+beta 			"--beta "	r (0.00, 3.00)
+evaporate		"--evaporation " 	r (0.00, 1.00)
+daemon			"--use-daemon " i (0,1)

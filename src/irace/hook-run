@@ -1,0 +1,10 @@
+#!/bin/bash
+INSTANCE=$1
+CANDIDATENUM=$2
+CAND_PARAMS=$*
+STDOUT="c${CANDIDATENUM}.stdout"
+FIXED_PARAMS=" --output --num-ants 20000 --num-runs 100 TEST "
+./assignment4 --input $INSTANCE  $FIXED_PARAMS $CAND_PARAMS 1> $STDOUT
+COST=$(grep -oE 'crossings sum: [-+0-9.e]+' $STDOUT | cut -d' ' -f3)
+echo "${COST}"
+exit 0

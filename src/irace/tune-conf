@@ -1,0 +1,4 @@
+execDir <- "../"
+maxEperiments <- 10000
+digits <- 2
+
