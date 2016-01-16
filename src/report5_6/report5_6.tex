@@ -119,7 +119,7 @@ variable neighborhood search into account.
 
 \subsubsection{Variable Neigborhood Search}
 
-We are using the Generalized Variable Neighborhood Search as developed in assignment 3.
+We are using the Generalized Variable Neighborhood Search as developed in Assignment~3.
 As described in the algorithm section, we use the Variable Neighborhood Descent in the Generalized
 Search as well as directly on the ant solutions.
 
@@ -151,22 +151,26 @@ We have set a timeout to 5 minutes for the variable neighborhood search, where t
 The time-based stopping criteria is
 only executed in the neighborhood search parts of the heuristic.\\
 
-Table \ref{tab:results} shows the results of the Ant-Colony-GVNS Hybrid as well as the results without
-Generalized Variable Neighborhood search.
-As expected the Neighborhood Search extension is a clear improvement to our Heuristic. \\
+Table \ref{tab:results} shows the results of the Ant-Colony-GVNS
+Hybrid as well as the results without Generalized Variable
+Neighborhood search.  As expected the Neighborhood Search extension is
+a clear improvement to our heuristic. \\
 
-An interesting fact is that the variant without GVNS is even better performing than the 
-heuristic of the last assignment. The reason for that is that we changed the random distribution
-for the ant path finding as described in section \ref{ant_colony} which is better performing
-under the limited circumstances that we have to execute our heuristic. The real power of the ant-colony 
-could unfold in a parallelized environment, where we could increase the number of runs ($t_{max}$)
-and ants.
-If we would further increase the probability for local better solutions we would degenerate
-to a randomized greedy construction heuristic. \\
+An interesting fact is that the variant without GVNS is even better
+performing than the heuristic of the last assignment. The reason for
+that is that we changed the random distribution for the ant path
+finding as described in section \ref{ant_colony} which is better
+performing under the limited circumstances that we have to execute our
+heuristic. The real power of the ant-colony could unfold in a
+parallelized environment, where we could increase the number of runs
+($t_{max}$) and ants.  If we would further increase the probability
+for local better solutions we would degenerate to a randomized greedy
+construction heuristic. \\
 
-So as an additional insight of this task we can say that a randomized greedy construction heuristic
-with a subsequent variable neighborhood search seems to be a very promising approach for
-the k-page crossing number minimization problem.
+So as an additional insight of this task we can say that a randomized
+greedy construction heuristic with a subsequent variable neighborhood
+search seems to be a very promising approach for the k-page crossing
+number minimization problem.
 
 
 
@@ -189,5 +193,28 @@ the k-page crossing number minimization problem.
 \caption{Crossings: GVNS / without GVNS}
 \label{tab:results}
 \end{table}
+
+\subsection{Parameter tuning}
+In exercise, we tuned the parameter of the ACO used in the previous assignment. In order to be able to validate
+the tuned parameters out-of-sample we generated a set of 40 random tuning instances. In order to be able to use
+a reasonable number of ants we decided to simulate reasonably small graphs. 
+
+\begin{itemize}
+  \item Number of vertices: between 10 and 15 Vertices
+  \item Number of edges: between 25 and 40 edges
+  \item Number of pages: between 3 and 5 pages
+\end{itemize}
+
+We decided not to tune the number of ants and the number of runs as we
+expect the results to be monotone in this parameter. Also, we would
+not be able to use an ``optimal'' number of ants/runs that was
+determined on a small instance on bigger instances. Thus, we used the following tuning parameters:
+
+\begin{itemize}
+  \item alpha: Real value between 0 and 3
+  \item beta: Real value between 0 and 3
+  \item use-daemon: Either 0 or 1
+  \item evaporation rate: Real value between 0 and 1
+\end{itemize}
 
 \end{document}
