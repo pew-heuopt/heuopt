@@ -133,6 +133,7 @@ res10tuned <- mclapply(1:8,runMeWrapper,nAnts=100,nRuns=5,instance="instances/au
 save(res10old,file="output/tuning/res510.rdata")
 save(res10tuned,file="output/tuning/res510nl.rdata")
 
+
 analyseResult <- function(res) {
     n <- length(res)
     crossings <- numeric(n)
@@ -168,7 +169,7 @@ analyseResult(res3old)
 analyseResult(res3tuned)
 
 analyseResult(res4old)
-analyseResult(res4tuned)
+analyseResult(res4tund)
 
 analyseResult(res5old)
 analyseResult(res5tuned)
@@ -187,3 +188,7 @@ analyseResult(res9tuned)
 
 analyseResult(res10old)
 analyseResult(res10tuned)
+
+
+untuned <- c(15,1.25,158.75,3.75,33,8080799,42652.62,1079272,1458140,170022.8)
+tuned <- c(14.625,3.75,158,4.5,33.5,8080295,46848.12,1079788,1446461,169784.1)

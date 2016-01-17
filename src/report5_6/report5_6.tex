@@ -220,17 +220,42 @@ following ranges for the tuning parameters (irace results are reported in parent
 \end{itemize}
 
 For each instance, we repeat our optimization 8 times and calculate
-averages. We compare the average crossings using a paired Wilcoxon
+averages. Table~\ref{tab:resultssim} lists the average for the two
+versions.  We compare the average crossings using a paired Wilcoxon
 test. Interestingly, we do not find a significant difference at the 5
-percent level between the tuned and the untuned variant.
+percent level between the tuned and the untuned variant. The
+difference between the means of the individual instances is very small
+and, for some instances, the tuned version even produces worse results
+(the difference is probably not statistically significant
+either). There could be several explanations for this result: First,
+our base-case scenario was already determined using a large set of
+experiments. Thus, this is not strictly ``untuned''.\footnote{The
+  tuned parameters -- with the exception of alpha -- are close to the
+  parameters we used in the base case.} It is, however, optimized on a
+single in-sample instance. Second, we performed irace on our simulated
+instances to avoid overfitting. It might be the case that our training
+instances are not optimal.
 
-There could be several explanations for this result: First, our
-base-case scenario was already determined using a large set of
-experiments. Thus, this is not strictly ``untuned''. It is, however,
-optimized on a single in-sample instance. Second, we performed irace
-on our simulated instances to avoid overfitting. It might be the case
-that our training instances are not optimal.
 
-
+\begin{table}
+\scriptsize
+\begin{tabular}{lcc}
+  \toprule  & untuned & tuned \\
+  \midrule 
+  automatic-1.txt & 15 & 14.63 \\
+  automatic-2.txt & 1.25 & 3.75  \\
+  automatic-3.txt & 158.75 & 158 \\
+  automatic-4.txt & 3.75 & 4.5 \\
+  automatic-5.txt & 33 &  33.5 \\
+  automatic-6.txt & 8,080,799 & 8,080,295 \\
+  automatic-7.txt & 42,652 & 46,848 \\
+  automatic-8.txt & 1,079,272 & 1,079,788 \\
+  automatic-9.txt & 1,458,140 & 1,446,461 \\
+  automatic-10.txt & 170,022 & 169,784 \\
+  \bottomrule 
+\end{tabular}
+\caption{Average number of crossings for tuned and untuned ACO.}
+\label{tab:resultssim}
+\end{table}
 
 \end{document}
