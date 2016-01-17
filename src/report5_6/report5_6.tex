@@ -147,14 +147,15 @@ We executed the code on a desktop computer with a Core i7 Quad-Core
 CPU with 2.67Ghz and 24 GB of main memory. \\
 
 
-We have set a timeout to 5 minutes for the variable neighborhood search, where the time measurement includes the calculation time for the ant colony part as well. 
-The time-based stopping criteria is
-only executed in the neighborhood search parts of the heuristic.\\
+We have set a timeout to 5 minutes for the variable neighborhood
+search, where the time measurement includes the calculation time for
+the ant colony part as well.  The time-based stopping criteria is only
+executed in the neighborhood search parts of the heuristic.\\
 
 Table \ref{tab:results} shows the results of the Ant-Colony-GVNS
 Hybrid as well as the results without Generalized Variable
 Neighborhood search.  As expected the Neighborhood Search extension is
-a clear improvement to our heuristic. \\
+an improvement to our heuristic, at least for many of the smaller instances. \\
 
 An interesting fact is that the variant without GVNS is even better
 performing than the heuristic of the last assignment. The reason for
@@ -178,16 +179,16 @@ number minimization problem.
 \scriptsize
 \begin{tabular}{lccccc}
   \toprule  & min & avg & sd & avgTime & sdTime \\ 
-  \midrule automatic-1.txt & 9 / 12 & 9.63 / 12.38 & 0.52 / 0.52 & 440.50 / 76.85 & 1.76 / 1.22 \\ 
-  automatic-2.txt & 0 / 0 & 0 / 0  & 0 / 0 & 417.71 / 65.32 & 1.34 / 1.23 \\ 
-  automatic-3.txt & 62 / 90 & 62.25 / 97.25 & 2.66 / 3.38 & 897.17 / 456.36 & 10.47 / 7.59 \\ 
-  automatic-4.txt & 0 / 1 & 0 / 1.26 & 0 / 0.35 & 437.36 / 91.40 & 3.11 / 1.89 \\ 
-  automatic-5.txt & 1 / 8 & 3.13 / 10.38 & 1.13 / 1.41 & 379.32 / 63.09 & 1.29 / 1.23 \\ 
-  automatic-6.txt & 7,405,217 / 7,429,527 & 7,439,179 / 7,444,068 & 15,364 / 6,993 & 384.78 / 122.592 & 2.77 / 1.87 \\ 
-  automatic-7.txt & 26,234 / 25,169 & 28,773 / 28,234 & 1,412 / 2,009 & 279.07 / 165.43 & 1.87 / 3.06 \\ 
-  automatic-8.txt & 1,048,980 / 1,049,749 & 1,050,587 / 1,051,231  & 1,336 / 1,204 & 659.92 / 443.03 & 4.40 / 4.26 \\ 
-  automatic-9.txt & 496,609 / 537,739 & 544,469 / 554,541 & 21,315 / 8,703 & 575.54 / 212.58 & 9.86 / 17.79 \\ 
-  automatic-10.txt & 117,012 / 119,429 & 119,520 / 120,212 & 1,117 / 391 & 498.60 / 232.95 & 2.97 / 2.65 \\ 
+  \midrule automatic-1.txt & 9 / 12 & 9.38 / 12.63 & 0.74 / 0.52 & 432.29 / 76.89 & 2.09 / 1.03 \\ 
+  automatic-2.txt & 0 / 2 & 0.25 / 5.75  & 0.46 / 2.38 & 438.38 / 66.26 & 1.22 / 0.99 \\ 
+  automatic-3.txt & 63 / 80 & 68.875 / 87.13 & 2.80 / 3.52 & 916.39 / 463.49 & 6.98 / 6.39 \\ 
+  automatic-4.txt & 5 / 3 & 6.875 / 6.625 & 1.13 / 2.615 & 444.67 / 86.45 & 2.17 / 1.91 \\ 
+  automatic-5.txt & 10 / 19 & 11.75 / 23.38 & 1.58 / 2.13 & 394.09 / 56.94 & 1.57 / 0.87 \\ 
+  automatic-6.txt & 7,388,672 / 7,442,471 & 7,425,825 / 7,448,006 & 20,228 / 3,185 & 387.24 / 124.00 & 1.72 / 1.16 \\ 
+  automatic-7.txt & 40,953 / 34,222 & 44,370 / 38,430 & 2,092 / 2,185 & 445.33 / 127.77 & 2.28 / 1.08 \\ 
+  automatic-8.txt & 1,008,639 / 1,007,304 & 1,014,500 / 1,015,000  & 3,317 / 4,124 & 634.86 / 410.49 & 4.80 / 1.58 \\ 
+  automatic-9.txt & 1,177,866 / 1,125,711 & 1,204,371 / 1,197,395 & 14,501 / 40,997 & 449.14 / 180.57 & 8.69 / 6.35 \\ 
+  automatic-10.txt & 150,320 / 152,032 & 152,916 / 153,774 & 1,432 / 1,104 & 819.98 / 433 & 3.19 / 1.40 \\ 
   \bottomrule 
 \end{tabular}
 \caption{Crossings: GVNS / without GVNS}
