@@ -209,13 +209,28 @@ a reasonable number of ants we decided to simulate reasonably small graphs.
 We decided not to tune the number of ants and the number of runs as we
 expect the results to be monotone in this parameter. Also, we would
 not be able to use an ``optimal'' number of ants/runs that was
-determined on a small instance on bigger instances. Thus, we used the following tuning parameters:
+determined on a small instance on bigger instances. Thus, we used the
+following ranges for the tuning parameters (irace results are reported in parentheses):
 
 \begin{itemize}
-  \item alpha: Real value between 0 and 3
-  \item beta: Real value between 0 and 3
-  \item use-daemon: Either 0 or 1
-  \item evaporation rate: Real value between 0 and 1
+  \item alpha: Real value between 0 and 3 (0.49)
+  \item beta: Real value between 0 and 3 (2.28)
+  \item use-daemon: Either 0 or 1 (1)
+  \item evaporation rate: Real value between 0 and 1 (0.38)
 \end{itemize}
+
+For each instance, we repeat our optimization 8 times and calculate
+averages. We compare the average crossings using a paired Wilcoxon
+test. Interestingly, we do not find a significant difference at the 5
+percent level between the tuned and the untuned variant.
+
+There could be several explanations for this result: First, our
+base-case scenario was already determined using a large set of
+experiments. Thus, this is not strictly ``untuned''. It is, however,
+optimized on a single in-sample instance. Second, we performed irace
+on our simulated instances to avoid overfitting. It might be the case
+that our training instances are not optimal.
+
+
 
 \end{document}
