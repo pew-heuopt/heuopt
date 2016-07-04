@@ -25,16 +25,18 @@ program_instances= {
 #
 # assignment 5
 #
-                     'aco-hybrid' : { 'bin' : 'src/assignment5', 
-                                         'opt' : [ '--num-ants', '5',
-                                                   '--num-runs', '1'
-                                             ] },
-
+#                     'aco-hybrid' : { 'bin' : 'src/assignment5', 
+#                                         'opt' : [ '--num-ants', '5',
+#                                                   '--num-runs', '1'
+#                                             ] },
+#
 
 
                      'aco-hybrid-local' : { 'bin' : 'src/assignment5', 
                                          'opt' : [ '--num-ants', '5',
-                                                   '--num-runs', '1',
+                                                   '--num-runs', '3',
+                                                   '--alpha', '2',
+                                                   '--beta', '2',
                                                    '--use-local-search', '1'
                                              ] },
 

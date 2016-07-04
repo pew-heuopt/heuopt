@@ -4,7 +4,7 @@
 import sys, getopt, math, make_stat_data
 
 
-NUM_RUNS= 20
+NUM_RUNS= 3
 
 PROGRAM_PROPERTIES= [ 'crossings' , 'time' ]
 
